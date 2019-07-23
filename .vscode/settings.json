@@ -1,0 +1,12 @@
+{
+    "javascript.format.enable": false,
+    "eslint.enable": true,
+    "eslint.validate": [
+        { "language": "json", "autoFix": false },
+        { "language": "javascript", "autoFix": true },
+        { "language": "typescript", "autoFix": true },
+    ],
+    "eslint.alwaysShowStatus": true,
+    "eslint.autoFixOnSave": true,
+    "editor.tabSize": 2
+}

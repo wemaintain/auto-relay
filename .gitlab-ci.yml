@@ -1,0 +1,27 @@
+image: node:10
+services:
+  - docker:17.09-dind
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+stages:
+  - test
+
+test:
+  stage: test
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-ci/
+  script:
+    - npm install
+    - npm run test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+    - coverage

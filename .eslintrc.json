@@ -1,0 +1,12 @@
+{
+    "extends": [
+        "@wemaintain/eslint-config"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "overrides": [{
+      "files": "**.ts",
+      "excludedFiles": "**/**.spec.js"
+    }]
+}

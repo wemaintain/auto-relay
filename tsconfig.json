@@ -1,0 +1,8 @@
+{
+    "extends": "@wemaintain/eslint-config/tsconfig.default.json",
+    "compilerOptions": {
+      "typeRoots": [
+        "node_modules/@types/"
+      ]
+    }
+}
