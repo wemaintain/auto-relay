@@ -41,7 +41,7 @@ export class SharedObjectFactory {
    */
   public generateConnectionArgs (prefix: string): new () => Relay.ConnectionArguments {
     const argsName = `${prefix}ConnectionArgs`
-    // This is trick so the local class will be called argsName, as the ArgsType decorator doesn't take
+    // This is a trick so the local class will be called argsName, as the ArgsType decorator doesn't take
     // a name argument and instead uses the class name in the SDL.
     const darkMagic = {
       [argsName]: class implements Relay.ConnectionArguments {
