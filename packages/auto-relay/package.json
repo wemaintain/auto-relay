@@ -1,11 +1,11 @@
 {
-  "name": "type-relay",
+  "name": "auto-relay",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "David <dfain@wemaintain.io>",
-  "homepage": "https://gitlab.com/wemaintain/type-relay#readme",
+  "homepage": "https://gitlab.com/wemaintain/auto-relay#readme",
   "license": "ISC",
-  "main": "lib/type-relay.js",
+  "main": "lib/auto-relay.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -15,13 +15,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/wemaintain/type-relay.git"
+    "url": "git+ssh://git@gitlab.com/wemaintain/auto-relay.git"
   },
   "scripts": {
     "test": "jest"
   },
   "bugs": {
-    "url": "https://gitlab.com/wemaintain/type-relay/issues"
+    "url": "https://gitlab.com/wemaintain/auto-relay/issues"
   },
   "peerDependencies": {
     "graphql": "^14.4.1",

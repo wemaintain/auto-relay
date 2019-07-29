@@ -1,11 +1,11 @@
-# `type-relay`
+# `auto-relay`
 
 > TODO: description
 
 ## Usage
 
 ```
-const typeRelay = require('type-relay');
+const typeRelay = require('auto-relay');
 
 // TODO: DEMONSTRATE API
 ```

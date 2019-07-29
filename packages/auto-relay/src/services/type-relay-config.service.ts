@@ -1,6 +1,6 @@
 import { SharedObjectFactory } from './../graphql/shared-object.factory'
 import { Container, Service } from 'typedi'
-import { TypeRelayConfigArgs, TypeRelayConfigArgsExistingModel, TypeRelayConfigArgsNoModel } from '../interfaces/type-relay-config.interface'
+import { TypeRelayConfigArgs, TypeRelayConfigArgsExistingModel, TypeRelayConfigArgsNoModel } from '../interfaces/auto-relay-config.interface'
 
 @Service()
 export class TypeRelayConfig {

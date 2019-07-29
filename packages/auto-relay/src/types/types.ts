@@ -15,3 +15,5 @@ export declare type ReturnTypeFuncValue = TypeValue | [TypeValue];
 export declare type TypeValueThunk = (type?: void) => TypeValue;
 export declare type ClassTypeResolver = (of?: void) => ClassType;
 export declare type ReturnTypeFunc = (returns?: void) => ReturnTypeFuncValue;
+
+export declare type ClassValueThunk<T=any> = (type?: void) => ClassType<T>

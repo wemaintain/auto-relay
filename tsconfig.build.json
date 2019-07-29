@@ -1,0 +1,21 @@
+{
+    "extends": "@wemaintain/eslint-config/tsconfig.default.json",
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5",
+      "outDir": "lib",
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "typeRoots": [
+        "node_modules/@types/"
+      ]
+    },
+    "include": [
+      "src/**.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "lib"
+    ]
+}

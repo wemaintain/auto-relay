@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable @typescript-eslint/ban-types */
 import { Service, Container } from 'typedi'
 import { TypeValue } from '../types/types'
-import { Field, ObjectType } from 'type-graphql'
+import { Field, ObjectType, Arg } from 'type-graphql'
 import * as Relay from 'graphql-relay'
 
 /**
@@ -27,6 +28,23 @@ export class DynamicObjectFactory {
     const Connection = this._makeConnection(connectionName, Edge, PageInfo)
 
     return { Edge, Connection }
+  }
+
+  /**
+   * Mark a given function
+   * @param target target object on which the function exists (this must be a Type-graphql decoarted class)
+   * @param functionName name of the function on the target object
+   * @param sdlName name to give to this function in the SDL
+   * @param Connection Connection object returned by the function
+   */
+  public declareFunctionAsRelayInSDL<T extends TypeValue> (target: any, functionName: string, sdlName: string | symbol, Connection: new () => Relay.Connection<T>): void {
+    // And we ensure our target[getterName] is recognized by GQL under target{}
+    Reflect.defineMetadata('design:paramtypes', [String, Number, String, Number], target, functionName)
+    Arg('after', () => String, { nullable: true })(target, functionName, 0)
+    Arg('first', () => Number, { nullable: true })(target, functionName, 1)
+    Arg('before', () => String, { nullable: true })(target, functionName, 2)
+    Arg('last', () => Number, { nullable: true })(target, functionName, 3)
+    Field(() => Connection, { name: `${String(sdlName)}` })(target, functionName, { value: true })
   }
 
   /**

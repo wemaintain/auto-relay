@@ -1,0 +1,26 @@
+{
+  "name": "auto-relay-typeorm",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "David <dfain@wemaintain.io>",
+  "homepage": "https://gitlab.com/wemaintain/auto-relay#readme",
+  "license": "ISC",
+  "main": "lib/typeorm.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/wemaintain/auto-relay.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/wemaintain/auto-relay/issues"
+  }
+}

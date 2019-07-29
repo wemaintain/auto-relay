@@ -1,4 +1,4 @@
-import { TypeRelayConfig } from './type-relay-config.service'
+import { TypeRelayConfig } from './auto-relay-config.service'
 import {Container} from 'typedi'
 describe('TypeRelayConfig', () => {
   let typeRelayConfig: TypeRelayConfig | null = null

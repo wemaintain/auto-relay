@@ -4,6 +4,6 @@ const base = require('../../jest.config.base.js')
 
 module.exports = {
   ...base,
-  name: 'type-relay',
-  displayName: 'type-relay',
+  name: 'auto-relay',
+  displayName: 'auto-relay',
 }
