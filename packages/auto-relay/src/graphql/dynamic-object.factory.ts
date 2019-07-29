@@ -100,7 +100,7 @@ export class DynamicObjectFactory {
       if (!PageInfo) throw new Error()
       return PageInfo
     } catch (e) {
-      throw new Error(`Couldn't find PageInfo Object. Did you forget to init TypeRelay?`)
+      throw new Error(`Couldn't find PageInfo Object. Did you forget to init AutoRelay?`)
     }
   }
 }

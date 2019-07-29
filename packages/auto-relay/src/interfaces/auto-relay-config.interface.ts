@@ -1,16 +1,16 @@
 import { TypeValueThunk } from '../types/types'
 
 /**
- * Arguments to initialize TypeRelay's config
+ * Arguments to initialize AutoRelay's config
  */
 // eslint-disable-next-line @typescript-eslint/no-type-alias
-export type TypeRelayConfigArgs = TypeRelayConfigArgsExistingModel | TypeRelayConfigArgsNoModel;
+export type AutoRelayConfigArgs = AutoRelayConfigArgsExistingModel | AutoRelayConfigArgsNoModel;
 
-export interface TypeRelayConfigArgsBase {
+export interface AutoRelayConfigArgsBase {
   orm: 'type-orm'
 }
 
-export interface TypeRelayConfigArgsExistingModel extends TypeRelayConfigArgsBase {
+export interface AutoRelayConfigArgsExistingModel extends AutoRelayConfigArgsBase {
   /** the objects we should use in the generated SDL */
   objects: {
     /** should be a type-graphql decorated type for pagination */
@@ -20,7 +20,7 @@ export interface TypeRelayConfigArgsExistingModel extends TypeRelayConfigArgsBas
   }
 }
 
-export interface TypeRelayConfigArgsNoModel extends TypeRelayConfigArgsBase {
+export interface AutoRelayConfigArgsNoModel extends AutoRelayConfigArgsBase {
   /** microservice name, will be prefixed to the generated SDL for shared Objects */
   microserviceName?: string
 }

@@ -79,8 +79,6 @@ describe.only('SDL Integration', () => {
         if (!pageInfoType) throw new Error(`Couldn't find Object in SDL`);
         const node = pageInfoType.toJSON();
 
-        console.log(node);
-
         // if (!node || !node.fields) throw new Error(`Couldn't find node in SDL`);
         // const hasNextPage = node.fields.find(f => f.name.value === 'hasNextPage');
 

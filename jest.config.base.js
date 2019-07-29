@@ -19,7 +19,7 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '(tests/.*.mock).(jsx?|tsx?)$',
   ],
-  setupFiles: ['../../tests/setup.ts'],
+  setupFiles: ['reflect-metadata'],
   setupFilesAfterEnv: ['jest-extended'],
   // verbose: true,
 }

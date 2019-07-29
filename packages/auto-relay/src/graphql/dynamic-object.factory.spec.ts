@@ -1,6 +1,6 @@
 import { DynamicObjectFactory } from "./dynamic-object.factory";
 import { Container } from "typedi";
-import { TypeRelayConfig } from "../services/auto-relay-config.service";
+import { AutoRelayConfig } from "../services/auto-relay-config.service";
 import * as TGQL from 'type-graphql'
 
 describe('DynamicObject factory', () => {
@@ -26,7 +26,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should return a decorated Edge Object', () => {
-      new TypeRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: 'type-orm' });
 
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const objectSpy = jest.spyOn(TGQL, 'ObjectType');
@@ -55,7 +55,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should return a decorated Connection Object', () => {
-      new TypeRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: 'type-orm' });
 
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const objectSpy = jest.spyOn(TGQL, 'ObjectType');
@@ -83,7 +83,7 @@ describe('DynamicObject factory', () => {
 
   describe('declareFunctionAsRelayInSDL', () => {
     it('Should add typescript reflect data on the function', () => {
-      new TypeRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: 'type-orm' });
       const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
 
       const Test = class TestClass { };
@@ -95,7 +95,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should decorate the function for the SDL', () => {
-      new TypeRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: 'type-orm' });
       const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const argSpy = jest.spyOn(TGQL, 'Arg');

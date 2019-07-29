@@ -1,23 +1,23 @@
-import { SharedObjectFactory } from './../graphql/shared-object.factory'
+import { SharedObjectFactory } from '../graphql/shared-object.factory'
 import { Container, Service } from 'typedi'
-import { TypeRelayConfigArgs, TypeRelayConfigArgsExistingModel, TypeRelayConfigArgsNoModel } from '../interfaces/auto-relay-config.interface'
+import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigArgsNoModel } from '../interfaces/auto-relay-config.interface'
 
 @Service()
-export class TypeRelayConfig {
+export class AutoRelayConfig {
   protected _sharedObjectFactory: SharedObjectFactory = Container.get(SharedObjectFactory)
 
-  constructor (config?: TypeRelayConfigArgs) {
+  constructor (config?: AutoRelayConfigArgs) {
     Container.remove('PAGINATION_OBJECT', 'CONNECTIONARGS_OBJECT')
 
-    if (config && (config as TypeRelayConfigArgsExistingModel).objects) {
-      this._declareExistingObjects(config as TypeRelayConfigArgsExistingModel)
+    if (config && (config as AutoRelayConfigArgsExistingModel).objects) {
+      this._declareExistingObjects(config as AutoRelayConfigArgsExistingModel)
     } else {
-      const prefix = config && (config as TypeRelayConfigArgsNoModel).microserviceName ? String((config as TypeRelayConfigArgsNoModel).microserviceName) : ''
+      const prefix = config && (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
       this._generateObjects(prefix)
     }
   }
 
-  protected _declareExistingObjects (config: TypeRelayConfigArgsExistingModel): void {
+  protected _declareExistingObjects (config: AutoRelayConfigArgsExistingModel): void {
     Container.set('PAGINATION_OBJECT', config.objects.pagination)
     Container.set('CONNECTIONARGS_OBJECT', config.objects.connectionArgs)
   }

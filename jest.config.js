@@ -11,5 +11,5 @@ module.exports = {
   ],
   coverageDirectory: '<rootDir>/coverage/',
   setupFiles: ['<rootDir>/tests/setup.ts'],
-  setupFilesAfterEnv: ['jest-extended'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup-after-env.ts'],
 }

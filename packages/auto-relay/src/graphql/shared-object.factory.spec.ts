@@ -118,7 +118,6 @@ describe('SharedObjectFactory', () => {
       expect(Test.name).toBe('ConnectionArgs');
       expect(Test2.name).toBe('ABConnectionArgs');
       expect(Test3.name).toBe('ABCDConnectionArgs');
-
     });
   })
 })
