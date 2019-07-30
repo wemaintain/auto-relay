@@ -3,8 +3,10 @@
     "compilerOptions": {
       "baseUrl": "packages",
       "paths": {
-        "auto-relay/*": ["auto-relay/src/*"],
-        "auto-relay": ["auto-relay/src/index.ts"],
+        "auto-relay/*": ["core/src/*"],
+        "auto-relay": ["core/src/index.ts"],
+        "auto-relay-common/*": ["common/src/*"],
+        "auto-relay-common": ["common/src/index.ts"],
       }
     },
     "include": [

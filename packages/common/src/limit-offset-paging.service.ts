@@ -3,14 +3,14 @@ import { Service } from 'typedi'
 import * as Relay from 'graphql-relay'
 
 @Service()
-export class PagingService {
+export class LimitOffsetPagingService {
   /**
-   * Create a 'paging parameters' object with 'limit' and 'offset' fields based on the incoming
-   * cursor-paging arguments.
+   * Create a 'paging parameters' object as expected by most ORMs with 'limit' and 'offset' fields based on the incoming
+   * cursor-paging arguments as spec'd by Relay.
    *
    * TODO: Handle the case when a user uses 'last' alone.
    */
-  public getPagingParametersOfRelayArgs (args: Relay.ConnectionArguments): { limit?: number; offset?: number } {
+  public getLimitOffset (args: Relay.ConnectionArguments): { limit?: number; offset?: number } {
     const meta = this._checkPagingSanity(args)
 
     switch (meta.pagingType) {
@@ -22,8 +22,9 @@ export class PagingService {
       }
       case 'backward': {
         const { last, before } = meta
+
         let limit = last
-        let offset = this._getId(before!) - last
+        let offset = this._getId(before) - last
 
         // Check to see if our before-page is underflowing past the 0th item
         if (offset < 0) {
@@ -45,16 +46,21 @@ export class PagingService {
    * @param args
    */
   protected _checkPagingSanity (args: Relay.ConnectionArguments): PagingMeta {
-    const { first = 0, last = 0, after, before } = args
+    const after = args.after || undefined
+    const before = args.before || undefined
+    const first = args.first || 0
+    const last = args.last || 0
     const isForwardPaging = !!first || !!after
     const isBackwardPaging = !!last || !!before
 
     if (isForwardPaging && isBackwardPaging) {
-      throw new Error('cursor-based pagination cannot be forwards AND backwards')
+      if ((isForwardPaging && before) || (isBackwardPaging && after)) {
+        throw new Error('paging must use either first/after or last/before')
+      } else {
+        throw new Error('cursor-based pagination cannot be forwards AND backwards')
+      }
     }
-    if ((isForwardPaging && before) || (isBackwardPaging && after)) {
-      throw new Error('paging must use either first/after or last/before')
-    }
+
     if ((isForwardPaging && first < 0) || (isBackwardPaging && last < 0)) {
       throw new Error('paging limit must be positive')
     }
@@ -67,7 +73,7 @@ export class PagingService {
     if (isForwardPaging) {
       return { pagingType: 'forward', after, first }
     } else if (isBackwardPaging) {
-      return { pagingType: 'backward', before, last }
+      return { pagingType: 'backward', before: before as string, last }
     } else {
       return { pagingType: 'none' }
     }
@@ -84,6 +90,6 @@ export class PagingService {
 
 // eslint-disable-next-line @typescript-eslint/no-type-alias
 type PagingMeta = ForwardPaging | BackwardPaging | NoPaging;
-interface ForwardPaging { pagingType: 'forward'; after?: string | null; first: number | null }
-interface BackwardPaging { pagingType: 'backward'; before?: string | null ; last: number | null }
+interface ForwardPaging { pagingType: 'forward'; after?: string; first: number }
+interface BackwardPaging { pagingType: 'backward'; before: string; last: number }
 interface NoPaging { pagingType: 'none' };

@@ -1,5 +1,5 @@
 {
-  "name": "@auto-relay/typeorm",
+  "name": "auto-relay-common",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "David <dfain@wemaintain.io>",
@@ -23,10 +23,10 @@
   "bugs": {
     "url": "https://gitlab.com/wemaintain/auto-relay/issues"
   },
-  "devDependencies": {
-    "typeorm": "^0.2.18"
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
   },
-  "peerDependencies": {
-    "typeorm": "^0.2.18"
+  "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.6"
   }
 }

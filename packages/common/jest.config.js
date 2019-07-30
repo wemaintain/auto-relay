@@ -4,6 +4,6 @@ const base = require('../../jest.config.base.js')
 
 module.exports = {
   ...base,
-  name: 'typeorm',
-  displayName: '@auto-relay/typeorm',
+  name: 'common',
+  displayName: 'auto-relay-common',
 }

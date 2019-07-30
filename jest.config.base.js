@@ -16,8 +16,12 @@ module.exports = {
     'node',
   ],
   collectCoverage: true,
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+  ],
   coveragePathIgnorePatterns: [
     '(tests/.*.mock).(jsx?|tsx?)$',
+    '(index.ts)$',
   ],
   setupFiles: ['reflect-metadata'],
   setupFilesAfterEnv: ['jest-extended'],

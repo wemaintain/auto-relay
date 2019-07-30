@@ -71,7 +71,7 @@ describe.only('SDL Integration', () => {
         expect(pageInfoType.name).toBe('AHAPageInfo');
       })
 
-      it('Should have hasNextPage: Boolean!', async () => {
+      it.skip('Should have hasNextPage: Boolean!', async () => {
         const PageInfo = sharedObjectFactory.generatePageInfo('');
         const schema = await buildSchema();
 
