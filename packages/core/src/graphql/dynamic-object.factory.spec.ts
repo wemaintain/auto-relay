@@ -2,6 +2,15 @@ import { DynamicObjectFactory } from "./dynamic-object.factory";
 import { Container } from "typedi";
 import { AutoRelayConfig } from "../services/auto-relay-config.service";
 import * as TGQL from 'type-graphql'
+import { ORMConnection } from "../orm/orm-connection.abstract";
+
+
+class ORMMock extends ORMConnection {
+  public autoRelayFactory(field: any, self: any, type: any, through?: any) {
+    return (): any => { };
+  }
+}
+
 
 describe('DynamicObject factory', () => {
   let dynamicObjectFactory = new DynamicObjectFactory();
@@ -26,7 +35,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should return a decorated Edge Object', () => {
-      new AutoRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: () => ORMMock });
 
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const objectSpy = jest.spyOn(TGQL, 'ObjectType');
@@ -55,7 +64,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should return a decorated Connection Object', () => {
-      new AutoRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: () => ORMMock });
 
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const objectSpy = jest.spyOn(TGQL, 'ObjectType');
@@ -83,7 +92,7 @@ describe('DynamicObject factory', () => {
 
   describe('declareFunctionAsRelayInSDL', () => {
     it('Should add typescript reflect data on the function', () => {
-      new AutoRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: () => ORMMock });
       const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
 
       const Test = class TestClass { };
@@ -95,7 +104,7 @@ describe('DynamicObject factory', () => {
     })
 
     it('Should decorate the function for the SDL', () => {
-      new AutoRelayConfig({ orm: 'type-orm' });
+      new AutoRelayConfig({ orm: () => ORMMock });
       const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const argSpy = jest.spyOn(TGQL, 'Arg');

@@ -6,15 +6,23 @@ import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigA
 export class AutoRelayConfig {
   protected _sharedObjectFactory: SharedObjectFactory = Container.get(SharedObjectFactory)
 
-  constructor (config?: AutoRelayConfigArgs) {
+  constructor (config: AutoRelayConfigArgs) {
+    if (!config) throw new Error(`No config supplied to AutoRelay`)
     Container.remove('PAGINATION_OBJECT', 'CONNECTIONARGS_OBJECT')
 
-    if (config && (config as AutoRelayConfigArgsExistingModel).objects) {
+    this._registerOrm(config)
+
+    if ((config as AutoRelayConfigArgsExistingModel).objects) {
       this._declareExistingObjects(config as AutoRelayConfigArgsExistingModel)
     } else {
-      const prefix = config && (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
+      const prefix = (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
       this._generateObjects(prefix)
     }
+  }
+
+  protected _registerOrm (config: AutoRelayConfigArgs): void {
+    if (!config.orm || typeof config.orm !== 'function') throw new Error(`config.orm must be a function`)
+    Container.set('ORM_CONNECTION', config.orm)
   }
 
   protected _declareExistingObjects (config: AutoRelayConfigArgsExistingModel): void {
