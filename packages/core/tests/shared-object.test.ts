@@ -1,7 +1,8 @@
 import * as TGQL from "type-graphql"
 import { SharedObjectFactory } from "../src/graphql/shared-object.factory";
-import { ObjectTypeDefinitionNode, GraphQLNamedType } from "graphql";
+import { ObjectTypeDefinitionNode, GraphQLNamedType, GraphQLObjectType } from "graphql";
 import { getMetadataStorage } from "type-graphql/dist/metadata/getMetadataStorage"
+import { getFieldOfObjectType, getConfigOfObjectType } from "./_.helper";
 
 const basicSchema = () => {
   @TGQL.ObjectType()
@@ -25,7 +26,7 @@ const basicSchema = () => {
 }
 
 
-describe.only('SDL Integration', () => {
+describe('SDL Integration', () => {
 
   let resolvers: any[] = [];
   let sharedObjectFactory = new SharedObjectFactory()
@@ -71,19 +72,20 @@ describe.only('SDL Integration', () => {
         expect(pageInfoType.name).toBe('AHAPageInfo');
       })
 
-      it.skip('Should have hasNextPage: Boolean!', async () => {
-        const PageInfo = sharedObjectFactory.generatePageInfo('');
+      it('Should have valid PageInfo object', async () => {
+        sharedObjectFactory.generatePageInfo('');
         const schema = await buildSchema();
 
-        const pageInfoType = schema.getType('PageInfo');
-        if (!pageInfoType) throw new Error(`Couldn't find Object in SDL`);
-        const node = pageInfoType.toJSON();
+        const config = getConfigOfObjectType(schema, 'PageInfo')
+        const hasNextPage = getFieldOfObjectType(schema, config, 'hasNextPage')
+        const hasPreviousPage = getFieldOfObjectType(schema, config, 'hasPreviousPage')
+        const startCursor = getFieldOfObjectType(schema, config, 'startCursor')
+        const endCursor = getFieldOfObjectType(schema, config, 'endCursor')
 
-        // if (!node || !node.fields) throw new Error(`Couldn't find node in SDL`);
-        // const hasNextPage = node.fields.find(f => f.name.value === 'hasNextPage');
-
-        // console.log(hasNextPage);
-        // expect(hasNextPage).toBeTruthy();
+        expect(hasNextPage.type.toString()).toEqual('Boolean!')
+        expect(hasPreviousPage.type.toString()).toEqual('Boolean!')
+        expect(startCursor.type.toString()).toEqual('String')
+        expect(endCursor.type.toString()).toEqual('String')
       })
     })
   })

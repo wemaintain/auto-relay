@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-dupe-class-members */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection } from 'auto-relay'
 import { LimitOffsetPagingService, augmentedConnection } from 'auto-relay-common'
 import { Container } from 'typedi'
 import { getConnection, EntityMetadata, FindManyOptions, BaseEntity } from 'typeorm'
-import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection } from 'auto-relay'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import * as Relay from 'graphql-relay'
 

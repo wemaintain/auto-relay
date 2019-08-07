@@ -11,7 +11,7 @@
     "@types/jest": "^24.0.15",
     "@types/node": "^12.6.8",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@wemaintain/eslint-config": "^1.0.4",
+    "@wemaintain/eslint-config": "^2.2.0",
     "eslint": "^6.1.0",
     "eslint-plugin-json": "^1.4.0",
     "faker": "^4.1.0",

@@ -1,14 +1,16 @@
 import { AutoRelayConfig } from './../services/auto-relay-config.service';
 import { RelayedConnection } from './relayed-connection.decorator';
 import 'jest-extended'
+import { DynamicObjectFactory } from '../graphql/dynamic-object.factory';
+import Container from 'typedi';
 
 
 describe('RelayedConnection', () => {
   let ORMCo: unknown;
-  let autoRelayFactory = jest.fn(() => function zeGetterTest() {})
+  let autoRelayFactory = jest.fn(() => function zeGetterTest() { })
 
   beforeEach(() => {
-    autoRelayFactory = jest.fn(() => function zeGetterTest() {})
+    autoRelayFactory = jest.fn(() => function zeGetterTest() { })
     class ORMCo {
       constructor() {
         return { autoRelayFactory: autoRelayFactory }
@@ -20,9 +22,7 @@ describe('RelayedConnection', () => {
 
 
   describe('GQL / SDL', () => {
-    it('Should call the GQL Object factories factory', () => {
-
-    })
+    it.todo('Should call the GQL Object factories factory')
   })
 
   describe('ORM', () => {

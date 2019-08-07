@@ -7,6 +7,8 @@
         "auto-relay": ["core/src/index.ts"],
         "auto-relay-common/*": ["common/src/*"],
         "auto-relay-common": ["common/src/index.ts"],
+        "@auto-relay/typeorm/*": ["typeorm/src/*"],
+        "@auto-relay/typeorm": ["typeorm/src/index.ts"],
       }
     },
     "include": [
