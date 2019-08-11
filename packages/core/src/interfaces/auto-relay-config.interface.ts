@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-type-alias */
 import { TypeValueThunk } from '../types/types'
 import { ORMConnection } from '../orm/orm-connection.abstract'
 
 /**
  * Arguments to initialize AutoRelay's config
  */
-// eslint-disable-next-line @typescript-eslint/no-type-alias
 export type AutoRelayConfigArgs = AutoRelayConfigArgsExistingModel | AutoRelayConfigArgsNoModel;
 
 export type AutoRelayOrmConnect<T extends ORMConnection = ORMConnection> = () => new () => T
