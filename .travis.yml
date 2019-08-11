@@ -1,5 +1,6 @@
 language: nodejs
-
+node_js:
+  - "10"
 stages:
   - test
 
