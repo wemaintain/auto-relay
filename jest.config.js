@@ -8,6 +8,7 @@ module.exports = {
   roots: null,
   projects: [
     '<rootDir>/packages/**/jest.config.js',
+    '<rootDir>/jest.integration.config.js',
   ],
   coverageDirectory: '<rootDir>/coverage/',
   setupFiles: ['<rootDir>/tests/setup.ts'],
