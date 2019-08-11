@@ -1,6 +1,6 @@
 {
   "name": "@auto-relay/typeorm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "auto-relay connection with typeorm",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
