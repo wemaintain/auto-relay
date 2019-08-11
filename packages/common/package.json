@@ -1,6 +1,6 @@
 {
   "name": "auto-relay-common",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "common module for auto-relay",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
