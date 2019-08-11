@@ -8,6 +8,8 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
       "esModuleInterop": true,
+      "declaration": true,
+      "allowJs": false,
       "typeRoots": [
         "node_modules/@types/"
       ],
@@ -18,9 +20,6 @@
         "reflect-metadata"
       ]
     },
-    "include": [
-      "src/**.ts"
-    ],
     "exclude": [
       "node_modules",
       "lib"

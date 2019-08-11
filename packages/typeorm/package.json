@@ -24,16 +24,20 @@
   "scripts": {
     "test": "jest",
     "prepublishOnly": "npm run build",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -b tsconfig.build.json"
   },
   "bugs": {
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "devDependencies": {
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18",
+    "auto-relay": "^0.3.0",
+    "auto-relay-common": "^0.3.0"
   },
   "peerDependencies": {
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18",
+    "auto-relay": "^0.3.0",
+    "auto-relay-common": "^0.3.0"
   },
   "gitHead": "c9b40fc4039e612835c362887333ed518de1c6b7"
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Service } from 'typedi'
 import * as Relay from 'graphql-relay'
 

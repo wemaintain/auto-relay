@@ -15,6 +15,11 @@ module.exports = {
     'json',
     'node',
   ],
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.build.json'
+    }
+  },
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',

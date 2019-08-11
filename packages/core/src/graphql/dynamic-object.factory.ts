@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable @typescript-eslint/ban-types */
 import { Service, Container } from 'typedi'
 import { TypeValue } from '../types/types'
 import { Field, ObjectType, Arg } from 'type-graphql'
@@ -18,7 +16,7 @@ export class DynamicObjectFactory {
    * @param nodeType type of the EntityB
    * @param edgeAugment if the relation is N:M, "augment" the edge with the join table
    */
-  public makeEdgeConnection<T extends TypeValue> (
+  public makeEdgeConnection<T extends TypeValue>(
     connectionName: string,
     nodeType: () => T,
     edgeAugment?: () => new () => Object): { Connection: new () => Relay.Connection<T>; Edge: new () => Relay.Edge<T> } {
@@ -37,7 +35,7 @@ export class DynamicObjectFactory {
    * @param sdlName name to give to this function in the SDL
    * @param Connection Connection object returned by the function
    */
-  public declareFunctionAsRelayInSDL<T extends TypeValue> (target: any, functionName: string, sdlName: string | symbol, Connection: new () => Relay.Connection<T>): void {
+  public declareFunctionAsRelayInSDL<T extends TypeValue>(target: any, functionName: string, sdlName: string | symbol, Connection: new () => Relay.Connection<T>): void {
     // And we ensure our target[getterName] is recognized by GQL under target{}
     Reflect.defineMetadata('design:paramtypes', [String, Number, String, Number], target, functionName)
     Arg('after', () => String, { nullable: true })(target, functionName, 0)
@@ -53,7 +51,7 @@ export class DynamicObjectFactory {
    * @param nodeType type of the node for this edge
    * @param edgeAugment optional type to augment the edge with
    */
-  protected _makeEdge<T extends TypeValue> (connectionName: string, nodeType: () => T, edgeAugment: () => new () => any): new () => Relay.Edge<T> {
+  protected _makeEdge<T extends TypeValue>(connectionName: string, nodeType: () => T, edgeAugment: () => new () => any): new () => Relay.Edge<T> {
     const Edge = class extends edgeAugment().prototype.constructor implements Relay.Edge<T> {
       public node!: T;
 
@@ -75,14 +73,14 @@ export class DynamicObjectFactory {
    * @param Edge type of the edges we want to have in this connection
    * @param PageInfo type of the PageInfo we're using
    */
-  protected _makeConnection<T extends TypeValue> (connectionName: string, Edge: new () => Relay.Edge<T>, PageInfo: new () => Relay.PageInfo): new () => Relay.Connection<T> {
+  protected _makeConnection<T extends TypeValue>(connectionName: string, Edge: new () => Relay.Edge<T>, PageInfo: new () => Relay.PageInfo): new () => Relay.Connection<T> {
     @ObjectType(`${connectionName}Connection`)
     class Connection implements Relay.Connection<T> {
-        @Field(() => PageInfo)
+      @Field(() => PageInfo)
       public pageInfo!: Relay.PageInfo;
 
-        @Field(() => [Edge])
-        public edges!: Relay.Edge<T>[];
+      @Field(() => [Edge])
+      public edges!: Relay.Edge<T>[];
     }
 
     return Connection
@@ -92,7 +90,7 @@ export class DynamicObjectFactory {
    * Get the local PageInfo model
    * @throws if PageInfo cannot be accessed.
    */
-  protected _getPageInfo (): new () => Relay.PageInfo {
+  protected _getPageInfo(): new () => Relay.PageInfo {
     try {
       const PageInfoFn: () => (new () => Relay.PageInfo) = Container.get('PAGINATION_OBJECT')
       const PageInfo = PageInfoFn()

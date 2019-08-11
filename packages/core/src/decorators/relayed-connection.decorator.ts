@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
