@@ -17,6 +17,7 @@ test:
       - $CI_COMMIT_MESSAGE =~ /skip-ci/
   script:
     - npm install
+    - npx lerna bootstrap
     - npm run test
   cache:
     key: ${CI_COMMIT_REF_SLUG}
