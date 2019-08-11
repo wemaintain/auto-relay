@@ -1,11 +1,12 @@
 {
   "name": "auto-relay-common",
   "version": "0.1.0",
-  "description": "> TODO: description",
+  "description": "common module for auto-relay",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
   "license": "Apache-2.0",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -18,7 +19,9 @@
     "url": "git+ssh://git@gitlab.com/wemaintain/auto-relay.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "jest",
+    "prepublishOnly": "npm run build",
+    "build": "tsc -p tsconfig.json"
   },
   "bugs": {
     "url": "https://github.com/wemaintain/auto-relay/issues"
@@ -28,5 +31,6 @@
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.6"
-  }
+  },
+  "gitHead": "304dbf34388726211d210b10bccb63e68ca35024"
 }
