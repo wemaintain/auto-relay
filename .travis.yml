@@ -6,4 +6,4 @@ stages:
 jobs:
   include:
     - before_script: npm install && npx lerna bootstrap
-    script: npm run test
+      script: npm run test
