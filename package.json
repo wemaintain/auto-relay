@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "postinstall": "npx lerna bootstrap && npx lerna build"
+    "postinstall": "npx lerna bootstrap && npx lerna run build"
   },
   "devDependencies": {
     "@types/faker": "^4.1.5",
