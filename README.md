@@ -1,6 +1,6 @@
 # AutoRelay 
 <hr />
-[![pipeline status](https://gitlab.com/wemaintain/auto-relay/badges/master/pipeline.svg)](https://gitlab.com/wemaintain/auto-relay/commits/master) [![coverage report](https://gitlab.com/wemaintain/auto-relay/badges/master/coverage.svg)](https://gitlab.com/wemaintain/auto-relay/commits/master)
-
+<a href="https://travis-ci.org/wemaintain/auto-relay.svg"><img src="https://travis-ci.org/wemaintain/auto-relay.svg?branch=master"></a>
+<br /> <br />
 AutoRelay is a librairy designed to work alongside [TypeGraphQL](https://typegraphql.ml/) and make it easy to paginated your results using the [Relay spec](https://facebook.github.io/relay/graphql/connections.htm)
 
