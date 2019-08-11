@@ -11,6 +11,9 @@
     "lib": "lib",
     "test": "__tests__"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "lib"
   ],
@@ -32,5 +35,5 @@
   "peerDependencies": {
     "typeorm": "^0.2.18"
   },
-  "gitHead": "304dbf34388726211d210b10bccb63e68ca35024"
+  "gitHead": "c9b40fc4039e612835c362887333ed518de1c6b7"
 }
