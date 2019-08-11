@@ -1,6 +1,6 @@
 {
   "name": "auto-relay-common",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "common module for auto-relay",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.6",
-    "auto-relay": "^0.3.0"
+    "auto-relay": "^0.4.0"
   },
   "gitHead": "c9b40fc4039e612835c362887333ed518de1c6b7"
 }

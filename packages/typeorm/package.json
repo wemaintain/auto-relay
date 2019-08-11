@@ -1,6 +1,6 @@
 {
   "name": "@auto-relay/typeorm",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "auto-relay connection with typeorm",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
@@ -30,14 +30,14 @@
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "devDependencies": {
-    "typeorm": "^0.2.18",
-    "auto-relay": "^0.3.0",
-    "auto-relay-common": "^0.3.0"
+    "auto-relay": "^0.4.0",
+    "auto-relay-common": "^0.4.0",
+    "typeorm": "^0.2.18"
   },
   "peerDependencies": {
-    "typeorm": "^0.2.18",
     "auto-relay": "^0.3.0",
-    "auto-relay-common": "^0.3.0"
+    "auto-relay-common": "^0.3.0",
+    "typeorm": "^0.2.18"
   },
   "gitHead": "c9b40fc4039e612835c362887333ed518de1c6b7"
 }
