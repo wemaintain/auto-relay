@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "David <dfain@wemaintain.io>",
-  "homepage": "https://gitlab.com/wemaintain/auto-relay#readme",
-  "license": "ISC",
+  "homepage": "https://github.com/wemaintain/auto-relay#readme",
+  "license": "Apache-2.0",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -21,7 +21,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
-    "url": "https://gitlab.com/wemaintain/auto-relay/issues"
+    "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "devDependencies": {
     "typeorm": "^0.2.18"
