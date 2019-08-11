@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Service } from 'typedi'
-import { Field, ObjectType, ArgsType } from 'type-graphql'
+import { Field, ObjectType, ArgsType, Int, InputType } from 'type-graphql'
 import * as Relay from 'graphql-relay'
 
 /**
@@ -58,11 +58,11 @@ export class SharedObjectFactory {
 
     Field(() => String, { nullable: true, description: 'Paginate before opaque cursor' })(darkMagic[argsName].prototype, 'before')
     Field(() => String, { nullable: true, description: 'Paginate after opaque cursor' })(darkMagic[argsName].prototype, 'after')
-    Field(() => Number, { nullable: true, description: 'Paginate first' })(darkMagic[argsName].prototype, 'first')
-    Field(() => Number, { nullable: true, description: 'Paginate last' })(darkMagic[argsName].prototype, 'last')
+    Field(() => Int, { nullable: true, description: 'Paginate first' })(darkMagic[argsName].prototype, 'first')
+    Field(() => Int, { nullable: true, description: 'Paginate last' })(darkMagic[argsName].prototype, 'last')
 
     ArgsType()(darkMagic[argsName])
-
+    InputType(argsName)(darkMagic[argsName])
     return darkMagic[argsName]
   }
 }

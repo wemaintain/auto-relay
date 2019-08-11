@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { AugmentedConnection } from 'auto-relay'
+import { AugmentedConnection } from '../interfaces/augmented-connection.interface' 
 import * as Relay from 'graphql-relay'
 import cloneDeep from 'lodash.clonedeep'
 

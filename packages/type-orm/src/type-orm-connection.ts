@@ -1,5 +1,4 @@
-import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection } from 'auto-relay'
-import { LimitOffsetPagingService, augmentedConnection } from 'auto-relay-common'
+import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection, LimitOffsetPagingService, augmentedConnection  } from 'auto-relay'
 import { Container } from 'typedi'
 import { getConnection, EntityMetadata, FindManyOptions, BaseEntity } from 'typeorm'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'

@@ -1,7 +1,7 @@
 {
-  "name": "auto-relay-common",
+  "name": "@auto-relay/typeorm",
   "version": "0.4.0",
-  "description": "common module for auto-relay",
+  "description": "auto-relay connection with typeorm",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
   "license": "Apache-2.0",
@@ -10,6 +10,9 @@
   "directories": {
     "lib": "lib",
     "test": "__tests__"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "lib"
@@ -26,12 +29,13 @@
   "bugs": {
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
-  "dependencies": {
-    "lodash.clonedeep": "^4.5.0"
-  },
   "devDependencies": {
-    "@types/lodash.clonedeep": "^4.5.6",
-    "auto-relay": "^0.4.0"
+    "auto-relay": "^0.4.0",
+    "typeorm": "^0.2.18"
+  },
+  "peerDependencies": {
+    "auto-relay": "^0.3.0",
+    "typeorm": "^0.2.18"
   },
   "gitHead": "c9b40fc4039e612835c362887333ed518de1c6b7"
 }

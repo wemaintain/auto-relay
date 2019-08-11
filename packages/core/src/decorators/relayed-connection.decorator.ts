@@ -21,6 +21,7 @@ export function RelayedConnection (type: ClassValueThunk, through?: ClassValueTh
       const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
       const ORM = ormConnection()
       const orm = new ORM()
+
       target[getterName] = orm.autoRelayFactory(String(propertyKey), () => (target as new () => unknown), type, through as ClassValueThunk)
     })
   }
