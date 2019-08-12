@@ -1,7 +1,37 @@
 const base = require('./jest.config.base.js')
-
+// jest.config.js
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+// In the following statement, replace `./tsconfig` with the path to your `tsconfig` file
+// which contains the path mapping (ie the `compilerOptions.paths` option):
+const { compilerOptions } = require('./tsconfig.integration.json');
 module.exports = {
-  ...base,
+  roots: [
+    '<rootDir>/tests',
+  ],
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  testRegex: '(.*\\.(test|spec))\\.(jsx?|tsx?)$',
+  moduleFileExtensions: [
+    'ts',
+    'tsx',
+    'js',
+    'jsx',
+    'json',
+    'node',
+  ],
+  globals: {
+    'ts-jest': {
+      tsConfig: './tsconfig.integration.json'
+    }
+  },
+  coveragePathIgnorePatterns: [
+    '(tests/.*.mock).(jsx?|tsx?)$',
+    '(index.ts)$',
+  ],
+  setupFiles: ['reflect-metadata'],
+  setupFilesAfterEnv: ['jest-extended'],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {prefix: '<rootDir>/packages/'}),
   name: 'integration',
   displayName: 'integration',
 }
