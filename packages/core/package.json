@@ -1,6 +1,6 @@
 {
   "name": "auto-relay",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Relay made simple in code-first GraphQL typescript applications",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "dependencies": {
-    "typedi": "^0.8.0",
-    "lodash.clonedeep": "^4.5.0"
+    "lodash.clonedeep": "^4.5.0",
+    "typedi": "^0.8.0"
   },
   "peerDependencies": {
     "@types/graphql-relay": "^0.4.9",
