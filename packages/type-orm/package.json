@@ -31,11 +31,16 @@
   },
   "devDependencies": {
     "auto-relay": "^0.6.1",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18",
+    "@types/graphql-relay": "^0.4.9",
+    "graphql-relay": "^0.6.0",
+    "typedi": "^0.8.0"
   },
   "peerDependencies": {
-    "auto-relay": "^0.3.0",
-    "typeorm": "^0.2.18"
+    "auto-relay": "^0.6.1",
+    "typeorm": "^0.2.18",
+    "graphql-relay": "^0.6.0",
+    "typedi": "^0.8.0"
   },
   "gitHead": "03b9022aa6e48cf2412e66e609937c8589d73e02"
 }

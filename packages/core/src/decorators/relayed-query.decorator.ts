@@ -4,7 +4,6 @@ import { AdvancedOptions } from 'type-graphql/dist/decorators/types'
 import { DynamicObjectFactory } from '../graphql/dynamic-object.factory'
 import { Query, UseMiddleware, Args, Arg } from 'type-graphql'
 import { RelayFromArrayCountFactory } from '../middlewares/relay-from-array-count.middleware'
-import { prototype } from 'stream';
 
 export function RelayedQuery<Model = any>(to: ClassValueThunk<Model>): RelayedQueryFactory<Model, false>
 export function RelayedQuery<Model = any>(to: ClassValueThunk<Model>, options: RelayedQueryOptions): RelayedQueryFactory<Model, false>
@@ -43,7 +42,7 @@ export function RelayedQuery<Model = any, Through = any>(to: ClassValueThunk<Mod
         Args(() => ConnectionArgs)(target, propertyKey, 99999999);
       }
 
-      const middleware = RelayFromArrayCountFactory(prototype, propertyKey);
+      const middleware = RelayFromArrayCountFactory(target, propertyKey);
       UseMiddleware(middleware)(target, propertyKey, descriptor)
       Query(() => Connection, { ...options, name: queryName })(target, propertyKey, descriptor)
     })
