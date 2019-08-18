@@ -15,5 +15,7 @@ export function connectionArgsFromResolverData(prototype: any, propertyKey: stri
 
   if (paginationKey) { args = args[paginationKey] }
 
+  if (!args) { args = {} }
+
   return args;
 }
