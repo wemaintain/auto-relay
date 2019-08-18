@@ -1,6 +1,6 @@
 {
   "name": "@auto-relay/typeorm",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "auto-relay connection with typeorm",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
@@ -30,7 +30,7 @@
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "devDependencies": {
-    "auto-relay": "^0.6.0",
+    "auto-relay": "^0.6.1",
     "typeorm": "^0.2.18"
   },
   "peerDependencies": {
