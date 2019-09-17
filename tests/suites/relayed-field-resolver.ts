@@ -3,18 +3,26 @@ import { Container } from "typedi";
 import { ApolloServerTestClient } from "apollo-server-testing";
 import { gql } from "apollo-server";
 
-export function RelayedQueryTests(suiteName: string) {
+export function RelayedFieldResolverTests(suiteName: string) {
   let testClient: ApolloServerTestClient;
 
   beforeAll(() => {
     testClient = Container.get('testServer');
   })
 
-  describe(`RelayedQuery`, () => {
-    it('Should work without errors on a query', async () => {
+  describe(`RelayedFieldResolver`, () => {
+    it('Should allow pagination and args on a FieldResolver', async () => {
       const test = await testClient.query({
         query: `query { 
-          getAllUsersPaginated(first: 5) { pageInfo{hasNextPage} } 
+          testObjects { 
+            nestedObject(pagination: { first: 5 }, args: { testArg: true }) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }  
+          } 
         }
         `
       })

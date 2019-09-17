@@ -5,7 +5,7 @@ export function SDLTests(suiteName: string) {
 
   let schema: GraphQLSchema;
 
-  describe(`${suiteName} SDL`, () => {
+  describe(`SDL`, () => {
 
     beforeAll(() => {
       schema = Container.get('schema');

@@ -1,20 +1,20 @@
-import { AutoRelayConfig } from '../services/auto-relay-config.service';
-import { RelayedQueryService } from '../services/relay-query.service';
-import { Container } from 'typedi';
-import { RelayedQuery } from './relayed-query.decorator';
+import { AutoRelayConfig } from '../services/auto-relay-config.service'
+import { RelayedQueryService } from '../services/relay-query.service'
+import { Container } from 'typedi'
+import { RelayedFieldResolver } from './relayed-field-resolver.decorator'
 import 'jest-extended'
-jest.mock('../services/relay-query.service');
+jest.mock('../services/relay-query.service')
 
 const TestClass = class TestClassImpl {
   public test(...args: any[]) {
 
   }
 }
-Reflect.defineMetadata('design:paramtypes', [], TestClass.prototype, 'test');
+Reflect.defineMetadata('design:paramtypes', [], TestClass.prototype, 'test')
 
 
 
-describe('@RelayedQuery', () => {
+describe('@RelayedFieldResolver', () => {
   let autoRelayFactory = jest.fn(() => function zeGetterTest() { })
   beforeEach(() => {
     autoRelayFactory = jest.fn(() => function zeGetterTest() { })
@@ -38,9 +38,9 @@ describe('@RelayedQuery', () => {
       const mock = new RelayedQueryService()
       Container.set(RelayedQueryService, mock)
   
-      RelayedQuery(Model, Through, options)(TestClass.prototype, 'test', {} as any)
+      RelayedFieldResolver(Model, Through, options)(TestClass.prototype, 'test', {} as any)
       process.nextTick(() => {
-        const makeMethodRelayed = mock.makeMethodRelayedQuery as jest.Mock<RelayedQueryService['makeMethodRelayedQuery']>
+        const makeMethodRelayed = mock.makeMethodRelayedFieldResolver as jest.Mock<RelayedQueryService['makeMethodRelayedFieldResolver']>
         expect(makeMethodRelayed).toHaveBeenCalledTimes(1)
         expect(makeMethodRelayed.mock.calls).toContainAllValues([
           [
@@ -63,9 +63,9 @@ describe('@RelayedQuery', () => {
       const mock = new RelayedQueryService()
       Container.set(RelayedQueryService, mock)
   
-      RelayedQuery(Model, options)(TestClass.prototype, 'test', {} as any)
+      RelayedFieldResolver(Model, options)(TestClass.prototype, 'test', {} as any)
       process.nextTick(() => {
-        const makeMethodRelayed = mock.makeMethodRelayedQuery as jest.Mock<RelayedQueryService['makeMethodRelayedQuery']>
+        const makeMethodRelayed = mock.makeMethodRelayedFieldResolver as jest.Mock<RelayedQueryService['makeMethodRelayedFieldResolver']>
         expect(makeMethodRelayed).toHaveBeenCalledTimes(1)
         expect(makeMethodRelayed.mock.calls).toContainAllValues([
           [
