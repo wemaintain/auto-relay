@@ -1,8 +1,9 @@
+import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { DynamicObjectFactory } from "./dynamic-object.factory";
 import { Container } from "typedi";
 import { AutoRelayConfig } from "../services/auto-relay-config.service";
-import * as TGQL from 'type-graphql'
 import { ORMConnection } from "../orm/orm-connection.abstract";
+import * as TGQL from 'type-graphql'
 
 
 class ORMMock extends ORMConnection {
@@ -88,6 +89,37 @@ describe('DynamicObject factory', () => {
       objectSpy.mockRestore();
     })
 
+    it('Should pass nullable options to edge field on Connection Object', () => {
+      new AutoRelayConfig({ orm: () => ORMMock });
+
+      const fieldSpy = jest.spyOn(TGQL, 'Field');
+      const objectSpy = jest.spyOn(TGQL, 'ObjectType');
+
+      const objectInnerSpy = jest.fn();
+      const fieldInnerSpy = jest.fn();
+      fieldSpy.mockImplementation((_a, _b) => {
+        return fieldInnerSpy;
+      });
+      objectSpy.mockImplementation((_a, _b) => {
+        return objectInnerSpy;
+      });
+
+      const options: RelayedConnectionOptions = {
+        field: {
+          nullable: 'items'
+        }
+      }
+
+      const { Connection } = dynamicObjectFactory.makeEdgeConnection("Foo", () => Object, undefined, options)
+
+      expect(Connection).toBeTruthy();
+      expect(objectSpy).toHaveBeenCalledWith('FooConnection');
+
+      expect(fieldSpy.mock.calls[fieldSpy.mock.calls.length - 1][1]).toEqual({ nullable: 'items' })
+
+      fieldSpy.mockRestore();
+      objectSpy.mockRestore();
+    })
   })
 
   describe('declareFunctionAsRelayInSDL', () => {
@@ -134,6 +166,40 @@ describe('DynamicObject factory', () => {
 
       fieldSpy.mockRestore();
       argSpy.mockRestore();
+    })
+
+
+    it('Should pass Field Options to the function', () => {
+      new AutoRelayConfig({ orm: () => ORMMock });
+      const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
+      const fieldSpy = jest.spyOn(TGQL, 'Field');
+
+      const fieldInnerSpy = jest.fn();
+      fieldSpy.mockImplementation((_a, _b) => {
+        return fieldInnerSpy;
+      });
+      const Test = class TestClass { };
+
+      const options: RelayedConnectionOptions = {
+        field: {
+          name: "test",
+          description: "a test description",
+          complexity: 1,
+          deprecationReason: "a reason",
+          nullable: "items",
+        }
+      }
+
+      dynamicObjectFactory.declareFunctionAsRelayInSDL(Test, 'testFn', 'aField', Connection, options);
+
+      expect(fieldSpy).toHaveBeenCalledTimes(1)
+      expect(fieldSpy).toHaveBeenCalledWith(expect.anything(), { 
+        name: 'aField',
+        ...options.field,
+        nullable: undefined
+      })
+
+      fieldSpy.mockRestore();
     })
   })
 })
