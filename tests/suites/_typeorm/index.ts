@@ -8,6 +8,7 @@ import { buildSchema } from 'type-graphql'
 import { TestResolver } from './resolvers/test.resolver'
 import { ApolloServer } from 'apollo-server'
 import { createTestClient } from 'apollo-server-testing'
+import { RecipeResolver } from './resolvers/recipe.resolver';
 
 export async function setUpTypeORM() {
   try {
@@ -17,11 +18,13 @@ export async function setUpTypeORM() {
   await createConnection({
     type: 'sqlite',
     database: ":memory:",
+    synchronize: true,
+    dropSchema: true,
     entities: [User, Recipe, Rate]
   })
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, TestResolver]
+    resolvers: [UserResolver, TestResolver, RecipeResolver]
   })
 
 
