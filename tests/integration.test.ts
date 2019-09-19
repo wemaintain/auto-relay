@@ -4,6 +4,7 @@ import { setUpTypeORM } from './suites/_typeorm';
 import { AutoRelayRunner } from './helpers/auto-relay-runner';
 import { SDLTests } from './suites/sdl';
 import { RelayedQueryTests } from './suites/relayed-query';
+import { RelayedFieldResolverTests } from './suites/relayed-field-resolver';
 
 const configs: [string, AutoRelayConfigArgs, () => void | Promise<void>][] = [
   [
@@ -22,8 +23,11 @@ const run = () => {
       await runner.beforeSuite();
     })
 
-    SDLTests(name);
-    RelayedQueryTests(name);
+    describe(name, () => {
+      SDLTests(name);
+      RelayedQueryTests(name);
+      RelayedFieldResolverTests(name);
+    })
   }
 }
 
