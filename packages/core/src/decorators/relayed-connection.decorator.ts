@@ -1,3 +1,4 @@
+import { AdvancedOptions, NullableListOptions } from 'type-graphql/dist/decorators/types';
 import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
@@ -24,8 +25,8 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
 
       // Create GQL Stuff
       const dynamicObjectFactory = Container.get(DynamicObjectFactory)
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection(connectionName, type, through)
-      dynamicObjectFactory.declareFunctionAsRelayInSDL(target, getterName, propertyKey, Connection)
+      const { Connection } = dynamicObjectFactory.makeEdgeConnection(connectionName, type, through, options)
+      dynamicObjectFactory.declareFunctionAsRelayInSDL(target, getterName, propertyKey, Connection, options)
 
       // Create the actual Relay'd getter
       const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
@@ -50,5 +51,18 @@ export interface RelayedConnectionOptions<Entity=any> {
   /** how to order the returned results */
   order?: {
     [P in keyof Entity]?: "ASC" | "DESC" | 1 | -1;
-  }; 
+  };
+  /** 
+   * TypeGraphQL field's options.
+   **/
+  field?: RelayedConnectionFieldOptions
+}
+
+export interface RelayedConnectionFieldOptions extends Omit<AdvancedOptions, 'defaultValue'> {
+  /** 
+   * Note that AutoRelay will always return pageInfos and edges/nodes
+   * So the only available options is to make the items nullable for collections
+   * that might be empty.
+   */
+  nullable?: 'items'
 }

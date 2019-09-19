@@ -12,7 +12,6 @@ export function SDLTests(suiteName: string) {
     })
 
     describe('RelayedConnection', () => {
-
     })
 
     describe('RelayedQuery', () => {

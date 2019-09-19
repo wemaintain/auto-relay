@@ -1,3 +1,4 @@
+import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue } from '../types/types'
 import { Field, ObjectType, Arg } from 'type-graphql'
@@ -19,11 +20,14 @@ export class DynamicObjectFactory {
   public makeEdgeConnection<T extends TypeValue>(
     connectionName: string,
     nodeType: () => T,
-    edgeAugment?: () => new () => Object): { Connection: new () => Relay.Connection<T>; Edge: new () => Relay.Edge<T> } {
+    edgeAugment?: () => new () => Object,
+    options?: RelayedConnectionOptions,
+  ): { Connection: new () => Relay.Connection<T>; Edge: new () => Relay.Edge<T> } {
     if (!edgeAugment) edgeAugment = () => Object
     const PageInfo = this._getPageInfo()
+
     const Edge = this._makeEdge(connectionName, nodeType, edgeAugment)
-    const Connection = this._makeConnection(connectionName, Edge, PageInfo)
+    const Connection = this._makeConnection(connectionName, Edge, PageInfo, options)
 
     return { Edge, Connection }
   }
@@ -35,14 +39,25 @@ export class DynamicObjectFactory {
    * @param sdlName name to give to this function in the SDL
    * @param Connection Connection object returned by the function
    */
-  public declareFunctionAsRelayInSDL<T extends TypeValue>(target: any, functionName: string, sdlName: string | symbol, Connection: new () => Relay.Connection<T>): void {
+  public declareFunctionAsRelayInSDL<T extends TypeValue>(
+    target: any,
+    functionName: string,
+    sdlName: string | symbol,
+    Connection: new () => Relay.Connection<T>,
+    options?: RelayedConnectionOptions,
+  ): void {
+    const fieldOptions = options && options.field
+    // Ignore the undefined options as it is the edge that needs to be nullable,
+    // Not ourself
+    if (fieldOptions && fieldOptions.nullable) fieldOptions.nullable = undefined
+
     // And we ensure our target[getterName] is recognized by GQL under target{}
     Reflect.defineMetadata('design:paramtypes', [String, Number, String, Number], target, functionName)
     Arg('after', () => String, { nullable: true })(target, functionName, 0)
     Arg('first', () => Number, { nullable: true })(target, functionName, 1)
     Arg('before', () => String, { nullable: true })(target, functionName, 2)
     Arg('last', () => Number, { nullable: true })(target, functionName, 3)
-    Field(() => Connection, { name: `${String(sdlName)}` })(target, functionName, { value: true })
+    Field(() => Connection, { name: `${String(sdlName)}`, ...fieldOptions })(target, functionName, { value: true })
   }
 
   /**
@@ -73,13 +88,20 @@ export class DynamicObjectFactory {
    * @param Edge type of the edges we want to have in this connection
    * @param PageInfo type of the PageInfo we're using
    */
-  protected _makeConnection<T extends TypeValue>(connectionName: string, Edge: new () => Relay.Edge<T>, PageInfo: new () => Relay.PageInfo): new () => Relay.Connection<T> {
+  protected _makeConnection<T extends TypeValue>(
+    connectionName: string,
+    Edge: new () => Relay.Edge<T>,
+    PageInfo: new () => Relay.PageInfo,
+    options?: RelayedConnectionOptions,
+  ): new () => Relay.Connection<T> {
+    const nullable = options && options.field && options.field.nullable
+
     @ObjectType(`${connectionName}Connection`)
     class Connection implements Relay.Connection<T> {
       @Field(() => PageInfo)
       public pageInfo!: Relay.PageInfo;
 
-      @Field(() => [Edge])
+      @Field(() => [Edge], { nullable })
       public edges!: Relay.Edge<T>[];
     }
 
