@@ -3,6 +3,7 @@
     "packages/*"
   ],
   "version": "0.6.3",
+  "hoist": true,
   "publish": {
     "conventionalCommits": true,
     "message": "chore(release): automatic version tagging"

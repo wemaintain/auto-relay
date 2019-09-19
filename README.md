@@ -12,7 +12,7 @@ AutoRelay is meant to be *plug and play* with TypeGraphQL and TypeORM (*more orm
 @ObjectType()
 class User {
   @OneToMany(() => Recipe)
-  @RelayConnection(() => Recipe)
+  @RelayedConnection(() => Recipe)
   recipes: Recipe[];
 }
 ```
@@ -143,6 +143,25 @@ This will auto-magically create a few GraphQL types, such as `UserRecipeConnecti
 
 Our TypeORM integration gets the repository for `Recipe`, translates the ConnectionArguments to an offset/limit tuple and fetches recipes connected to this `User`.
 
+
+#### Sorting results
+@RelayedConnection can optionally accept an order parameter in its options, that will allow you to fetch while sorting on the column of your entities. For example, if we wanted to get our recipes by best ratings :
+
+```typescript
+export class User {
+  @PrimaryGeneratedColumn()
+  @Field(() => ID)
+  id: number;
+
+  @Column()
+  @Field()
+  name: string;
+
+  @OneToMany(() => Recipe)
+  @RelayedConnection(() => Recipe, { order: { rating: 'DESC' } })
+  recipes: Recipe[]
+}
+```
 
 ### Making a Query Relayable
 Let's imagine we now have an `users` query, that we want to paginate using Relay. AutoRelay offers a few helpers with that.

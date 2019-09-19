@@ -24,7 +24,10 @@ export class Recipe {
   @RelayedConnection(() => Rate)
   ratings!: Rate[];
 
+  @RelayedConnection(() => Rate, { order: { value: "DESC" } })
+  ratingsByValue!: Rate[]
+
   @Field(type => User)
-  @ManyToOne(type => User)
-  author!: User;
+  @ManyToOne(type => User, { nullable: true })
+  author?: User;
 }

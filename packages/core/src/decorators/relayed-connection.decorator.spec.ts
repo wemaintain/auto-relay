@@ -42,15 +42,40 @@ describe('RelayedConnection', () => {
 
       process.nextTick(() => {
         expect(autoRelayFactory.mock.calls).toContainAllValues([
-          ['testLinked', expect.anything(), toTest, undefined],
-          ['testLinkedThrough', expect.anything(), toTest, toTestLink]
+          ['testLinked', expect.anything(), toTest, undefined, undefined],
+          ['testLinkedThrough', expect.anything(), toTest, toTestLink, undefined]
         ])
 
         cb();
       })
     })
 
-    it('StestClassTypehould create a getter on the class', (cb) => {
+    it('Should pass correct options to the orm factory', (cb) => {
+      class TestLinked { }
+      class TestLinkedThrough { }
+      const testClassType = class TestClass {
+        testLinked: TestLinked | undefined
+        testLinkedThrough: TestLinked | undefined
+      }
+
+      const toTest = () => TestLinked;
+      const toTestLink = () => TestLinkedThrough;
+      const options = {test:"test"} as any;
+
+      RelayedConnection(toTest, options)(testClassType.prototype, 'testLinked')
+      RelayedConnection(toTest, toTestLink, options)(testClassType.prototype, 'testLinkedThrough')
+
+      process.nextTick(() => {
+        expect(autoRelayFactory.mock.calls).toContainAllValues([
+          ['testLinked', expect.anything(), toTest, undefined, options],
+          ['testLinkedThrough', expect.anything(), toTest, toTestLink, options]
+        ])
+
+        cb();
+      })
+    })
+
+    it('Should create a getter on the class', (cb) => {
       class TestLinked { }
       class TestLinkedThrough { }
       const testClassType = class TestClass {
