@@ -6,9 +6,17 @@ export class AutoRelayRunner {
   constructor(protected readonly name: string, protected readonly config: AutoRelayConfigArgs, protected readonly runBefore?: () => Promise<void> | void) {
   }
 
-  public async beforeSuite() {
+  /**
+   * Prepare for test suite
+   * @param configAutoRelay wether or not to create an AutoRelayConfig object
+   */
+  public async beforeSuite(configAutoRelay=true) {
     Container.reset();
-    new AutoRelayConfig(this.config);
+    
+    if(configAutoRelay) {
+      new AutoRelayConfig(this.config);
+    }
+
     if(this.runBefore) {
       await this.runBefore();
     }

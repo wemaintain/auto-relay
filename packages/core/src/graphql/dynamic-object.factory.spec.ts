@@ -21,8 +21,9 @@ describe('DynamicObject factory', () => {
   })
 
   describe('makeEdgeConnection', () => {
-    it('Should throw if PAGINATION_OBJECT wasn\'t init\'d', () => {
-      expect(() => dynamicObjectFactory.makeEdgeConnection("", () => Object)).toThrowError(/PageInfo/)
+    it('Should auto create one if PAGINATION_OBJECT wasn\'t init\'d', () => {
+      expect(dynamicObjectFactory.makeEdgeConnection("", () => Object)).toBeTruthy()
+      expect(Container.get<Function>('PAGINATION_OBJECT')()).toBeTruthy()
     })
 
     it('Should throw if PAGINATION_OBJECT isn\'t a function', () => {
