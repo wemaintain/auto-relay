@@ -1,4 +1,5 @@
-import { AdvancedOptions, NullableListOptions } from 'type-graphql/dist/decorators/types';
+import { NoORMError } from './../errors/no-orm.error';
+import { AdvancedOptions } from 'type-graphql/dist/decorators/types';
 import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
@@ -29,17 +30,26 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
       dynamicObjectFactory.declareFunctionAsRelayInSDL(target, getterName, propertyKey, Connection, options)
 
       // Create the actual Relay'd getter
-      const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
-      const ORM = ormConnection()
-      const orm = new ORM()
-
-      target[getterName] = orm.autoRelayFactory(
-        String(propertyKey),
-        () => (target as new () => unknown),
-        type,
-        through as ClassValueThunk,
-        options
-      )
+      try {
+        const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
+        const ORM = ormConnection()
+        const orm = new ORM()
+  
+        target[getterName] = orm.autoRelayFactory(
+          String(propertyKey),
+          () => (target as new () => unknown),
+          type,
+          through as ClassValueThunk,
+          options
+        )
+      } catch(e) {
+        if(e && e.name === "ServiceNotFoundError") {
+          // ORMConnection wasn't loaded. Our relay factory can't ever work.
+          target[getterName] = () => { throw new NoORMError() }
+        } else {
+          throw e;
+        }
+      }
     })
   }
 }

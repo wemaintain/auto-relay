@@ -1,3 +1,4 @@
+import { AutoRelayConfig } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue } from '../types/types'
@@ -24,10 +25,10 @@ export class DynamicObjectFactory {
     options?: RelayedConnectionOptions,
   ): { Connection: new () => Relay.Connection<T>; Edge: new () => Relay.Edge<T> } {
     if (!edgeAugment) edgeAugment = () => Object
-    const PageInfo = this._getPageInfo()
+    const PageInfo = this.getPageInfo()
 
-    const Edge = this._makeEdge(connectionName, nodeType, edgeAugment)
-    const Connection = this._makeConnection(connectionName, Edge, PageInfo, options)
+    const Edge = this.makeEdge(connectionName, nodeType, edgeAugment)
+    const Connection = this.makeConnection(connectionName, Edge, PageInfo, options)
 
     return { Edge, Connection }
   }
@@ -66,7 +67,7 @@ export class DynamicObjectFactory {
    * @param nodeType type of the node for this edge
    * @param edgeAugment optional type to augment the edge with
    */
-  protected _makeEdge<T extends TypeValue>(connectionName: string, nodeType: () => T, edgeAugment: () => new () => any): new () => Relay.Edge<T> {
+  protected makeEdge<T extends TypeValue>(connectionName: string, nodeType: () => T, edgeAugment: () => new () => any): new () => Relay.Edge<T> {
     const Edge = class extends edgeAugment().prototype.constructor implements Relay.Edge<T> {
       public node!: T;
 
@@ -88,7 +89,7 @@ export class DynamicObjectFactory {
    * @param Edge type of the edges we want to have in this connection
    * @param PageInfo type of the PageInfo we're using
    */
-  protected _makeConnection<T extends TypeValue>(
+  protected makeConnection<T extends TypeValue>(
     connectionName: string,
     Edge: new () => Relay.Edge<T>,
     PageInfo: new () => Relay.PageInfo,
@@ -112,15 +113,22 @@ export class DynamicObjectFactory {
    * Get the local PageInfo model
    * @throws if PageInfo cannot be accessed.
    */
-  protected _getPageInfo(): new () => Relay.PageInfo {
+  protected getPageInfo(): new () => Relay.PageInfo {
     try {
-      const PageInfoFn: () => (new () => Relay.PageInfo) = Container.get('PAGINATION_OBJECT')
+      let PageInfoFn: () => new () => Relay.PageInfo;
+      try {
+        PageInfoFn = Container.get<() => (new () => Relay.PageInfo)>('PAGINATION_OBJECT')
+      } catch (e) {
+        // If we couldn't find a PageInfoFn, let's generate anew and retry
+        AutoRelayConfig.generateObjects()
+        PageInfoFn = Container.get<() => (new () => Relay.PageInfo)>('PAGINATION_OBJECT')
+      }
       const PageInfo = PageInfoFn()
 
-      if (!PageInfo) throw new Error()
+      if (!PageInfo) throw new Error(`Couldn't find or generate PageInfo Object`)
       return PageInfo
     } catch (e) {
-      throw new Error(`Couldn't find PageInfo Object. Did you forget to init AutoRelay?`)
+      throw new Error(`Couldn't find or generate PageInfo Object`)
     }
   }
 }

@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID } from "type-graphql";
 import * as faker from 'faker'
 import { TestNestedObject } from "./test-nested";
+import { RelayedConnection } from "auto-relay";
 
 @ObjectType()
 export class TestObject {
@@ -13,6 +14,9 @@ export class TestObject {
   
   @Field()
   bar: string = faker.random.words()
+
+  @RelayedConnection(() => TestNestedObject, { order: { id: "DESC" }, field: { description: "test" } })
+  public relayedConnectionWithOptions! : TestNestedObject[]
   
   protected nestedObject!: TestNestedObject[]
 }

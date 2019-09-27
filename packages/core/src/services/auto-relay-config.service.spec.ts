@@ -16,7 +16,7 @@ describe('AutoRelayConfig', () => {
   })
 
   it('Should not instantiate without config', () => {
-    expect(() => new (AutoRelayConfig as new () => any)()).toThrow(/No config/);
+    expect(() => new (AutoRelayConfig as any)()).toThrow(/No config/);
   })
 
   it('Should not instantiate without orm', () => {
@@ -24,12 +24,12 @@ describe('AutoRelayConfig', () => {
   })
 
   it('Should instantiate with basic config', () => {
-    const autoRelay = new AutoRelayConfig({orm: () => ORMMock})
+    const autoRelay = new AutoRelayConfig({ orm: () => ORMMock })
     expect(autoRelay).toBeTruthy();
   })
 
   it('Should provide ORM_CONNECTION', () => {
-    const autoRelay = new AutoRelayConfig({orm: () => ORMMock})
+    const autoRelay = new AutoRelayConfig({ orm: () => ORMMock })
 
     const test: () => typeof ORMConnection = Container.get('ORM_CONNECTION');
 
