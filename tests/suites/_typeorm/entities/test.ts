@@ -1,7 +1,7 @@
 import { ObjectType, Field, ID } from "type-graphql";
 import * as faker from 'faker'
 import { TestNestedObject, TestNestedThroughObject } from "./test-nested";
-import { RelayedConnection, RelayedFieldResolver } from "auto-relay";
+import { RelayedConnection, RelayedFieldResolver, RelayedField, AugmentedConnection } from "auto-relay";
 
 @ObjectType()
 export class TestObject {
@@ -17,6 +17,9 @@ export class TestObject {
 
   @RelayedConnection(() => TestNestedObject, { order: { id: "DESC" }, field: { description: "test" } })
   public relayedConnectionWithOptions!: TestNestedObject[]
+
+  @RelayedField(() => TestObject2)
+  testRelayedFieldOnly!: AugmentedConnection<TestObject2>
 
 }
 

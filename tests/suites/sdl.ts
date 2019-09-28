@@ -40,6 +40,14 @@ export function SDLTests(suiteName: string) {
 
     })
 
+    describe('RelayedField', () => {
+      it('Should set collection type in SDL', () => {
+        const type = schema.getType('TestObject')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        expect(type).toBeTruthy()
+        expect((type.fields as GraphQLFieldConfigMap<any, any,any>)['testRelayedFieldOnly'].type.toString()).toEqual('TestObject2Connection!')
+      })
+    })
+
     describe('RelayedConnection', () => {
     })
 

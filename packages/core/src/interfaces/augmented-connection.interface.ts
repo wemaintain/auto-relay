@@ -1,7 +1,7 @@
 import * as Relay from 'graphql-relay'
 
 /**
- * Flow type designed to extend `Relay.Connection` with edges that have data on them
+ * Flow type of a `Relay.Connection` with edges that can possibly have some more data on them
  */
 export interface AugmentedConnection<T=any, Y=any> extends Relay.Connection<T> {
   edges: AugmentedEdge<T, Y>[]
@@ -10,5 +10,4 @@ export interface AugmentedConnection<T=any, Y=any> extends Relay.Connection<T> {
 /**
  * Flow type of a `Relay.Edge` with optional additional properties on it
  */
-// eslint-disable-next-line @typescript-eslint/no-type-alias
-export type AugmentedEdge<T=any, Y=any> = Relay.Edge<T> & Record<Partial<keyof Y>, any>;
+export type AugmentedEdge<T=any, Y=any> = Relay.Edge<T> & Partial<Y>;
