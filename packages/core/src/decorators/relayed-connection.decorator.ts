@@ -22,11 +22,10 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
     process.nextTick(() => {
       const getterName = `relayField${String(propertyKey)}Getter`
       const capitalized = String(propertyKey).charAt(0).toUpperCase() + String(propertyKey).slice(1)
-      const connectionName = `${target.constructor.name}${capitalized}`
 
       // Create GQL Stuff
       const dynamicObjectFactory = Container.get(DynamicObjectFactory)
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection(connectionName, type, through, options)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(type, through, options)
       dynamicObjectFactory.declareFunctionAsRelayInSDL(target, getterName, propertyKey, Connection, options)
 
       // Create the actual Relay'd getter

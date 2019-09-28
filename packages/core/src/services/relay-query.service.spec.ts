@@ -5,12 +5,19 @@ import 'jest-extended'
 import { RelayedQueryService } from './relay-query.service';
 jest.mock("../graphql/dynamic-object.factory");
 
-const TestClass = class TestClassImpl {
+const TestClass = class TestClass {
   public test(...args: any[]) {
 
   }
 }
 Reflect.defineMetadata('design:paramtypes', [], TestClass.prototype, 'test');
+
+const TestThroughClass = class TestThroughClass {
+  public test(...args: any[]) {
+
+  }
+}
+Reflect.defineMetadata('design:paramtypes', [], TestThroughClass.prototype, 'test');
 
 
 /**
@@ -19,44 +26,19 @@ Reflect.defineMetadata('design:paramtypes', [], TestClass.prototype, 'test');
  */
 const sharedTests = (methodToCall: keyof RelayedQueryService) => {
   let service!: RelayedQueryService
-  
+
   beforeEach(() => {
     service = new RelayedQueryService()
   })
 
   describe('GQL / SDL', () => {
     describe('Connection/Edge', () => {
-      let makeEdgeConnection: jest.Mock<DynamicObjectFactory['makeEdgeConnection']> = jest.fn();
+      let makeEdgeConnection: jest.Mock<DynamicObjectFactory['getEdgeConnection']> = jest.fn();
 
       beforeEach(() => {
         makeEdgeConnection = jest.fn(() => () => ({ Connection: Object as any, Edge: Object as any }));
-        DynamicObjectFactory.prototype.makeEdgeConnection = makeEdgeConnection as any;
+        DynamicObjectFactory.prototype.getEdgeConnection = makeEdgeConnection as any;
         Container.set(DynamicObjectFactory, new DynamicObjectFactory());
-      })
-
-      it('Should create with name of method', (cb) => {
-        service[methodToCall](TestClass.prototype, 'test', {} as any, () => Object)
-
-        process.nextTick(() => {
-          expect(makeEdgeConnection.mock.calls).toContainAllValues([
-            ['test', expect.toBeFunction(), undefined]
-          ]);
-          cb();
-        })
-
-
-      })
-
-      it('Should create with supplied name', (cb) => {
-        service[methodToCall](TestClass.prototype, 'test', {} as any, () => Object, undefined, { name: "anotherTest" })
-
-        process.nextTick(() => {
-          expect(makeEdgeConnection.mock.calls).toContainAllValues([
-            ['anotherTest', expect.toBeFunction(), undefined]
-          ]);
-          cb()
-        });
-
       })
 
       it('Should save args propertyName  in metadata if not inline', (cb) => {
@@ -69,15 +51,27 @@ const sharedTests = (methodToCall: keyof RelayedQueryService) => {
         });
       })
 
-      it('Should create with Through', (cb) => {
-        const Through = () => Object;
-        const Model = () => Object;
-
-        service[methodToCall](TestClass.prototype, 'test', {} as any, Model, Through)
+      it('Should create Connection with To', (cb) => {
+        const To = () => TestClass
+        service[methodToCall](TestClass.prototype, 'test', {} as any, To)
 
         process.nextTick(() => {
           expect(makeEdgeConnection.mock.calls).toContainAllValues([
-            ['test', Model, Through]
+            [To, undefined]
+          ]);
+          cb();
+        })
+      })
+
+      it('Should create with Through', (cb) => {
+        const Through = () => Object;
+        const To = () => Object;
+
+        service[methodToCall](TestClass.prototype, 'test', {} as any, To, Through)
+
+        process.nextTick(() => {
+          expect(makeEdgeConnection.mock.calls).toContainAllValues([
+            [To, Through]
           ]);
           cb()
         })

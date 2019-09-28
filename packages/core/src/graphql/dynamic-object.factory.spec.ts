@@ -22,18 +22,18 @@ describe('DynamicObject factory', () => {
 
   describe('makeEdgeConnection', () => {
     it('Should auto create one if PAGINATION_OBJECT wasn\'t init\'d', () => {
-      expect(dynamicObjectFactory.makeEdgeConnection("", () => Object)).toBeTruthy()
+      expect(dynamicObjectFactory.getEdgeConnection(() => Object)).toBeTruthy()
       expect(Container.get<Function>('PAGINATION_OBJECT')()).toBeTruthy()
     })
 
     it('Should throw if PAGINATION_OBJECT isn\'t a function', () => {
       Container.set('PAGINATION_OBJECT', {})
-      expect(() => dynamicObjectFactory.makeEdgeConnection("", () => Object)).toThrowError(/PageInfo/)
+      expect(() => dynamicObjectFactory.getEdgeConnection(() => Object)).toThrowError(/PageInfo/)
     })
 
     it('Should throw if PAGINATION_OBJECT returns undefined', () => {
       Container.set('PAGINATION_OBJECT', () => undefined)
-      expect(() => dynamicObjectFactory.makeEdgeConnection("", () => Object)).toThrowError(/PageInfo/)
+      expect(() => dynamicObjectFactory.getEdgeConnection(() => Object)).toThrowError(/PageInfo/)
     })
 
     it('Should return a decorated Edge Object', () => {
@@ -51,7 +51,7 @@ describe('DynamicObject factory', () => {
         return objectInnerSpy;
       });
 
-      const { Edge } = dynamicObjectFactory.makeEdgeConnection("Foo", () => Object)
+      const { Edge } = dynamicObjectFactory.getEdgeConnection(() => class Foo {})
 
       expect(Edge).toBeTruthy();
       expect(fieldInnerSpy.mock.calls).toIncludeAllMembers([
@@ -80,7 +80,7 @@ describe('DynamicObject factory', () => {
         return objectInnerSpy;
       });
 
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection("Foo", () => Object)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(() => class Foo {})
 
       expect(Connection).toBeTruthy();
 
@@ -111,7 +111,7 @@ describe('DynamicObject factory', () => {
         }
       }
 
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection("Foo", () => Object, undefined, options)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(() => class Foo {}, undefined, options)
 
       expect(Connection).toBeTruthy();
       expect(objectSpy).toHaveBeenCalledWith('FooConnection');
@@ -126,7 +126,7 @@ describe('DynamicObject factory', () => {
   describe('declareFunctionAsRelayInSDL', () => {
     it('Should add typescript reflect data on the function', () => {
       new AutoRelayConfig({ orm: () => ORMMock });
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(() => class Foo {})
 
       const Test = class TestClass { };
 
@@ -138,7 +138,7 @@ describe('DynamicObject factory', () => {
 
     it('Should decorate the function for the SDL', () => {
       new AutoRelayConfig({ orm: () => ORMMock });
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(() => class Foo {})
       const fieldSpy = jest.spyOn(TGQL, 'Field');
       const argSpy = jest.spyOn(TGQL, 'Arg');
 
@@ -172,7 +172,7 @@ describe('DynamicObject factory', () => {
 
     it('Should pass Field Options to the function', () => {
       new AutoRelayConfig({ orm: () => ORMMock });
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection("", () => Object)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(() => class Foo {})
       const fieldSpy = jest.spyOn(TGQL, 'Field');
 
       const fieldInnerSpy = jest.fn();
@@ -201,6 +201,32 @@ describe('DynamicObject factory', () => {
       })
 
       fieldSpy.mockRestore();
+    })
+  })
+
+
+  describe('Edge/Connection cache', () => {
+    const To = class To {}
+    const Through = class Through {}
+
+    it('Should re-use already created Connection and Edge', () => {
+      const test1 = dynamicObjectFactory.getEdgeConnection(() => To)
+      const test2 = dynamicObjectFactory.getEdgeConnection(() => To)
+
+      expect(test1.Connection).toBe(test2.Connection)
+      expect(test1.Edge).toBe(test2.Edge)
+    })
+
+    it('Should re-use already created Connection and Edge for matching Through', () => {
+      const test1 = dynamicObjectFactory.getEdgeConnection(() => To)
+      const test2 = dynamicObjectFactory.getEdgeConnection(() => To, () => Through)
+      const test3 = dynamicObjectFactory.getEdgeConnection(() => To, () => Through)
+
+      expect(test1.Connection).not.toBe(test2.Connection)
+      expect(test1.Edge).not.toBe(test2.Edge)
+
+      expect(test2.Connection).toBe(test3.Connection)
+      expect(test2.Edge).toBe(test3.Edge)
     })
   })
 })

@@ -6,6 +6,7 @@ import { ObjectTypeDefinitionNode, GraphQLNamedType, GraphQLObjectType, GraphQLS
 import { getMetadataStorage } from "type-graphql/dist/metadata/getMetadataStorage"
 import { getFieldOfObjectType, getConfigOfObjectType } from "./_.helper";
 import Container from 'typedi';
+import { ClassType } from 'type-graphql';
 
 const basicSchema = () => {
   @TGQL.ObjectType()
@@ -47,7 +48,7 @@ const basicSchema = () => {
 
 
 describe('SDL Integration', () => {
-  let declarations: { TestResolver: Function, TestObject: Function; TestLinkedObject: Function; TestLinkedThroughObject: Function; }
+  let declarations: { TestResolver: ClassType, TestObject: ClassType; TestLinkedObject: ClassType; TestLinkedThroughObject: ClassType; }
   let resolvers: any[] = [];
   let dynamicObjectFactory = new DynamicObjectFactory()
   const buildSchema = async () => {
@@ -86,33 +87,33 @@ describe('SDL Integration', () => {
       }
 
       it('Should create basic Edge', async () => {
-        dynamicObjectFactory.makeEdgeConnection('AToB', () => declarations.TestLinkedObject)
+        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
         const schema = await buildSchema();
 
-        const type = getConfigOfObjectType(schema, 'AToBEdge');
+        const type = getConfigOfObjectType(schema, 'TestLinkedObjectEdge');
 
         expect(type).toBeTruthy();
-        expect(type.name).toEqual('AToBEdge');
+        expect(type.name).toEqual('TestLinkedObjectEdge');
       })
 
       it('Should have valid Edge Object', async () => {
-        dynamicObjectFactory.makeEdgeConnection('AToB', () => declarations.TestLinkedObject)
+        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
         const schema = await buildSchema();
 
-        validateSchemaOfBasicEdge(schema, 'AToBEdge', declarations.TestLinkedObject);
+        validateSchemaOfBasicEdge(schema, 'TestLinkedObjectEdge', declarations.TestLinkedObject);
       })
 
       it('Should have valid Augmented Edge Object', async () => {
-        dynamicObjectFactory.makeEdgeConnection('AToBThrough', () => declarations.TestLinkedObject, () => declarations.TestLinkedThroughObject as any)
+        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject, () => declarations.TestLinkedThroughObject as any)
         const schema = await buildSchema();
 
-        validateSchemaOfBasicEdge(schema, 'AToBThroughEdge', declarations.TestLinkedObject);
+        validateSchemaOfBasicEdge(schema, 'TestLinkedThroughObjectTestLinkedObjectEdge', declarations.TestLinkedObject);
 
-        const type = getConfigOfObjectType(schema, 'AToBThroughEdge');
+        const type = getConfigOfObjectType(schema, 'TestLinkedThroughObjectTestLinkedObjectEdge');
         const foo = getFieldOfObjectType(schema, type, 'foo');
 
 
-        validateSchemaOfBasicEdge(schema, 'AToBThroughEdge', declarations.TestLinkedObject);
+        validateSchemaOfBasicEdge(schema, 'TestLinkedThroughObjectTestLinkedObjectEdge', declarations.TestLinkedObject);
         expect(() => getFieldOfObjectType(schema, type, 'bar')).toThrow(/bar doesn't exist/)
         expect(foo.type.toString()).toEqual('String!')
       })
@@ -120,26 +121,26 @@ describe('SDL Integration', () => {
 
     describe('Connection', () => {
       it('Should create a connection Object', async () => {
-        dynamicObjectFactory.makeEdgeConnection('AToB', () => declarations.TestLinkedObject)
+        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
         const schema = await buildSchema();
 
-        const type = getConfigOfObjectType(schema, 'AToBConnection');
+        const type = getConfigOfObjectType(schema, 'TestLinkedObjectConnection');
 
         expect(type).toBeTruthy();
-        expect(type.name).toEqual('AToBConnection');
+        expect(type.name).toEqual('TestLinkedObjectConnection');
       })
 
       it('Should have valid Connection Object', async () => {
-        dynamicObjectFactory.makeEdgeConnection('AToB', () => declarations.TestLinkedObject)
+        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
         const schema = await buildSchema();
 
-        const type = getConfigOfObjectType(schema, 'AToBConnection');
+        const type = getConfigOfObjectType(schema, 'TestLinkedObjectConnection');
 
         const pageInfo = getFieldOfObjectType(schema, type, 'pageInfo');
         const edges = getFieldOfObjectType(schema, type, 'edges');
 
         expect(pageInfo.type.toString()).toEqual('PageInfo!');
-        expect(edges.type.toString()).toEqual('[AToBEdge!]!');
+        expect(edges.type.toString()).toEqual('[TestLinkedObjectEdge!]!');
       })
       
     })

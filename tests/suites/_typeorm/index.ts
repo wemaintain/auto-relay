@@ -22,21 +22,29 @@ export async function setUpTypeORM() {
     dropSchema: true,
     entities: [User, Recipe, Rate]
   })
-
+try {
   const schema = await buildSchema({
     resolvers: [UserResolver, TestResolver, RecipeResolver]
   })
 
-
   const server = new ApolloServer({
     schema
   });
+
   const testServer = createTestClient(server);
   await server.listen({ port: 33333 });
 
   Container.set('schema', schema)
   Container.set('server', server);
   Container.set('testServer', testServer)
+
+  expect(schema).toBeTruthy()
+  expect(server).toBeTruthy()
+  expect(testServer).toBeTruthy()
+} catch(e) {
+  console.error("EEEE", e)
+  throw e;
+}
 
   return;
 } 
