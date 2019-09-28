@@ -46,7 +46,7 @@ describe('AugmentConnection', () => {
       const augmented = augmentedConnection<TestEntity, TestObjectAugment>(c, 'testNode');
 
       expect(augmented.edges[0].augment).toBe(c.edges[0].node.augment);
-      expect(augmented.edges[0].augmentObject.test).toBe(c.edges[0].node.augmentObject.test);
+      expect(augmented.edges[0].augmentObject!.test).toBe(c.edges[0].node.augmentObject.test);
     })
 
     it('Should swap the nodes to the desired entity', () => {
