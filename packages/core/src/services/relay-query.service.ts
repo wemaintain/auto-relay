@@ -4,6 +4,7 @@ import { DynamicObjectFactory } from "../graphql/dynamic-object.factory"
 import { ClassValueThunk } from "../types"
 import { RelayFromArrayCountFactory } from "../middlewares/relay-from-array-count.middleware";
 import { UseMiddleware, Query, Args, Arg, FieldResolver } from "type-graphql";
+import { CONNECTIONARGS_OBJECT } from './auto-relay-config.service';
 
 /**
  * Abstracts the logic for registering paginated queries / field resolvers
@@ -67,7 +68,7 @@ export class RelayedQueryService {
     isFieldResolver: boolean = false
   ): void {
     const queryName = this.getQueryName(propertyKey, options)
-    const { Connection } = this.makeEdgeConnection(queryName, to, through)
+    const { Connection } = this.makeEdgeConnection(to, through)
     this.registerArgs(target, propertyKey, options)
 
     const middleware = RelayFromArrayCountFactory(target, propertyKey);
@@ -80,15 +81,21 @@ export class RelayedQueryService {
   }
 
   protected makeEdgeConnection<Model = any, Through = any>(
-    queryName: string, 
     to: ClassValueThunk<Model>, 
     through?: ClassValueThunk<Through>
   ) {
     const dynamicObjectFactory = Container.get(DynamicObjectFactory);
-    return dynamicObjectFactory.makeEdgeConnection(queryName, to, through);
+    return dynamicObjectFactory.getEdgeConnection(to, through);
   }
 
-  protected getQueryName(propertyKey: string, options?: RelayedQueryOptions ) {
+  /**
+   * Computes name of the query/field for SDL. Could be either the name of the property
+   * or an user defined name
+   *
+   * @param propertyKey name of the property we were defined on
+   * @param options user defined options to overide with
+   */
+  protected getQueryName(propertyKey: string, options?: RelayedQueryOptions ): string {
     return options && options.name ? options.name : propertyKey;
   }
 
@@ -99,7 +106,7 @@ export class RelayedQueryService {
    * @param propertyKey 
    */
   protected registerArgs(target: Object, propertyKey: string, options?: RelayedQueryOptions,) {
-    const ConnectionArgsThunk: () => Function = Container.get('CONNECTIONARGS_OBJECT');
+    const ConnectionArgsThunk = Container.get(CONNECTIONARGS_OBJECT);
     const ConnectionArgs = ConnectionArgsThunk();
 
     if (options && options.paginationInputType) {

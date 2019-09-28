@@ -1,8 +1,8 @@
-import { AutoRelayConfig } from './../services/auto-relay-config.service';
+import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
-import { TypeValue } from '../types/types'
-import { Field, ObjectType, Arg } from 'type-graphql'
+import { TypeValue, ClassValueThunk } from '../types/types'
+import { Field, ObjectType, Arg, ClassType } from 'type-graphql'
 import * as Relay from 'graphql-relay'
 
 /**
@@ -11,26 +11,34 @@ import * as Relay from 'graphql-relay'
  */
 @Service()
 export class DynamicObjectFactory {
+
+  /** Map of Edge & Connections object as a cache for already created ones */
+  protected edgeConnectionCache = new Map<string, ConnectionEdgeType>()
+
   /**
-   * Creates and decorates two new Objects to connect two entities via Relay
-   * Will return a relay Edge and Connection Object to be used when fetching this specific object
-   * @param connectionName name of the connection, usually `EntitAEntityB`
-   * @param nodeType type of the EntityB
-   * @param edgeAugment if the relation is N:M, "augment" the edge with the join table
+   * Returns the Edge and Connection Object class decorated and injected in the SDL
+   * Will return a relay Edge and Connection Object to be used when fetching this specific Entity
+   *
+   * @param To type of the Entity we're linking to
+   * @param Through if the relation is N:M, "augment" the edge with the join table
+   * @param options user defined options for this edge/connection
    */
-  public makeEdgeConnection<T extends TypeValue>(
-    connectionName: string,
-    nodeType: () => T,
-    edgeAugment?: () => new () => Object,
+  public getEdgeConnection<T = any>(
+    to: ClassValueThunk<T>,
+    through: ClassValueThunk<any> = () => Object,
     options?: RelayedConnectionOptions,
-  ): { Connection: new () => Relay.Connection<T>; Edge: new () => Relay.Edge<T> } {
-    if (!edgeAugment) edgeAugment = () => Object
-    const PageInfo = this.getPageInfo()
+  ): ConnectionEdgeType<T> {
+    const connectionName = this.getConnectionName(to, through)
 
-    const Edge = this.makeEdge(connectionName, nodeType, edgeAugment)
-    const Connection = this.makeConnection(connectionName, Edge, PageInfo, options)
+    if (!this.edgeConnectionCache.has(connectionName)) {
+      const PageInfo = this.getPageInfo()
+      const Edge = this.makeEdge(connectionName, to, through)
+      const Connection = this.makeConnection(connectionName, Edge, PageInfo, options)
 
-    return { Edge, Connection }
+      this.edgeConnectionCache.set(connectionName, { Edge, Connection })
+    }
+
+    return this.edgeConnectionCache.get(connectionName) as ConnectionEdgeType<T>
   }
 
   /**
@@ -64,21 +72,25 @@ export class DynamicObjectFactory {
   /**
    * Create the Edge for the given node type & augment
    * @param connectionName name of the connection to prefix the edge
-   * @param nodeType type of the node for this edge
-   * @param edgeAugment optional type to augment the edge with
+   * @param to type of the node for this edge
+   * @param through optional type to augment the edge with
    */
-  protected makeEdge<T extends TypeValue>(connectionName: string, nodeType: () => T, edgeAugment: () => new () => any): new () => Relay.Edge<T> {
-    const Edge = class extends edgeAugment().prototype.constructor implements Relay.Edge<T> {
+  protected makeEdge<T extends TypeValue>(
+    connectionName: string,
+    to: () => T,
+    through: () => new () => any
+  ): ClassType<Relay.Edge<T>> {
+    const Edge = class extends through().prototype.constructor implements Relay.Edge<T> {
       public node!: T;
 
       public cursor!: Relay.ConnectionCursor;
     }
 
-    Object.assign(Edge, edgeAugment())
+    Object.assign(Edge, through())
 
-    Field(nodeType)(Edge.prototype, 'node')
+    Field(to)(Edge.prototype, 'node')
     Field(() => String, { description: 'Used in `before` and `after` args' })(Edge.prototype, 'cursor')
-    ObjectType(`${connectionName}Edge`)(Edge)
+    ObjectType(`${this.getPrefix()}${connectionName}Edge`)(Edge)
 
     return Edge
   }
@@ -91,13 +103,13 @@ export class DynamicObjectFactory {
    */
   protected makeConnection<T extends TypeValue>(
     connectionName: string,
-    Edge: new () => Relay.Edge<T>,
-    PageInfo: new () => Relay.PageInfo,
+    Edge: ClassType<Relay.Edge<T>>,
+    PageInfo: ClassType<Relay.PageInfo>,
     options?: RelayedConnectionOptions,
-  ): new () => Relay.Connection<T> {
+  ): ClassType<Relay.Connection<T>> {
     const nullable = options && options.field && options.field.nullable
 
-    @ObjectType(`${connectionName}Connection`)
+    @ObjectType(`${this.getPrefix()}${connectionName}Connection`)
     class Connection implements Relay.Connection<T> {
       @Field(() => PageInfo)
       public pageInfo!: Relay.PageInfo;
@@ -113,15 +125,15 @@ export class DynamicObjectFactory {
    * Get the local PageInfo model
    * @throws if PageInfo cannot be accessed.
    */
-  protected getPageInfo(): new () => Relay.PageInfo {
+  protected getPageInfo(): ClassType<Relay.PageInfo> {
     try {
-      let PageInfoFn: () => new () => Relay.PageInfo;
+      let PageInfoFn: ClassValueThunk<Relay.PageInfo>;
       try {
-        PageInfoFn = Container.get<() => (new () => Relay.PageInfo)>('PAGINATION_OBJECT')
+        PageInfoFn = Container.get(PAGINATION_OBJECT)
       } catch (e) {
         // If we couldn't find a PageInfoFn, let's generate anew and retry
         AutoRelayConfig.generateObjects()
-        PageInfoFn = Container.get<() => (new () => Relay.PageInfo)>('PAGINATION_OBJECT')
+        PageInfoFn = Container.get(PAGINATION_OBJECT)
       }
       const PageInfo = PageInfoFn()
 
@@ -131,4 +143,28 @@ export class DynamicObjectFactory {
       throw new Error(`Couldn't find or generate PageInfo Object`)
     }
   }
+
+  /**
+   * Computes the name of the Connection in the SDL
+   *
+   * @param to the Object we're linking to
+   * @param through optional Through object to get the To object
+   */
+  protected getConnectionName(to: ClassValueThunk<any>, through?: ClassValueThunk<any>): string {
+    return `${through && through().name !== "Object" ? through().name : ''}${to().name}`
+  }
+
+  /**
+   * Returns currently defined prefix
+   */
+  protected getPrefix(): string {
+    try {
+      return Container.get(PREFIX)
+    } catch(e) {
+      return ""
+    }
+  } 
+
 }
+
+export type ConnectionEdgeType<T = any> = { Connection: ClassType<Relay.Connection<ClassType<T>>>; Edge: ClassType<Relay.Edge<ClassType<T>>> }

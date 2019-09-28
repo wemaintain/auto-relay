@@ -4,6 +4,7 @@ import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
 import { DynamicObjectFactory } from '../graphql/dynamic-object.factory'
+import { ORM_CONNECTION } from './../services/auto-relay-config.service';
 
 export function RelayedConnection(type: ClassValueThunk): MethodAndPropDecorator
 export function RelayedConnection<T=any>(type: ClassValueThunk<T>, options: RelayedConnectionOptions<T>): MethodAndPropDecorator
@@ -22,16 +23,15 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
     process.nextTick(() => {
       const getterName = `relayField${String(propertyKey)}Getter`
       const capitalized = String(propertyKey).charAt(0).toUpperCase() + String(propertyKey).slice(1)
-      const connectionName = `${target.constructor.name}${capitalized}`
 
       // Create GQL Stuff
       const dynamicObjectFactory = Container.get(DynamicObjectFactory)
-      const { Connection } = dynamicObjectFactory.makeEdgeConnection(connectionName, type, through, options)
+      const { Connection } = dynamicObjectFactory.getEdgeConnection(type, through, options)
       dynamicObjectFactory.declareFunctionAsRelayInSDL(target, getterName, propertyKey, Connection, options)
 
       // Create the actual Relay'd getter
       try {
-        const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
+        const ormConnection = Container.get(ORM_CONNECTION)
         const ORM = ormConnection()
         const orm = new ORM()
   
