@@ -1,3 +1,4 @@
+import { PREFIX } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { DynamicObjectFactory } from "./dynamic-object.factory";
 import { Container } from "typedi";
@@ -119,6 +120,18 @@ describe('DynamicObject factory', () => {
       expect(fieldSpy.mock.calls[fieldSpy.mock.calls.length - 1][1]).toEqual({ nullable: 'items' })
 
       fieldSpy.mockRestore();
+      objectSpy.mockRestore();
+    })
+
+    it('Should prefix connection/edge names with global prefix', () => {
+      Container.set(PREFIX, "aTestPrefix")
+
+      const objectSpy = jest.spyOn(TGQL, 'ObjectType');
+      dynamicObjectFactory.getEdgeConnection(() => class Foo {})
+
+      expect(objectSpy).toHaveBeenCalledWith('aTestPrefixFooConnection');
+      expect(objectSpy).toHaveBeenCalledWith('aTestPrefixFooEdge');
+
       objectSpy.mockRestore();
     })
   })

@@ -4,10 +4,10 @@ import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigA
 import { ClassValueThunk } from '..'
 import * as Relay from 'graphql-relay'
 
-export const PREFIX = new Token<string>('PREFIX') 
+export const PREFIX = new Token<string>('PREFIX')
 export const PAGINATION_OBJECT = new Token<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
 export const CONNECTIONARGS_OBJECT = new Token<ClassValueThunk<Relay.ConnectionArguments>>('CONNECTIONARGS_OBJECT')
-export const ORM_CONNECTION =  new Token<AutoRelayOrmConnect>('ORM_CONNECTION') 
+export const ORM_CONNECTION = new Token<AutoRelayOrmConnect>('ORM_CONNECTION')
 
 @Service()
 export class AutoRelayConfig {
@@ -22,7 +22,10 @@ export class AutoRelayConfig {
     if ((config as AutoRelayConfigArgsExistingModel).objects) {
       this._declareExistingObjects(config as AutoRelayConfigArgsExistingModel)
     } else {
-      const prefix = (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
+      let prefix = (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
+      if (prefix) {
+        prefix = prefix[0].toUpperCase() + prefix.substring(1)
+      }
       AutoRelayConfig.generateObjects(prefix, true)
       Container.set(PREFIX, prefix)
     }
@@ -50,7 +53,7 @@ export class AutoRelayConfig {
     let alreadyExists!: boolean;
     try {
       alreadyExists = Boolean(Container.get(PAGINATION_OBJECT))
-    } catch(e) {
+    } catch (e) {
       alreadyExists = false;
     }
     return alreadyExists

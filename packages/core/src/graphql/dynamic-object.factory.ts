@@ -1,4 +1,4 @@
-import { AutoRelayConfig, PAGINATION_OBJECT } from './../services/auto-relay-config.service';
+import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue, ClassValueThunk } from '../types/types'
@@ -90,7 +90,7 @@ export class DynamicObjectFactory {
 
     Field(to)(Edge.prototype, 'node')
     Field(() => String, { description: 'Used in `before` and `after` args' })(Edge.prototype, 'cursor')
-    ObjectType(`${connectionName}Edge`)(Edge)
+    ObjectType(`${this.getPrefix()}${connectionName}Edge`)(Edge)
 
     return Edge
   }
@@ -109,7 +109,7 @@ export class DynamicObjectFactory {
   ): ClassType<Relay.Connection<T>> {
     const nullable = options && options.field && options.field.nullable
 
-    @ObjectType(`${connectionName}Connection`)
+    @ObjectType(`${this.getPrefix()}${connectionName}Connection`)
     class Connection implements Relay.Connection<T> {
       @Field(() => PageInfo)
       public pageInfo!: Relay.PageInfo;
@@ -153,6 +153,17 @@ export class DynamicObjectFactory {
   protected getConnectionName(to: ClassValueThunk<any>, through?: ClassValueThunk<any>): string {
     return `${through && through().name !== "Object" ? through().name : ''}${to().name}`
   }
+
+  /**
+   * Returns currently defined prefix
+   */
+  protected getPrefix(): string {
+    try {
+      return Container.get(PREFIX)
+    } catch(e) {
+      return ""
+    }
+  } 
 
 }
 

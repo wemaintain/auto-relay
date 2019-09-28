@@ -1,4 +1,4 @@
-import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION } from './auto-relay-config.service'
+import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION, PREFIX } from './auto-relay-config.service'
 import { Container } from 'typedi'
 import { ORMConnection } from '../orm';
 
@@ -13,6 +13,10 @@ describe('AutoRelayConfig', () => {
   let typeRelayConfig: AutoRelayConfig | null = null
   beforeEach(() => {
     typeRelayConfig = null;
+  })
+
+  afterEach(() => {
+    Container.reset()
   })
 
   it('Should not instantiate without config', () => {
@@ -33,6 +37,13 @@ describe('AutoRelayConfig', () => {
     const test = Container.get(ORM_CONNECTION);
 
     expect(test()).toBe(ORMMock);
+  })
+
+  it('Should provide capitalized PREFIX', () => {
+    const autoRelay = new AutoRelayConfig({ orm: () => ORMMock, microserviceName: "aPrefix" })
+
+    const test = Container.get(PREFIX);
+    expect(test).toEqual("APrefix")
   })
 
   it('Should make available supplied PAGINATION_OBJECT and CONNECTIONARGS_OBJECT', () => {
