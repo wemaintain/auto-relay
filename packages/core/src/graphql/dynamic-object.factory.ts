@@ -1,4 +1,4 @@
-import { AutoRelayConfig } from './../services/auto-relay-config.service';
+import { AutoRelayConfig, PAGINATION_OBJECT } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue, ClassValueThunk } from '../types/types'
@@ -129,11 +129,11 @@ export class DynamicObjectFactory {
     try {
       let PageInfoFn: ClassValueThunk<Relay.PageInfo>;
       try {
-        PageInfoFn = Container.get<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
+        PageInfoFn = Container.get(PAGINATION_OBJECT)
       } catch (e) {
         // If we couldn't find a PageInfoFn, let's generate anew and retry
         AutoRelayConfig.generateObjects()
-        PageInfoFn = Container.get<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
+        PageInfoFn = Container.get(PAGINATION_OBJECT)
       }
       const PageInfo = PageInfoFn()
 

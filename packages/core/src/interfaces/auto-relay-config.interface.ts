@@ -1,5 +1,6 @@
-import { TypeValueThunk } from '../types/types'
+import { TypeValueThunk, ClassValueThunk } from '../types/types'
 import { ORMConnection } from '../orm/orm-connection.abstract'
+import * as Relay from "graphql-relay"
 
 /**
  * Arguments to initialize AutoRelay's config
@@ -17,9 +18,9 @@ export interface AutoRelayConfigArgsExistingModel extends AutoRelayConfigArgsBas
   /** the objects we should use in the generated SDL */
   objects: {
     /** should be a type-graphql decorated type for pagination */
-    pagination: TypeValueThunk
+    pagination: ClassValueThunk<Relay.PageInfo>
     /** should be a type-graphql decorated type for connection args */
-    connectionArgs: TypeValueThunk
+    connectionArgs: ClassValueThunk<Relay.ConnectionArguments>
   }
 }
 

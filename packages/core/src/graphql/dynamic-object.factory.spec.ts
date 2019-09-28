@@ -1,7 +1,7 @@
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { DynamicObjectFactory } from "./dynamic-object.factory";
 import { Container } from "typedi";
-import { AutoRelayConfig } from "../services/auto-relay-config.service";
+import { AutoRelayConfig, PAGINATION_OBJECT } from "../services/auto-relay-config.service";
 import { ORMConnection } from "../orm/orm-connection.abstract";
 import * as TGQL from 'type-graphql'
 
@@ -23,16 +23,16 @@ describe('DynamicObject factory', () => {
   describe('makeEdgeConnection', () => {
     it('Should auto create one if PAGINATION_OBJECT wasn\'t init\'d', () => {
       expect(dynamicObjectFactory.getEdgeConnection(() => Object)).toBeTruthy()
-      expect(Container.get<Function>('PAGINATION_OBJECT')()).toBeTruthy()
+      expect(Container.get<Function>(PAGINATION_OBJECT)()).toBeTruthy()
     })
 
     it('Should throw if PAGINATION_OBJECT isn\'t a function', () => {
-      Container.set('PAGINATION_OBJECT', {})
+      Container.set(PAGINATION_OBJECT, {} as any)
       expect(() => dynamicObjectFactory.getEdgeConnection(() => Object)).toThrowError(/PageInfo/)
     })
 
     it('Should throw if PAGINATION_OBJECT returns undefined', () => {
-      Container.set('PAGINATION_OBJECT', () => undefined)
+      Container.set(PAGINATION_OBJECT, () => undefined as any)
       expect(() => dynamicObjectFactory.getEdgeConnection(() => Object)).toThrowError(/PageInfo/)
     })
 

@@ -1,4 +1,4 @@
-import { AutoRelayConfig } from './auto-relay-config.service'
+import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION } from './auto-relay-config.service'
 import { Container } from 'typedi'
 import { ORMConnection } from '../orm';
 
@@ -30,8 +30,7 @@ describe('AutoRelayConfig', () => {
 
   it('Should provide ORM_CONNECTION', () => {
     const autoRelay = new AutoRelayConfig({ orm: () => ORMMock })
-
-    const test: () => typeof ORMConnection = Container.get('ORM_CONNECTION');
+    const test = Container.get(ORM_CONNECTION);
 
     expect(test()).toBe(ORMMock);
   })
@@ -48,8 +47,8 @@ describe('AutoRelayConfig', () => {
     })
 
 
-    const containerA: () => typeof Object = Container.get('PAGINATION_OBJECT');
-    const containerB: () => typeof Object = Container.get('CONNECTIONARGS_OBJECT');
+    const containerA = Container.get(PAGINATION_OBJECT);
+    const containerB = Container.get(CONNECTIONARGS_OBJECT);
 
     expect(containerA().name).toBe(pagination().name);
     expect(containerB().name).toBe(connectionArgs().name);
@@ -60,8 +59,8 @@ describe('AutoRelayConfig', () => {
   it('Should generate PAGINATION_OBJECT and CONNECTIONARGS_OBJECT when none are given', () => {
     typeRelayConfig = new AutoRelayConfig({ orm: () => ORMMock });
 
-    const containerA: () => typeof Object = Container.get('PAGINATION_OBJECT');
-    const containerB: () => typeof Object = Container.get('CONNECTIONARGS_OBJECT');
+    const containerA = Container.get(PAGINATION_OBJECT);
+    const containerB = Container.get(CONNECTIONARGS_OBJECT);
 
     expect(containerA()).toBeTruthy()
     expect(containerB()).toBeTruthy()

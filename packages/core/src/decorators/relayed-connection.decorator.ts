@@ -4,6 +4,7 @@ import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
 import { DynamicObjectFactory } from '../graphql/dynamic-object.factory'
+import { ORM_CONNECTION } from './../services/auto-relay-config.service';
 
 export function RelayedConnection(type: ClassValueThunk): MethodAndPropDecorator
 export function RelayedConnection<T=any>(type: ClassValueThunk<T>, options: RelayedConnectionOptions<T>): MethodAndPropDecorator
@@ -30,7 +31,7 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
 
       // Create the actual Relay'd getter
       try {
-        const ormConnection: () => new () => ORMConnection = Container.get('ORM_CONNECTION')
+        const ormConnection = Container.get(ORM_CONNECTION)
         const ORM = ormConnection()
         const orm = new ORM()
   

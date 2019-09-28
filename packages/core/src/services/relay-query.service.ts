@@ -4,6 +4,7 @@ import { DynamicObjectFactory } from "../graphql/dynamic-object.factory"
 import { ClassValueThunk } from "../types"
 import { RelayFromArrayCountFactory } from "../middlewares/relay-from-array-count.middleware";
 import { UseMiddleware, Query, Args, Arg, FieldResolver } from "type-graphql";
+import { CONNECTIONARGS_OBJECT } from './auto-relay-config.service';
 
 /**
  * Abstracts the logic for registering paginated queries / field resolvers
@@ -105,7 +106,7 @@ export class RelayedQueryService {
    * @param propertyKey 
    */
   protected registerArgs(target: Object, propertyKey: string, options?: RelayedQueryOptions,) {
-    const ConnectionArgsThunk: () => Function = Container.get('CONNECTIONARGS_OBJECT');
+    const ConnectionArgsThunk = Container.get(CONNECTIONARGS_OBJECT);
     const ConnectionArgs = ConnectionArgsThunk();
 
     if (options && options.paginationInputType) {
