@@ -6,11 +6,13 @@ import { SDLTests } from './suites/sdl';
 import { RelayedQueryTests } from './suites/relayed-query';
 import { RelayedFieldResolverTests } from './suites/relayed-field-resolver';
 import { ConnectionTests } from './suites/connection';
+import { ExtendedPageInfo } from './suites/_typeorm/page-info';
+import { ExtendingPageInfo } from './suites/extending-pageinfo';
 
 const configs: [string, AutoRelayConfigArgs, () => void | Promise<void>][] = [
   [
     'TypeORM',
-    { orm: () => TypeOrmConnection } as AutoRelayConfigArgs,
+    { orm: () => TypeOrmConnection, extends: { pageInfo: () => ExtendedPageInfo } } as AutoRelayConfigArgs,
     () => setUpTypeORM()
   ],
 ]
@@ -29,6 +31,7 @@ const run = () => {
       RelayedQueryTests(name)
       RelayedFieldResolverTests(name)
       ConnectionTests(name)
+      ExtendingPageInfo(name)
     })
   }
 }

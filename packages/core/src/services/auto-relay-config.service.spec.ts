@@ -53,7 +53,7 @@ describe('AutoRelayConfig', () => {
     typeRelayConfig = new AutoRelayConfig({
       orm: () => ORMMock, objects: {
         connectionArgs,
-        pagination
+        pageInfo: pagination
       }
     })
 

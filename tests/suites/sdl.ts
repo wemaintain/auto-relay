@@ -129,5 +129,14 @@ export function SDLTests(suiteName: string) {
 
     })
 
+    describe('PageInfo', () => {
+      it('Should have extended PageInfo', async () => {
+        const PageInfo = schema.getType('PageInfo') as GraphQLObjectType;
+        const testField = PageInfo.getFields()['test']
+
+        expect(testField).toBeTruthy()
+        expect(testField.type.toString()).toEqual('String!')
+      })
+    })
   })
 }

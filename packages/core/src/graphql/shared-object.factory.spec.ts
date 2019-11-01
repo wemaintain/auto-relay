@@ -1,6 +1,9 @@
 import { SharedObjectFactory } from "../../src/graphql/shared-object.factory";
 import * as TGQL from 'type-graphql'
 import * as Relay from 'graphql-relay'
+import { ObjectType, Field } from "type-graphql";
+
+
 
 describe('SharedObjectFactory', () => {
   let sharedObjectFactory = new SharedObjectFactory();
@@ -64,6 +67,19 @@ describe('SharedObjectFactory', () => {
 
       objectSpy.mockRestore();
     });
+
+    it('Should allow extending another object', () => {
+      @ObjectType({ isAbstract: true })
+      class AugmentPageInfo {
+        @Field()
+        public test: string = "test"
+      }
+
+      const Test = sharedObjectFactory.generatePageInfo('', () => AugmentPageInfo)
+      const test = new Test()
+
+      expect(test.test)
+    })
   })
 
 
