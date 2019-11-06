@@ -30,7 +30,9 @@ export interface AutoRelayConfigArgsNoModel extends AutoRelayConfigArgsBase {
   microserviceName?: string
   /** used to extend dynamically generated object */
   extends?: {
-    /** extend the PageInfo object with the following abstract objecttype */
+    /** extend the PageInfo object with the following abstract ObjectType */
     pageInfo?: ClassValueThunk<any>
+    /** extend the Connection object with the following abstract ObjectType */
+    connection?: ClassValueThunk<any>
   }
 }

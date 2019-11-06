@@ -22,7 +22,10 @@ export function RelayFromArrayCountFactory<TContext = {}>(prototype: any, proper
     const pagination = RelayLimitOffsetResolverFactory(prototype, propertyKey)(resolverData);
     const connection = Relay.connectionFromArraySlice(entities, args, { sliceStart: pagination.offset || 0, arrayLength: entityCount })
 
-    Object.assign(connection.pageInfo, { _autoRelayMetadata: { totalItems: entityCount } } as AutoRelayRoot)
+    const metadatas = { _autoRelayMetadata: { totalItems: entityCount } } as AutoRelayRoot
+
+    Object.assign(connection, metadatas)
+    Object.assign(connection.pageInfo, metadatas)
 
     if (throughKey) {
       return augmentedConnection(connection, String(throughKey));

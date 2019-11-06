@@ -5,6 +5,7 @@ import { ClassValueThunk } from '..'
 import * as Relay from 'graphql-relay'
 
 export const PREFIX = new Token<string>('PREFIX')
+export const CONNECTION_BASE_OBJECT = new Token<ClassValueThunk<any>>('CONNECTION_BASE_OBJECT')
 export const PAGINATION_OBJECT = new Token<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
 export const CONNECTIONARGS_OBJECT = new Token<ClassValueThunk<Relay.ConnectionArguments>>('CONNECTIONARGS_OBJECT')
 export const ORM_CONNECTION = new Token<AutoRelayOrmConnect>('ORM_CONNECTION')
@@ -26,13 +27,20 @@ export class AutoRelayConfig {
     if ((config as AutoRelayConfigArgsExistingModel).objects) {
       this._declareExistingObjects(config as AutoRelayConfigArgsExistingModel)
     } else {
-      (config as AutoRelayConfigArgsNoModel).microserviceName = (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
-      if ( (config as AutoRelayConfigArgsNoModel).microserviceName) {
-        (config as AutoRelayConfigArgsNoModel).microserviceName =  (config as AutoRelayConfigArgsNoModel).microserviceName![0].toUpperCase() +  (config as AutoRelayConfigArgsNoModel).microserviceName!.substring(1)
+      const configNoModel: AutoRelayConfigArgsNoModel = config;
+
+      configNoModel.microserviceName = configNoModel.microserviceName ? String(configNoModel.microserviceName) : ''
+      if ( configNoModel.microserviceName) {
+        configNoModel.microserviceName =  configNoModel.microserviceName![0].toUpperCase() +  configNoModel.microserviceName!.substring(1)
       }
 
       AutoRelayConfig.generateObjects(config, true)
-      Container.set(PREFIX, (config as AutoRelayConfigArgsNoModel).microserviceName)
+      Container.set(PREFIX, configNoModel.microserviceName)
+      if (configNoModel.extends && configNoModel.extends.connection) {
+        Container.set(CONNECTION_BASE_OBJECT, configNoModel.extends.connection)
+      } else {
+        Container.set(CONNECTION_BASE_OBJECT, () => Object)
+      }
     }
 
     AutoRelayConfig._config = config

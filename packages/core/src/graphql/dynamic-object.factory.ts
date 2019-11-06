@@ -1,4 +1,4 @@
-import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX } from './../services/auto-relay-config.service';
+import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX, CONNECTION_BASE_OBJECT } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue, ClassValueThunk } from '../types/types'
@@ -109,8 +109,10 @@ export class DynamicObjectFactory {
   ): ClassType<Relay.Connection<T>> {
     const nullable = options && options.field && options.field.nullable
 
+    const baseClass = this.getBaseConnection()
+
     @ObjectType(`${this.getPrefix()}${connectionName}Connection`)
-    class Connection implements Relay.Connection<T> {
+    class Connection extends baseClass() implements Relay.Connection<T> {
       @Field(() => PageInfo)
       public pageInfo!: Relay.PageInfo;
 
@@ -119,6 +121,17 @@ export class DynamicObjectFactory {
     }
 
     return Connection
+  }
+
+  /**
+   * Get the base Connection model if any
+   */
+  protected getBaseConnection(): ClassValueThunk<any>  {
+    try {
+      return Container.get(CONNECTION_BASE_OBJECT)
+    } catch(e) { }
+
+    return () => Object
   }
 
   /**
