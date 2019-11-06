@@ -1,4 +1,13 @@
-# [](https://github.com/wemaintain/auto-relay/compare/v0.9.0...v) (2019-09-28)
+# [](https://github.com/wemaintain/auto-relay/compare/v0.10.0...v) (2019-11-06)
+
+
+
+# [0.10.0](https://github.com/wemaintain/auto-relay/compare/v0.9.0...v0.10.0) (2019-11-06)
+
+
+### Features
+
+* **sharedObjects:** allow extending of PageInfo & Connection objects ([#17](https://github.com/wemaintain/auto-relay/issues/17)) ([d05637b](https://github.com/wemaintain/auto-relay/commit/d05637b))
 
 
 
