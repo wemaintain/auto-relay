@@ -2,6 +2,7 @@
 import { Service } from 'typedi'
 import { Field, ObjectType, ArgsType, Int, InputType } from 'type-graphql'
 import * as Relay from 'graphql-relay'
+import { ClassValueThunk } from '..'
 
 /**
  * Factory service for shared object/arguments needed for Relay in the SDL
@@ -11,17 +12,17 @@ export class SharedObjectFactory {
   /**
    * Generate the PageInfo type-graphql class, decorated so it is auto-inserted
    * in the SDL
+   *
    * @param prefix prefix for the name of the PageInfo object in the SDL.
+   * @param extending Function returning a type we want PageInfo to extend
    */
-  public generatePageInfo (prefix: string): new () => Relay.PageInfo {
+  public generatePageInfo<T = any>(prefix: string, extending?: ClassValueThunk<T>): new () => (Relay.PageInfo & T) {
     const pageInfoName = `${prefix}PageInfo`
-    const PageInfo = class implements Relay.PageInfo {
+
+    const PageInfo = class extends ((extending ? extending() : Object) as any) implements Relay.PageInfo {
       public hasNextPage!: boolean;
-
       public hasPreviousPage!: boolean;
-
       public startCursor?: Relay.ConnectionCursor;
-
       public endCursor?: Relay.ConnectionCursor;
     }
 
@@ -31,7 +32,7 @@ export class SharedObjectFactory {
     Field(() => String, { nullable: true })(PageInfo.prototype, 'endCursor')
     ObjectType(pageInfoName)(PageInfo)
 
-    return PageInfo
+    return PageInfo as any
   }
 
   /**
@@ -39,7 +40,7 @@ export class SharedObjectFactory {
    * in the SDL
    * @param prefix prefix for the name of the ConnectionArgs in the SDL
    */
-  public generateConnectionArgs (prefix: string): new () => Relay.ConnectionArguments {
+  public generateConnectionArgs(prefix: string): new () => Relay.ConnectionArguments {
     if (!prefix) prefix = ''
     const argsName = `${prefix}ConnectionArgs`
     // This is a trick so the local class will be called argsName, as the ArgsType decorator doesn't take

@@ -5,15 +5,20 @@ import { ClassValueThunk } from '..'
 import * as Relay from 'graphql-relay'
 
 export const PREFIX = new Token<string>('PREFIX')
+export const CONNECTION_BASE_OBJECT = new Token<ClassValueThunk<any>>('CONNECTION_BASE_OBJECT')
 export const PAGINATION_OBJECT = new Token<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
 export const CONNECTIONARGS_OBJECT = new Token<ClassValueThunk<Relay.ConnectionArguments>>('CONNECTIONARGS_OBJECT')
 export const ORM_CONNECTION = new Token<AutoRelayOrmConnect>('ORM_CONNECTION')
 
 @Service()
 export class AutoRelayConfig {
-  protected static _sharedObjectFactory: SharedObjectFactory = Container.get(SharedObjectFactory)
 
-  constructor(config: AutoRelayConfigArgs) {
+  protected static _sharedObjectFactory: SharedObjectFactory = Container.get(SharedObjectFactory)
+  protected static _config: AutoRelayConfigArgs = {  } as any
+
+  constructor(
+    config: AutoRelayConfigArgs
+  ) {
     if (!config) throw new Error(`No config supplied to AutoRelay`)
     Container.remove(PAGINATION_OBJECT, CONNECTIONARGS_OBJECT)
 
@@ -22,24 +27,35 @@ export class AutoRelayConfig {
     if ((config as AutoRelayConfigArgsExistingModel).objects) {
       this._declareExistingObjects(config as AutoRelayConfigArgsExistingModel)
     } else {
-      let prefix = (config as AutoRelayConfigArgsNoModel).microserviceName ? String((config as AutoRelayConfigArgsNoModel).microserviceName) : ''
-      if (prefix) {
-        prefix = prefix[0].toUpperCase() + prefix.substring(1)
+      const configNoModel: AutoRelayConfigArgsNoModel = config;
+
+      configNoModel.microserviceName = configNoModel.microserviceName ? String(configNoModel.microserviceName) : ''
+      if ( configNoModel.microserviceName) {
+        configNoModel.microserviceName =  configNoModel.microserviceName![0].toUpperCase() +  configNoModel.microserviceName!.substring(1)
       }
-      AutoRelayConfig.generateObjects(prefix, true)
-      Container.set(PREFIX, prefix)
+
+      AutoRelayConfig.generateObjects(config, true)
+      Container.set(PREFIX, configNoModel.microserviceName)
+      if (configNoModel.extends && configNoModel.extends.connection) {
+        Container.set(CONNECTION_BASE_OBJECT, configNoModel.extends.connection)
+      } else {
+        Container.set(CONNECTION_BASE_OBJECT, () => Object)
+      }
     }
+
+    AutoRelayConfig._config = config
   }
 
   /**
    * Generate common Objects and make them available to auto-relay
    * @param prefix string to prefix the object's names with
    */
-  public static generateObjects(prefix: string = "", force: boolean = false): void {
+  public static generateObjects(config?: AutoRelayConfigArgsNoModel, force: boolean = false): void {
+    config = config || AutoRelayConfig._config
     const alreadyExists = this.paginationExists()
     if (!alreadyExists || force) {
-      const ConnectionArgs = this._sharedObjectFactory.generateConnectionArgs(prefix)
-      const PageInfo = this._sharedObjectFactory.generatePageInfo(prefix)
+      const ConnectionArgs = this._sharedObjectFactory.generateConnectionArgs(config.microserviceName!)
+      const PageInfo = this._sharedObjectFactory.generatePageInfo(config.microserviceName!, config.extends ? config.extends.pageInfo : undefined)
 
       Container.set(PAGINATION_OBJECT, (): typeof PageInfo => PageInfo)
       Container.set(CONNECTIONARGS_OBJECT, (): typeof ConnectionArgs => ConnectionArgs)
@@ -65,7 +81,7 @@ export class AutoRelayConfig {
   }
 
   protected _declareExistingObjects(config: AutoRelayConfigArgsExistingModel): void {
-    Container.set(PAGINATION_OBJECT, config.objects.pagination)
+    Container.set(PAGINATION_OBJECT, config.objects.pageInfo)
     Container.set(CONNECTIONARGS_OBJECT, config.objects.connectionArgs)
   }
 

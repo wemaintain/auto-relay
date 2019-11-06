@@ -1,4 +1,4 @@
-import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION, PREFIX } from './auto-relay-config.service'
+import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION, PREFIX, CONNECTION_BASE_OBJECT } from './auto-relay-config.service'
 import { Container } from 'typedi'
 import { ORMConnection } from '../orm';
 
@@ -53,7 +53,7 @@ describe('AutoRelayConfig', () => {
     typeRelayConfig = new AutoRelayConfig({
       orm: () => ORMMock, objects: {
         connectionArgs,
-        pagination
+        pageInfo: pagination
       }
     })
 
@@ -75,5 +75,27 @@ describe('AutoRelayConfig', () => {
 
     expect(containerA()).toBeTruthy()
     expect(containerB()).toBeTruthy()
+  })
+
+  describe('CONNECTION_BASE_OBJECT', () => {
+    it('Should provide empty usable CONNECTION_BASE_OBJECT if none specified in config', () => {
+      typeRelayConfig = new AutoRelayConfig({ orm: () => ORMMock });
+
+      const test = Container.get(CONNECTION_BASE_OBJECT)
+
+      expect(test()).toBeTruthy()
+      expect(test()).toBe(Object)
+    })
+
+    it('Should provide CONNECTION_BASE_OBJECT if specified in config', () => {
+      const TestFunc = () => class Test {};
+      typeRelayConfig = new AutoRelayConfig({ orm: () => ORMMock, extends: { connection: TestFunc } });
+
+      const test = Container.get(CONNECTION_BASE_OBJECT)
+
+      expect(test()).toBeTruthy()
+      expect(test).toBe(TestFunc)
+    })
+
   })
 })
