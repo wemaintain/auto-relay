@@ -13,7 +13,7 @@ export function RelayedFieldResolver<Model = any, Through = any>(to: ClassValueT
     through = undefined;
   }
 
-  return (target, propertyKey, descriptor) => {
+  return (target, propertyKey, descriptor: PropertyDescriptor) => {
     process.nextTick(() => {
       Container.get(RelayedQueryService).makeMethodRelayedFieldResolver(target, propertyKey, descriptor, to, through as  ClassValueThunk<Through> | undefined, options)
     })

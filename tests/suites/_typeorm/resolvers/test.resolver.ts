@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, InputType, Field } from 'type-graphql';
 import { TestObject } from '../entities/test';
-import { RelayedQuery, RelayedFieldResolver } from 'auto-relay';
+import { RelayedQuery, RelayedFieldResolver, RelayEntityWithCounts } from 'auto-relay';
 import { TestNestedObject } from '../entities/test-nested';
 
 @InputType()
@@ -13,13 +13,13 @@ export class NestedObjectInput {
 export class TestResolver {
 
   @RelayedQuery(() => TestObject, { paginationInputType: true })
-  public async testInputTypeArgs(): Promise<[number, TestObject[]]> {
-    return [1, [new TestObject()]];
+  public async testInputTypeArgs() {
+    return [1, [new TestObject()]] as [number, TestObject[]];
   }
 
   @RelayedQuery(() => TestObject, { paginationInputType: 'testName' })
-  public async testNamedInputTypeArgs(): Promise<[number, TestObject[]]> {
-    return [1, [new TestObject()]];
+  public async testNamedInputTypeArgs() {
+    return [1, [new TestObject()]] as [number, TestObject[]];
   }
 
   @Query(() => [TestObject])
@@ -32,6 +32,20 @@ export class TestResolver {
     @Arg('args') { testArg }: NestedObjectInput
   ): Promise<[ number, TestNestedObject[]]> {
     return [10, Array(10).fill(null).map(() => new TestNestedObject()) ]   
+  }
+
+
+  @RelayedQuery(() => TestObject, { paginationInputType: 'testName' })
+  public async testTypeOrmReturnFormat() {
+    return [[new TestObject()], 5] as [TestObject[], number];
+  }
+
+  @RelayedQuery(() => TestObject, { paginationInputType: 'testName' })
+  public async testSequelizeReturnFormat(): Promise<RelayEntityWithCounts<TestObject>> {
+    return {
+      count: 2,
+      rows: [new TestObject()],
+    }
   }
 
 }

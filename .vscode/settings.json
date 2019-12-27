@@ -8,5 +8,13 @@
     ],
     "eslint.alwaysShowStatus": true,
     "eslint.autoFixOnSave": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "[json]": {
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": false
+      }
+    }
 }

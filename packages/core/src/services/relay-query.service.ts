@@ -1,4 +1,4 @@
-import { RelayedQueryOptions, RelayedQueryGetterFunction } from './../decorators/relayed-query.decorator';
+import { RelayedQueryOptions, RelayedQueryTypedDescriptor } from './../decorators/relayed-query.decorator';
 import { Container, Service } from "typedi"
 import { DynamicObjectFactory } from "../graphql/dynamic-object.factory"
 import { ClassValueThunk } from "../types"
@@ -21,7 +21,7 @@ export class RelayedQueryService {
     target: Object,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<
-      RelayedQueryGetterFunction<
+      RelayedQueryTypedDescriptor<
         Through extends (undefined | null) ? Model : Through,
         Through extends (undefined | null) ? never : true
       >
@@ -41,7 +41,7 @@ export class RelayedQueryService {
     target: Object,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<
-      RelayedQueryGetterFunction<
+      RelayedQueryTypedDescriptor<
         Through extends (undefined | null) ? Model : Through,
         Through extends (undefined | null) ? never : true
       >
@@ -57,7 +57,7 @@ export class RelayedQueryService {
     target: Object,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<
-      RelayedQueryGetterFunction<
+      RelayedQueryTypedDescriptor<
         Through extends (undefined | null) ? Model : Through,
         Through extends (undefined | null) ? never : true
       >
