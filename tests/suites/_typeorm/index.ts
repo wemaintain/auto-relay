@@ -9,6 +9,7 @@ import { TestResolver } from './resolvers/test.resolver'
 import { ApolloServer } from 'apollo-server'
 import { createTestClient } from 'apollo-server-testing'
 import { RecipeResolver } from './resolvers/recipe.resolver';
+import { SortableEntity, SortingResolver } from './sorting';
 
 export async function setUpTypeORM() {
   try {
@@ -20,11 +21,11 @@ export async function setUpTypeORM() {
     database: ":memory:",
     synchronize: true,
     dropSchema: true,
-    entities: [User, Recipe, Rate]
+    entities: [User, Recipe, Rate, SortableEntity]
   })
 try {
   const schema = await buildSchema({
-    resolvers: [UserResolver, TestResolver, RecipeResolver]
+    resolvers: [UserResolver, TestResolver, RecipeResolver, SortingResolver]
   })
 
   const server = new ApolloServer({

@@ -63,8 +63,8 @@ describe('SDL Integration', () => {
     declarations = basicSchema();
     resolvers = [declarations.TestResolver];
     dynamicObjectFactory = new DynamicObjectFactory();
-    const config = new AutoRelayConfig({
-      orm: jest.fn()
+    new AutoRelayConfig({
+      orm: () => class {} as any
     })
   })
 

@@ -1,11 +1,26 @@
+import { ClassType } from 'type-graphql';
 import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection, LimitOffsetPagingService, augmentedConnection, RelayedConnectionOptions } from 'auto-relay'
 import { Container } from 'typedi'
 import { getConnection, EntityMetadata, FindManyOptions, BaseEntity } from 'typeorm'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import * as Relay from 'graphql-relay'
+import { connectionFinderForEntity } from './connection-finder.helper'
 
 export class TypeOrmConnection extends ORMConnection {
+
   protected _pagingService = Container.get(LimitOffsetPagingService);
+
+  public getColumnsOfFields(entity: ClassValueThunk<any>, keys: string[]): Record<string, string | undefined> {
+    
+    const fieldColumnMap: Record<string,string> = {}
+
+    for(let column of connectionFinderForEntity(entity).getMetadata(entity()).columns) {
+      if (!keys.includes(column.propertyName)) continue
+      fieldColumnMap[column.propertyName] = column.databaseName
+    }
+
+    return fieldColumnMap
+  }
 
   public autoRelayFactory<T = unknown, Y = unknown> (
     field: string,
@@ -16,14 +31,20 @@ export class TypeOrmConnection extends ORMConnection {
   ): AutoRelayGetter {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const typeOrmConnection = this
-    return async function (this: Record<string, unknown>, after?: string, first?: number, before?: string, last?: number): Promise<AugmentedConnection<T, Y>> {
+    return async function (
+      this: Record<string, unknown>,
+      after?: string,
+      first?: number,
+      before?: string,
+      last?: number
+    ): Promise<AugmentedConnection<T, Y>> {
       const pagination = typeOrmConnection._pagingService.getLimitOffset({ after, first, before, last })
-      const Entity = type() as Function
-      const ThroughEntity = through ? through() as Function : undefined
+      const Entity = type()
+      const ThroughEntity = through ? through() : undefined
       const throughKey = typeOrmConnection._findPropertyNameBetweenEntityAndThrough(Entity, ThroughEntity)
-      const findOptions = typeOrmConnection._findOptionsForEntity(field, Entity, self, this, pagination, throughKey, ThroughEntity as Function, options)
+      const findOptions = typeOrmConnection._findOptionsForEntity(field, Entity, self, this, pagination, throughKey, ThroughEntity, options)
 
-      const [entities, count] = await getConnection()
+      const [entities, count] = await connectionFinderForEntity(() => ThroughEntity || Entity)
         .manager
         .findAndCount<Y | T>(ThroughEntity || Entity, findOptions as FindManyOptions)
 
@@ -53,7 +74,16 @@ export class TypeOrmConnection extends ORMConnection {
    * @param throughKey name of the property on ThroughEntity linking to Entity
    * @param ThroughEntity type of ThroughEntity linking Self to Entity
    */
-  protected _findOptionsForEntity (field: string, Entity: Function, self: Function, record: Record<string, unknown>, pagination: { offset?: number; limit?: number }, throughKey?: string, ThroughEntity?: Function, options?: RelayedConnectionOptions): FindManyOptions<BaseEntity> {
+  protected _findOptionsForEntity(
+    field: string,
+    Entity: ClassType,
+    self: ClassValueThunk,
+    record: Record<string, unknown>,
+    pagination: { offset?: number; limit?: number },
+    throughKey?: string,
+    ThroughEntity?: ClassType,
+    options?: RelayedConnectionOptions
+  ): FindManyOptions<BaseEntity> {
     const { relation } = this._getMedataAndRelationForEntity(field, Entity, self, ThroughEntity)
     const neededProps = this._neededPropsForJoin(record, relation)
 
@@ -102,10 +132,10 @@ export class TypeOrmConnection extends ORMConnection {
    * @param Entity the target entity type
    * @param Through the through entity type
    */
-  protected _findPropertyNameBetweenEntityAndThrough (Entity: Function, Through?: Function): string {
+  protected _findPropertyNameBetweenEntityAndThrough (Entity: ClassType, Through?: ClassType): string {
     if (!Through) { return '' }
 
-    const metadatas = getConnection().getMetadata(Through)
+    const metadatas = connectionFinderForEntity(() => Through).getMetadata(Through)
     const relation = metadatas.relations
       .find((rel) => (rel.type as Function).name === Entity.name)
 
@@ -124,9 +154,9 @@ export class TypeOrmConnection extends ORMConnection {
    * @param Self  self entity type
    * @param Through optional join entity type
    */
-  protected _getMedataAndRelationForEntity (propertyKey: string, Entity: Function, Self: Function, Through?: Function): { metadatas: EntityMetadata; relation: RelationMetadata } {
-    const isManyToMany = Boolean(Through)
-    const metadatas = getConnection().getMetadata(isManyToMany ? Through as Function : Entity)
+  protected _getMedataAndRelationForEntity (propertyKey: string, Entity: ClassType, Self: ClassValueThunk, Through?: ClassType): { metadatas: EntityMetadata; relation: RelationMetadata } {
+    const targetEntity = Through || Entity
+    const metadatas = connectionFinderForEntity(() => targetEntity).getMetadata(targetEntity)
     let relation = metadatas.relations
       .find((rel) => rel.inverseRelation && rel.inverseRelation.propertyName === propertyKey)
 
@@ -137,7 +167,7 @@ export class TypeOrmConnection extends ORMConnection {
 
 
     if (!relation) {
-      throw new Error(`Couldn't find relation between ${Self().constructor.name} and ${isManyToMany ? (Through as Function).name : Entity.name} `)
+      throw new Error(`Couldn't find relation between ${Self().constructor.name} and ${targetEntity.name} `)
     }
 
     return { metadatas, relation }

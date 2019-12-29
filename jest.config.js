@@ -7,10 +7,12 @@ module.exports = {
   rootDir: './',
   roots: null,
   projects: [
-    '<rootDir>/packages/**/jest.config.js',
+    '<rootDir>/packages/core/jest.config.js',
+    '<rootDir>/packages/type-orm/jest.config.js',
+    '<rootDir>/packages/sorting/jest.config.js',
     '<rootDir>/jest.integration.config.js',
   ],
-  coverageDirectory: '<rootDir>/coverage/',
+  // coverageDirectory: '<rootDir>/coverage/',
   setupFiles: ['<rootDir>/tests/setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup-after-env.ts'],
 }

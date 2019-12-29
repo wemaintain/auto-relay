@@ -28,7 +28,7 @@ export function RelayedQuery<Model = any, Through = any>(to: ClassValueThunk<Mod
 export type RelayedQueryTypedDescriptor<ActualModel=any, HasThrough extends boolean = false> = 
 | RelayedQueryGetterFunction<[number, ActualModel[], HasThrough extends true ? keyof ActualModel : void]>
 | RelayedQueryGetterFunction<[ActualModel[], number, HasThrough extends true ? keyof ActualModel : void]>
-| RelayedQueryGetterFunction<RelayEntityWithCounts<ActualModel, HasThrough>>
+| RelayedQueryGetterFunction<EntityWithCounts<ActualModel, HasThrough>>
 
 export type RelayedQueryGetterFunction<Y> = (...arg: any[]) => Promise<Y>
 
@@ -39,15 +39,15 @@ export type RelayedQueryFactory<ActualModel = unknown, HasThrough extends boolea
    descriptor: 
     | (HasThrough extends true ? TypedPropertyDescriptor<RelayedQueryGetterFunction<[ActualModel[], number, keyof ActualModel]>> : TypedPropertyDescriptor<RelayedQueryGetterFunction<[ActualModel[], number]>>)
     | (HasThrough extends true ? TypedPropertyDescriptor<RelayedQueryGetterFunction<[number, ActualModel[], keyof ActualModel]>> : TypedPropertyDescriptor<RelayedQueryGetterFunction<[number, ActualModel[]]>>)
-    | (TypedPropertyDescriptor<RelayedQueryGetterFunction<RelayEntityWithCounts<ActualModel, HasThrough>>>)
+    | (TypedPropertyDescriptor<RelayedQueryGetterFunction<EntityWithCounts<ActualModel, HasThrough>>>)
     ) => void
 
-export type RelayedQueryOptions = RelayLimitOffsetOptions & AdvancedOptions;
+export type RelayedQueryOptions = LimitOffsetOptions & AdvancedOptions;
 
 /**
  * Object to return to build a relay'd query
  */
-export interface RelayEntityWithCounts<Model = any, HasThrough extends boolean = false> {
+export interface EntityWithCounts<Model = any, HasThrough extends boolean = false> {
   /** total amount of matching results */
   count: number
   /** actual rows to be returned for pagination */
@@ -56,7 +56,7 @@ export interface RelayEntityWithCounts<Model = any, HasThrough extends boolean =
   key?: HasThrough extends true ? keyof Model : undefined
 }
 
-export interface RelayLimitOffsetOptions {
+export interface LimitOffsetOptions {
   /** 
    * set to true if you don't want to use an input type instead of inlining pagination args
    * You can optionally supply the key you want them to be in

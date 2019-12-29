@@ -8,6 +8,6 @@ module.exports = {
     './src',
     './tests',
   ],
-  name: 'auto-relay',
-  displayName: '@auto-relay/core',
+  name: 'sorting',
+  displayName: '@auto-relay/sorting',
 }

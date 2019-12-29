@@ -1,8 +1,12 @@
 import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTION, PREFIX, CONNECTION_BASE_OBJECT } from './auto-relay-config.service'
 import { Container } from 'typedi'
 import { ORMConnection } from '../orm';
+import { ClassValueThunk } from '..';
 
 class ORMMock extends ORMConnection {
+  public getColumnsOfFields(entity: ClassValueThunk<any>, keys: string[]): Record<string, string | undefined> {
+    throw new Error("Method not implemented.");
+  }
   public autoRelayFactory(field: any, self: any, type: any, through?: any) {
     return (): any => { };
   }
@@ -36,7 +40,7 @@ describe('AutoRelayConfig', () => {
     const autoRelay = new AutoRelayConfig({ orm: () => ORMMock })
     const test = Container.get(ORM_CONNECTION);
 
-    expect(test()).toBe(ORMMock);
+    expect(test).toBeInstanceOf(ORMMock);
   })
 
   it('Should provide capitalized PREFIX', () => {

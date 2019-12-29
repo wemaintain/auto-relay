@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, InputType, Field } from 'type-graphql';
 import { TestObject } from '../entities/test';
-import { RelayedQuery, RelayedFieldResolver, RelayEntityWithCounts } from 'auto-relay';
+import { RelayedQuery, RelayedFieldResolver, EntityWithCounts } from 'auto-relay';
 import { TestNestedObject } from '../entities/test-nested';
 
 @InputType()
@@ -41,7 +41,7 @@ export class TestResolver {
   }
 
   @RelayedQuery(() => TestObject, { paginationInputType: 'testName' })
-  public async testSequelizeReturnFormat(): Promise<RelayEntityWithCounts<TestObject>> {
+  public async testSequelizeReturnFormat(): Promise<EntityWithCounts<TestObject>> {
     return {
       count: 2,
       rows: [new TestObject()],
