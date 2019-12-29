@@ -1,12 +1,13 @@
-# AutoRelay 
-[![npm version](https://badge.fury.io/js/auto-relay.svg)](https://badge.fury.io/js/auto-relay)
-[![Build Status](https://travis-ci.org/wemaintain/auto-relay.svg?branch=master)](https://travis-ci.org/wemaintain/auto-relay)
+# @auto-relay/type-orm
+
+[![npm version](https://badge.fury.io/js/auto-relay.svg)](https://badge.fury.io/js/auto-relay) [![Build Status](https://travis-ci.org/wemaintain/auto-relay.svg?branch=master)](https://travis-ci.org/wemaintain/auto-relay)
 
 AutoRelay is a librairy designed to work alongside [TypeGraphQL](https://typegraphql.ml/) and make it easy to paginate your results using the [Relay spec](https://facebook.github.io/relay/graphql/connections.htm).
 
 Please note this is currently a W.I.P, expect frequent breaking changes in the API until 1.0.0
 
-AutoRelay is meant to be *plug and play* with TypeGraphQL and TypeORM (*more orm support such as sequelize-typescript could be supported*). Simply decorate your relations with `@RelayedConnection` as such:
+AutoRelay is meant to be _plug and play_ with TypeGraphQL and TypeORM \(_more orm support such as sequelize-typescript could be supported_\). Simply decorate your relations with `@RelayedConnection` as such:
+
 ```typescript
 @Entity()
 @ObjectType()
@@ -18,6 +19,7 @@ class User {
 ```
 
 This will result in the following working SDL:
+
 ```graphql
 // Autogenrated by AutoRelay
 type PageInfo {
@@ -48,44 +50,41 @@ type User {
 }
 ```
 
-where `User.recipes` is now a fully working field resolver, that automatically takes Relay ConnectionArguments (*first, before, after, last*) and returns a Relay Connection containing the results.
-
+where `User.recipes` is now a fully working field resolver, that automatically takes Relay ConnectionArguments \(_first, before, after, last_\) and returns a Relay Connection containing the results.
 
 ## Installation
 
-*This lib is meant to be used with TypeGraphQL. It will not work with other code-first graphql librairies* 
-
+_This lib is meant to be used with TypeGraphQL. It will not work with other code-first graphql librairies_
 
 1. Install the npm package:
 
-    `npm install auto-relay --save`
+   `npm install auto-relay --save`
 
-2. (Install an ORM *if you plan to use `@RelayedConnection`*)
+2. \(Install an ORM _if you plan to use `@RelayedConnection`_\)
 
-    *currently only TypeORM is supported*
+   _currently only TypeORM is supported_
 
-    `npm install @auto-relay/typeorm`
-
+   `npm install @auto-relay/typeorm`
 
 ## Quick Start
 
 Simply configure AutoRelay to use your ORM of choice, and you're ready to go !
 
-*index.ts*
+_index.ts_
+
 ```typescript
 import { TypeOrmConnection } from '@auto-relay/typeorm'
 import { AutoRelayConfig } from 'auto-relay'
 
 new AutoRelayConfig({ orm: () => TypeOrmConnection })
-
 ```
 
-
-
 ## Step-by-step guide
+
 AutoRelay was designed with two goals in mind : Firstly, to automate the pagination between two entities that share a relationship in TypeORM. Secondly, to make it easy and boilerplate-free to implement your own Relay logic. This guide will showcase both of those.
 
 ### Making a relationship relayable.
+
 Let's say you currently have two entities / graphql objects, `User` and `Recipe`. A recipe is always linked to an user, and a given user can have multiple recipes. Your classes might look like that :
 
 ```typescript
@@ -117,9 +116,9 @@ export class Recipe {
 }
 ```
 
-With some custom logic (either lazy-loading or field resolvers) to fetch User.recipes / Recipe.user.
+With some custom logic \(either lazy-loading or field resolvers\) to fetch User.recipes / Recipe.user.
 
-With AutoRelay, we're gonna replace all that logic with a single decorator, `@RelayedConnection`. 
+With AutoRelay, we're gonna replace all that logic with a single decorator, `@RelayedConnection`.
 
 Our `User` will now look like this :
 
@@ -143,8 +142,8 @@ This will auto-magically create a few GraphQL types, such as `UserRecipeConnecti
 
 Our TypeORM integration gets the repository for `Recipe`, translates the ConnectionArguments to an offset/limit tuple and fetches recipes connected to this `User`.
 
-
 ### Making a Query Relayable
+
 Let's imagine we now have an `users` query, that we want to paginate using Relay. AutoRelay offers a few helpers with that.
 
 ```typescript
@@ -171,17 +170,13 @@ export class UserResolver {
 }
 ```
 
-And that's it! Again, AutoRelay has taken care under the hood of a few things:
-1. It's created all the necessary GraphQL types for us.
-2. It's ensured the `users` query expects Connection Arguments, but conveniently translated them to limit/offset for us.
-3. It takes the return of our `findAndCount` calls and automatically transforms it to a Relay `Connection` as expected by GraphQL.
+And that's it! Again, AutoRelay has taken care under the hood of a few things: 1. It's created all the necessary GraphQL types for us. 2. It's ensured the `users` query expects Connection Arguments, but conveniently translated them to limit/offset for us. 3. It takes the return of our `findAndCount` calls and automatically transforms it to a Relay `Connection` as expected by GraphQL.
 
+### Extending edges \(relationship metadata\)
 
-### Extending edges (relationship metadata)
 Often, we have relationships that contains metadata. This is particulary the case for N:M relationships, where the join table might contain data our graphql client might want.
 
 AutoRelay offers a simple API to extend the returned `Edges` with information contained in a join table.
-
 
 ```typescript
 class EntityA {
@@ -230,7 +225,7 @@ class EntityA {
 }
 ```
 
-This would result in the following working SDL: 
+This would result in the following working SDL:
 
 ```graphql
 type EntityA {
@@ -253,3 +248,4 @@ type EntityAToBEdge {
   node: EntityB
 }
 ```
+
