@@ -1,7 +1,8 @@
-import { RelayedQuery } from 'auto-relay';
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
-import { Resolver, ObjectType, Field, ID, Query } from "type-graphql";
-import { Sortable } from '@auto-relay/sorting';
+import { RelayedQuery } from 'auto-relay'
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm'
+import { Resolver, ObjectType, Field, ID, Query } from "type-graphql"
+import { Sortable } from '@auto-relay/sorting'
+import { OrderOptions, TypeORMOrdering } from '@auto-relay/typeorm'
 
 @Entity()
 @ObjectType()
@@ -13,15 +14,15 @@ export class SortableEntity extends BaseEntity {
 
   @Field()
   @Column({ default: () => "RANDOM()"})
-  public foo!: number
+  public sortingFoo!: number
 
   @Field()
   @Column({ default: () => "RANDOM()"})
-  public bar!: number
+  public sortingBar!: number
 
   @Field(() => Number)
-  public get computed(): number {
-    return this.foo / this.bar
+  public get sortingComputed(): number {
+    return this.sortingFoo / this.sortingBar
   }
 
 }
@@ -33,10 +34,12 @@ export class SortingResolver {
     // Array.of(50).map(() => SortableEntity.insert({}))
   }
 
-  @Query(() => [SortableEntity])
-  // @Sortable(() => SortableEntity)
-  public async sortableEntities() {
-    return SortableEntity.find({})
+  @Query(() => String)
+  @Sortable(() => SortableEntity)
+  public async sortableEntities(
+    @OrderOptions() order: TypeORMOrdering
+  ) {
+    return JSON.stringify(order)
   }
 
   @RelayedQuery(() => SortableEntity)

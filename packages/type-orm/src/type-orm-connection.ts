@@ -1,11 +1,12 @@
 import { ClassType } from 'type-graphql';
 import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection, LimitOffsetPagingService, augmentedConnection, RelayedConnectionOptions } from 'auto-relay'
-import { Container } from 'typedi'
-import { getConnection, EntityMetadata, FindManyOptions, BaseEntity } from 'typeorm'
+import { Container, Service } from 'typedi'
+import { getConnection, EntityMetadata, FindManyOptions, BaseEntity, getMetadataArgsStorage } from 'typeorm'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import * as Relay from 'graphql-relay'
 import { connectionFinderForEntity } from './connection-finder.helper'
 
+@Service()
 export class TypeOrmConnection extends ORMConnection {
 
   protected _pagingService = Container.get(LimitOffsetPagingService);
@@ -14,9 +15,9 @@ export class TypeOrmConnection extends ORMConnection {
     
     const fieldColumnMap: Record<string,string> = {}
 
-    for(let column of connectionFinderForEntity(entity).getMetadata(entity()).columns) {
-      if (!keys.includes(column.propertyName)) continue
-      fieldColumnMap[column.propertyName] = column.databaseName
+    for(let column of getMetadataArgsStorage().columns) {
+      if ( column.target !== entity() || !keys.includes(column.propertyName) ) continue
+      fieldColumnMap[column.propertyName] = column.options.name || column.propertyName
     }
 
     return fieldColumnMap

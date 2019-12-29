@@ -42,7 +42,7 @@ export function orderingValueGQLFactory(
 }
 
 
-export interface OrderingValue<T extends StandardEnum = any> {
+export interface OrderingValue<T extends StandardEnum<U> = any, U = any> {
   direction?: OrderingDirection
   sort: T
 }

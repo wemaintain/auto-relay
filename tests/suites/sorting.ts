@@ -14,12 +14,12 @@ export function SortingTests(suiteName: string) {
     it('Should work without errors on a query', async () => {
       const test = await testClient.query({
         query: `query { 
-          getAllUsersPaginated(first: 5) { pageInfo{hasNextPage} } 
+          sortableEntities(order: [{sort: sortingFoo}, { sort: sortingBar, direction: DESC }]) 
         }
         `
       })
-
       expect(test.errors).toBeUndefined()
+      expect(JSON.parse(test.data!.sortableEntities)).toStrictEqual({ sortingFoo: "ASC", sortingBar: "DESC" })
     })
   })
 }

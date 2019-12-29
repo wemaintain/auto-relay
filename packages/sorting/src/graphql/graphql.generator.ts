@@ -29,7 +29,7 @@ export class GQLSortingGenerator {
     target: ClassType,
     propertyKey: string,
   ): void {
-    const Enum =  this.createEnum(type)
+    const Enum = this.createEnum(type, target, propertyKey)
 
     if (Enum) {
       const OrderingValue = orderingValueGQLFactory(type.name, Enum)
@@ -41,11 +41,17 @@ export class GQLSortingGenerator {
   /**
    * Create an Enum of sortableFields for a given type
    */
-  protected createEnum(type: ClassType): StandardEnum<any> | undefined {
+  protected createEnum(type: ClassType, target: ClassType, propertyKey: string): StandardEnum<any> | undefined {
     const sortables = this.findSortableFields(type)
-    if (!sortables || !sortables.length) return
-    const Enum = sortables.reduce((acc, sort) => {acc[sort.name] = sort.name; return acc}, {} as Record<string, string>)
+    
+    if (!sortables || !sortables.length) {
+      Reflect.defineMetadata(AUTORELAY_ENUM_REVERSE_MAP, "false", target, propertyKey)
+      return
+    }
 
+    const Enum = sortables.reduce((acc, sort) => { acc[sort.schemaName] = sort.schemaName; return acc }, {} as Record<string, string>)
+
+    Reflect.defineMetadata(AUTORELAY_ENUM_REVERSE_MAP, sortables, target, propertyKey)
     registerEnumType(Enum, { name: `${type.name}SortableFields` })
     return Enum
   }
@@ -74,11 +80,12 @@ export class GQLSortingGenerator {
    * Find all the fields (fields + fieldResolvers) declared in a given class
    * @param type the @ObjectType or @InputType decorated class to search for
    */
-  protected findGqlfieldsOfType<T=unknown>(type: ClassType<T>): SortableField[] {
+  protected findGqlfieldsOfType<T = unknown>(type: ClassType<T>): SortableField[] {
     const gqlFields: SortableField[] = []
     const resolvers: any[] = []
+
     for (const field of (getMetadataStorage() as any).fields as FieldMetadata[]) {
-      if (field.target === type) gqlFields.push({ 
+      if (field.target === type) gqlFields.push({
         name: field.name,
         schemaName: field.schemaName,
         type: field.target as any
@@ -111,3 +118,5 @@ export interface SortableField {
   /** class to which we're linked */
   type: ClassType
 }
+
+export const AUTORELAY_ENUM_REVERSE_MAP = Symbol(`Reverse map to find fields that are being used as enum values for sorting`)

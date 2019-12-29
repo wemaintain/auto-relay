@@ -1,5 +1,5 @@
 import { ORMConnection, ORM_CONNECTION } from 'auto-relay'
-import { GQLSortingGenerator } from './graphql.generator'
+import { GQLSortingGenerator, AUTORELAY_ENUM_REVERSE_MAP } from './graphql.generator'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
 import { FieldResolver, ClassType, Query, buildSchema, registerEnumType } from 'type-graphql'
 import { Field, ObjectType, Resolver } from 'type-graphql'
@@ -14,6 +14,7 @@ const createSchema = () => {
 
   Field(() => Number)(EntityA.prototype, "foo")
   Field(() => Number)(EntityA.prototype, "bar")
+  Field(() => Number, { name: "schemaName" })(EntityA.prototype, "nonSchemaName")
   ObjectType()(EntityA)
 
   const ResolverA = class {
@@ -94,9 +95,42 @@ describe('GQLSortingGenerator', () => {
       expect(test.values.bar).toBeTruthy()
     })
 
+    it('Should use schema names of fields', async () => {
+      ormConnection.getColumnsOfFields.mockReturnValueOnce({
+        nonSchemaName: "dbName" 
+      })
+      generator.generateForType(EntityA, ResolverA.prototype, "query")
+
+      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
+      const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')?.toConfig() as any
+
+      expect(test).toBeTruthy()
+      expect(test.values.nonSchemaName).toBeFalsy()
+      expect(test.values.dbName).toBeFalsy()
+      expect(test.values.schemaName).toBeTruthy()
+    })
+
+    it("Should decorate reverse map for further use", () => {
+      ormConnection.getColumnsOfFields.mockReturnValueOnce({
+        foo: "foo",
+        bar: "bar" 
+      })
+      generator.generateForType(EntityA, ResolverA.prototype, "query")
+
+      const test = Reflect.getMetadata(AUTORELAY_ENUM_REVERSE_MAP, ResolverA.prototype, "query")
+
+      expect(test).toBeTruthy()
+      expect(Array.isArray(test)).toBeTrue()
+      expect(test).toContainAllValues([
+        { name: "foo", schemaName: "foo", type: EntityA },
+        { name: "bar", schemaName: "bar", type: EntityA },
+      ])
+    })
+
   })
 
   describe("Input", () => {
+
     it('Should add order input to decorater fresolver', async () => {
       ormConnection.getColumnsOfFields.mockReturnValueOnce({
         bar: "bar" 
@@ -112,18 +146,6 @@ describe('GQLSortingGenerator', () => {
       expect(test?.args[0].type.toString()).toEqual("[EntityAOrdering!]")
     })
 
-    it('Should be an array of enum w direction', async () => {
-      ormConnection.getColumnsOfFields.mockReturnValueOnce({
-        bar: "bar" 
-      })
-      generator.generateForType(EntityA, ResolverA.prototype, "query")
-
-      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
-      const ordering = schema.getType('EntityAOrdering')
-      // const test = query?.getFields().query
-      
-      console.log(ordering?.toConfig())
-    })
   })
 
 
