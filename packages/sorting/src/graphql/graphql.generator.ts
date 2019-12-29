@@ -3,7 +3,7 @@ import { ClassType, Arg } from 'type-graphql'
 import { Container, Service } from "typedi"
 import { ORMConnection, ORM_CONNECTION } from 'auto-relay'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
-import { FieldMetadata } from 'type-graphql/dist/metadata/definitions'
+import { FieldMetadata, ResolverClassMetadata, FieldResolverMetadata } from 'type-graphql/dist/metadata/definitions'
 import { orderingValueGQLFactory, StandardEnum } from './ordering.input'
 
 /**
@@ -43,7 +43,7 @@ export class GQLSortingGenerator {
    */
   protected createEnum(type: ClassType, target: ClassType, propertyKey: string): StandardEnum<any> | undefined {
     const sortables = this.findSortableFields(type)
-    
+
     if (!sortables || !sortables.length) {
       Reflect.defineMetadata(AUTORELAY_ENUM_REVERSE_MAP, "false", target, propertyKey)
       return
@@ -65,15 +65,12 @@ export class GQLSortingGenerator {
    * @param type type to find sortable fields for
    */
   protected findSortableFields<T = unknown>(type: ClassType<T>): SortableField[] {
-    const sortables: SortableField[] = []
     const gqlFields = this.findGqlfieldsOfType(type)
     const columns = this.orm.getColumnsOfFields(() => type, gqlFields.map(f => f.name))
 
-    for (let column of Object.keys(columns)) {
-      sortables.push(gqlFields.find(field => field.name === column)!)
-    }
-
-    return sortables
+    return (
+      Object.keys(columns).map(column => gqlFields.find(field => field.name === column))
+    ) as SortableField[]
   }
 
   /**
@@ -82,27 +79,31 @@ export class GQLSortingGenerator {
    */
   protected findGqlfieldsOfType<T = unknown>(type: ClassType<T>): SortableField[] {
     const gqlFields: SortableField[] = []
-    const resolvers: any[] = []
+    const resolversForThisType: Function[] = []
 
-    for (const field of (getMetadataStorage() as any).fields as FieldMetadata[]) {
-      if (field.target === type) gqlFields.push({
+    const { fields, resolverClasses, fieldResolvers }: { fields: FieldMetadata[], resolverClasses: ResolverClassMetadata[], fieldResolvers: FieldResolverMetadata[] }
+      = getMetadataStorage() as any
+
+    resolversForThisType.push(
+      ...resolverClasses.filter(resolver => resolver.getObjectType() === type)
+        .map(resolver => resolver.target)
+    )
+
+    const basicFields = fields.filter(field => field.target === type)
+      .map(field => ({
         name: field.name,
         schemaName: field.schemaName,
         type: field.target as any
-      })
-    }
+      }))
 
-    for (const resolver of (getMetadataStorage() as any).resolverClasses) {
-      if (resolver.getObjectType() === type) resolvers.push(resolver.target)
-    }
-
-    for (const fieldResolver of getMetadataStorage().fieldResolvers) {
-      if (resolvers.includes(fieldResolver.target)) gqlFields.push({
+    const fieldInResolvers = fieldResolvers.filter(fieldResolver => resolversForThisType.includes(fieldResolver.target))
+      .map(fieldResolver => ({
         name: fieldResolver.methodName,
         schemaName: fieldResolver.schemaName,
         type: fieldResolver.target as any
-      })
-    }
+      }))
+
+    gqlFields.push(...basicFields,...fieldInResolvers)
 
     return gqlFields
   }

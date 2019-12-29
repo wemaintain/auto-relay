@@ -26,7 +26,7 @@ export function orderingValueGQLFactory(
   try {
     prefix = Container.get(PREFIX)
   } catch(e) { }
-  const className = `${prefix}${name}Ordering`
+  const className = `${prefix}${name}OrderOptions`
   const namedClass = {
     [className]: class implements OrderingValue {
       direction?: OrderingDirection;

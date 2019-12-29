@@ -29,9 +29,9 @@ describe('OrderingInput', () => {
       resolvers: [{} as any],
       skipCheck: true,
     })
-    const test = schema.getType(`TestabcMyTypeOrdering`)!.toConfig()
+    const test = schema.getType(`TestabcMyTypeOrderOptions`)!.toConfig()
 
-    expect(test.name).toEqual("TestabcMyTypeOrdering")
+    expect(test.name).toEqual("TestabcMyTypeOrderOptions")
     const direction: GraphQLInputField = (test as any).fields.direction
     const sort: GraphQLInputField = (test as any).fields.sort
 

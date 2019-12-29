@@ -1,6 +1,5 @@
 import { ClassType, ResolverData } from 'type-graphql'
-import Container, { Service } from "typedi"
-import { getSortablesFromResolverData } from '@auto-relay/sorting'
+import { Container, Service } from "typedi"
 import { TypeORMOrdering } from '../decorators/order-options.decorator'
 import { TypeOrmConnection } from '../type-orm-connection'
 
@@ -15,7 +14,14 @@ export class SortingService {
     propertyKey: string,
     prefix: string = ""
   ): TypeORMOrdering {
-    const sortingFields = getSortablesFromResolverData(resolverData, target, propertyKey)
+    let getSortablesFromResolverData!: Function 
+    try {
+      getSortablesFromResolverData = require("@auto-relay/sorting").getSortablesFromResolverData
+    } catch(e) {
+      throw new Error(`Couldn't loading sorting module. Did you forgot to install @auto-relay/sorting ?`)
+    }
+
+    const sortingFields: { name: string, type: ClassType, direction: "ASC" | "DESC" }[] = getSortablesFromResolverData(resolverData, target, propertyKey)
     if (!sortingFields.length) return {}
 
     const dbColumns = this.typeOrmConnection.getColumnsOfFields(
@@ -23,7 +29,7 @@ export class SortingService {
       sortingFields.map((sf) => sf.name)
     )
 
-    return sortingFields.reduce((acc, sortingField) => {
+    return sortingFields.reduce((acc: TypeORMOrdering, sortingField) => {
       const dbName = dbColumns[sortingField.name]
       acc[`${prefix}${dbName}`] = sortingField.direction
       return acc

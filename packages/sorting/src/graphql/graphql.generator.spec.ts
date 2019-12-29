@@ -143,7 +143,7 @@ describe('GQLSortingGenerator', () => {
       
       expect(test).toBeTruthy()
       expect(test?.args[0].name).toEqual("order")
-      expect(test?.args[0].type.toString()).toEqual("[EntityAOrdering!]")
+      expect(test?.args[0].type.toString()).toEqual("[EntityAOrderOptions!]")
     })
 
   })

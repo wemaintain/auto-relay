@@ -13,5 +13,5 @@
 
 ## Sorting
 
-* [Coming soon](sorting/coming-soon.md)
+* [Introduction](sorting/introduction.md)
 

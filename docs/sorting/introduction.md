@@ -58,7 +58,7 @@ type Query {
   entities(order: [EntityOrdering!]): [Entity!]!
 }
 
-type EntityOrdering {
+type EntityOrderOptions {
   direction: OrderingDirection = OrderingDirection.ASC
   sort: EntitySortableField
 }

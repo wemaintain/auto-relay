@@ -4,8 +4,8 @@ import { TypeOrmConnection } from '../type-orm-connection'
 import { OrderingDirection } from '@auto-relay/sorting/graphql/ordering.input'
 import { Container } from 'typedi'
 
-jest.mock("@auto-relay/sorting")
 jest.mock("../type-orm-connection")
+jest.mock("@auto-relay/sorting")
 describe("TypeORM Sorting Service", () => {
   let getSortables: jest.Mock<ReturnType<typeof getSortablesFromResolverData>>
   let service: SortingService

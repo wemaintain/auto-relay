@@ -20,14 +20,14 @@ export function getSortablesFromResolverData(
   if (!map) throw new NotSortableError(target, propertyKey)
 
   const suppliedOrder: OrderingValue[] = resolverData.args.order
-  if (!suppliedOrder || !suppliedOrder.length) return []
+  if (!suppliedOrder?.length) return []
 
   const sortingFields: SortingField[] = suppliedOrder.map((orderingValue) => {
     const sortable = map.find((s) => s.schemaName === orderingValue.sort)
     if (!sortable) throw new SortingFieldDoesntExistError(orderingValue, target, propertyKey)
     return {
       ...sortable,
-      direction: orderingValue.direction || OrderingDirection.ASC
+      direction: orderingValue.direction ?? OrderingDirection.ASC
     }
   })
 

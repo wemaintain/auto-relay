@@ -20,7 +20,7 @@ export class SharedObjectFactory {
     const pageInfoName = `${prefix}PageInfo`
     const extend = extending ? extending() : Object
 
-    const PageInfo = class extends extend implements Relay.PageInfo {
+    const PageInfo = class extends (extend as ObjectConstructor) implements Relay.PageInfo {
       public hasNextPage!: boolean;
       public hasPreviousPage!: boolean;
       public startCursor?: Relay.ConnectionCursor;
