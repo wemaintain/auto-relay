@@ -1,14 +1,14 @@
 import { SharedObjectFactory } from '../graphql/shared-object.factory'
 import { Container, Service, Token } from 'typedi'
 import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigArgsNoModel, AutoRelayOrmConnect } from '../interfaces/auto-relay-config.interface'
-import { ClassValueThunk } from '..'
+import { ClassValueThunk, ORMConnection } from '..'
 import * as Relay from 'graphql-relay'
 
 export const PREFIX = new Token<string>('PREFIX')
 export const CONNECTION_BASE_OBJECT = new Token<ClassValueThunk<any>>('CONNECTION_BASE_OBJECT')
 export const PAGINATION_OBJECT = new Token<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
 export const CONNECTIONARGS_OBJECT = new Token<ClassValueThunk<Relay.ConnectionArguments>>('CONNECTIONARGS_OBJECT')
-export const ORM_CONNECTION = new Token<AutoRelayOrmConnect>('ORM_CONNECTION')
+export const ORM_CONNECTION = new Token<ORMConnection>('ORM_CONNECTION')
 
 @Service()
 export class AutoRelayConfig {
@@ -77,7 +77,7 @@ export class AutoRelayConfig {
 
   protected _registerOrm(config: AutoRelayConfigArgs): void {
     if (!config.orm || typeof config.orm !== 'function') throw new Error(`config.orm must be a function`)
-    Container.set(ORM_CONNECTION, config.orm)
+    Container.set(ORM_CONNECTION, new (config.orm())())
   }
 
   protected _declareExistingObjects(config: AutoRelayConfigArgsExistingModel): void {

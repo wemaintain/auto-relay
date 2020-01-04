@@ -26,10 +26,6 @@ module.exports = {
       tsCofnfig: './tsconfig.integration.json'
     }
   },
-  coveragePathIgnorePatterns: [
-    '(tests/.*.mock).(jsx?|tsx?)$',
-    '(index.ts)$',
-  ],
   setupFiles: ['reflect-metadata'],
   setupFilesAfterEnv: ['jest-extended'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {prefix: '<rootDir>/packages/'}),

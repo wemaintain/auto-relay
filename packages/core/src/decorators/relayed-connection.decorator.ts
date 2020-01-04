@@ -1,6 +1,5 @@
-import { NoORMError } from './../errors/no-orm.error';
+import { NoORMError } from '../errors/no-orm.error'
 import { AdvancedOptions } from 'type-graphql/dist/decorators/types';
-import { ORMConnection } from '../orm/orm-connection.abstract'
 import { Container } from 'typedi'
 import { MethodAndPropDecorator, ClassValueThunk } from '../types/types'
 import { DynamicObjectFactory } from '../graphql/dynamic-object.factory'
@@ -31,9 +30,7 @@ export function RelayedConnection (type: ClassValueThunk, throughOrOptions?: Cla
 
       // Create the actual Relay'd getter
       try {
-        const ormConnection = Container.get(ORM_CONNECTION)
-        const ORM = ormConnection()
-        const orm = new ORM()
+        const orm = Container.get(ORM_CONNECTION)
   
         target[getterName] = orm.autoRelayFactory(
           String(propertyKey),

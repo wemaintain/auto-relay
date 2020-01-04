@@ -18,8 +18,9 @@ export class SharedObjectFactory {
    */
   public generatePageInfo<T = any>(prefix: string, extending?: ClassValueThunk<T>): new () => (Relay.PageInfo & T) {
     const pageInfoName = `${prefix}PageInfo`
+    const extend = extending ? extending() : Object
 
-    const PageInfo = class extends ((extending ? extending() : Object) as any) implements Relay.PageInfo {
+    const PageInfo = class extends (extend as ObjectConstructor) implements Relay.PageInfo {
       public hasNextPage!: boolean;
       public hasPreviousPage!: boolean;
       public startCursor?: Relay.ConnectionCursor;

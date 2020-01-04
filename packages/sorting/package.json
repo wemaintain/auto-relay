@@ -1,0 +1,46 @@
+{
+  "name": "@auto-relay/sorting",
+  "version": "0.10.0",
+  "description": "auto-relay sorting module",
+  "author": "David <dfain@wemaintain.io>",
+  "homepage": "https://github.com/wemaintain/auto-relay#readme",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/wemaintain/auto-relay.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "prepublishOnly": "npm run build",
+    "build": "tsc -b tsconfig.build.json"
+  },
+  "bugs": {
+    "url": "https://github.com/wemaintain/auto-relay/issues"
+  },
+  "devDependencies": {
+    "@types/graphql-relay": "^0.4.9",
+    "auto-relay": "^0.10.0",
+    "graphql-relay": "^0.6.0",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.18"
+  },
+  "peerDependencies": {
+    "auto-relay": "^0.10.0",
+    "graphql-relay": "^0.6.0",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.18"
+  },
+  "gitHead": "03b9022aa6e48cf2412e66e609937c8589d73e02"
+}

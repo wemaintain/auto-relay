@@ -5,9 +5,13 @@ import { Container } from "typedi";
 import { AutoRelayConfig, PAGINATION_OBJECT } from "../services/auto-relay-config.service";
 import { ORMConnection } from "../orm/orm-connection.abstract";
 import * as TGQL from 'type-graphql'
+import { ClassValueThunk } from '..';
 
 
 class ORMMock extends ORMConnection {
+  public getColumnsOfFields(entity: ClassValueThunk<any>, keys: string[]): Record<string, string | undefined> {
+    throw new Error("Method not implemented.");
+  }
   public autoRelayFactory(field: any, self: any, type: any, through?: any) {
     return (): any => { };
   }

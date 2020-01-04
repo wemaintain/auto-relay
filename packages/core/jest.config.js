@@ -4,6 +4,10 @@ const base = require('../../jest.config.base.js')
 
 module.exports = {
   ...base,
+  roots: [
+    './src',
+    './tests',
+  ],
   name: 'auto-relay',
-  displayName: 'auto-relay',
+  displayName: '@auto-relay/core',
 }

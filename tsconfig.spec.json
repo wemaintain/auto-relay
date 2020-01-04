@@ -9,12 +9,18 @@
       "auto-relay": [
         "core/src/index.ts"
       ],
+      "@auto-relay/sorting/*": [
+        "sorting/src/*"
+      ],
+      "@auto-relay/sorting": [
+        "sorting/src/index.ts"
+      ],
       "@auto-relay/typeorm/*": [
-        "typeorm/src/*"
+        "type-orm/src/*"
       ],
       "@auto-relay/typeorm": [
-        "typeorm/src/index.ts"
-      ],
+        "type-orm/src/index.ts"
+      ]
     }
-  },
+  }
 }

@@ -1,4 +1,4 @@
-import { RelayedQueryGetterFunction, RelayEntityWithCounts, RelayedQueryTypedDescriptor } from './../decorators/relayed-query.decorator'
+import { RelayedQueryGetterFunction, EntityWithCounts, RelayedQueryTypedDescriptor } from './../decorators/relayed-query.decorator'
 import { AutoRelayRoot } from './../interfaces/auto-relay-root-metadata.interface'
 import { RelayLimitOffsetResolverFactory } from './../decorators/limit-offset.decorator'
 import { ResolverData, NextFn } from "type-graphql"

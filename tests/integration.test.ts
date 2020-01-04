@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { ExtendedConnection } from './suites/_typeorm/connection';
 import { AutoRelayConfigArgs } from 'auto-relay';
 import { TypeOrmConnection } from '@auto-relay/typeorm';
@@ -9,6 +10,8 @@ import { RelayedFieldResolverTests } from './suites/relayed-field-resolver';
 import { ConnectionTests } from './suites/connection';
 import { ExtendedPageInfo } from './suites/_typeorm/page-info';
 import { ExtendingPageInfo } from './suites/extending';
+import { SortingTests } from './suites/sorting';
+import { getConnection } from 'typeorm';
 
 const configs: [string, AutoRelayConfigArgs, () => void | Promise<void>][] = [
   [
@@ -27,12 +30,19 @@ const run = () => {
       await runner.beforeSuite();
     })
 
+    afterAll(async () => {
+      const co = getConnection()
+      await co.close()
+      await (<any>Container.get("server")).stop()
+    })
+
     describe(name, () => {
       SDLTests(name)
       RelayedQueryTests(name)
       RelayedFieldResolverTests(name)
       ConnectionTests(name)
       ExtendingPageInfo(name)
+      SortingTests(name)
     })
   }
 }

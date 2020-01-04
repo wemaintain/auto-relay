@@ -1,3 +1,4 @@
+import { LimitOffsetOptions } from './../decorators/relayed-query.decorator'
 import { TypeValueThunk, ClassValueThunk } from '../types/types'
 import { ORMConnection } from '../orm/orm-connection.abstract'
 import * as Relay from "graphql-relay"
@@ -12,7 +13,12 @@ export type AutoRelayOrmConnect<T extends ORMConnection = ORMConnection> = () =>
 export interface AutoRelayConfigArgsBase {
   /** which ORM to use for the auto-relaying, see readme for available ORMs */
   orm: AutoRelayOrmConnect
+  /** global sort options */
+  sort?: {
 
+  },
+  /** global pagination options */
+  pagination?: Pick<LimitOffsetOptions, "paginationInputType">
 }
 
 export interface AutoRelayConfigArgsExistingModel extends AutoRelayConfigArgsBase {
