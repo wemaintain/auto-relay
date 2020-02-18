@@ -8,8 +8,8 @@ import { buildSchema } from 'type-graphql'
 import { TestResolver } from './resolvers/test.resolver'
 import { ApolloServer } from 'apollo-server'
 import { createTestClient } from 'apollo-server-testing'
-import { RecipeResolver } from './resolvers/recipe.resolver';
-import { SortableEntity, SortingResolver } from './sorting';
+import { RecipeResolver } from './resolvers/recipe.resolver'
+import { SortableEntity, SortingResolver } from './sorting'
 
 export async function setUpTypeORM() {
   try {
@@ -23,6 +23,7 @@ export async function setUpTypeORM() {
     dropSchema: true,
     entities: [User, Recipe, Rate, SortableEntity]
   })
+  await UserResolver.seed()
 try {
   const schema = await buildSchema({
     resolvers: [UserResolver, TestResolver, RecipeResolver, SortingResolver]

@@ -1,10 +1,11 @@
-import { RelayedQueryGetterFunction, EntityWithCounts, RelayedQueryTypedDescriptor } from './../decorators/relayed-query.decorator'
+import { RelayedQueryTypedDescriptor, RelayedQueryOptions } from './../decorators/relayed-query.decorator'
 import { AutoRelayRoot } from './../interfaces/auto-relay-root-metadata.interface'
 import { RelayLimitOffsetResolverFactory } from './../decorators/limit-offset.decorator'
-import { ResolverData, NextFn } from "type-graphql"
+import { ResolverData } from "type-graphql"
 import { connectionArgsFromResolverData } from '../helpers/pagination-args-from-data.function'
 import { augmentedConnection } from '../helpers/augment-connection.function'
 import * as Relay from 'graphql-relay'
+import { biDirectionalPageInfo } from '../helpers/bi-directional-pageinfo.function'
 
 type UnPromisify<T> = T extends Promise<infer U> ? U : T;
 
@@ -33,7 +34,16 @@ export function RelayFromArrayCountFactory<
 
     const args = connectionArgsFromResolverData(prototype, propertyKey, resolverData);
     const pagination = RelayLimitOffsetResolverFactory(prototype, propertyKey)(resolverData);
-    const connection = Relay.connectionFromArraySlice(entities, args, { sliceStart: pagination.offset || 0, arrayLength: entityCount })
+    const pageMeta = { sliceStart: pagination.offset || 0, arrayLength: entityCount }
+    const rawConnection = Relay.connectionFromArraySlice(entities, args, pageMeta)
+    let connection = rawConnection
+    
+    
+    const options: RelayedQueryOptions = JSON.parse(Reflect.getMetadata('autorelay:query:options', prototype, propertyKey) || '{}')
+    
+    if (options.biDirectionalPageInfo) {
+      connection = biDirectionalPageInfo(rawConnection, pageMeta, entities.length)
+    }
 
     const metadatas = { _autoRelayMetadata: { totalItems: entityCount } } as AutoRelayRoot
 

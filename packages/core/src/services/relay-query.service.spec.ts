@@ -1,3 +1,5 @@
+import { AutoRelayConfigArgs } from './../interfaces/auto-relay-config.interface';
+import { CONFIG } from './auto-relay-config.service';
 import { AutoRelayConfig } from '../services/auto-relay-config.service';
 import { DynamicObjectFactory } from '../graphql/dynamic-object.factory';
 import { Container } from 'typedi';
@@ -80,6 +82,36 @@ const sharedTests = (methodToCall: keyof RelayedQueryService) => {
 
     })
   })
+
+  describe('Metadata', () => {
+
+    afterEach(() => {
+      Container.reset()
+    })
+
+    it('Should decorate specific pagination config to the method', (cb) => {
+      service[methodToCall](TestClass.prototype, 'test', {} as any, () => Object, undefined, { biDirectionalPageInfo: true })
+      process.nextTick(() => {
+        const test = Reflect.getMetadata('autorelay:query:options', TestClass.prototype, 'test')
+        expect(test).toBeTruthy();
+        expect(JSON.parse(test)).toMatchObject({ biDirectionalPageInfo: true })
+        cb()
+      })
+    })
+
+    it('Should decorate specific pagination with merged global config to the method', (cb) => {
+      Container.set(CONFIG, { pagination: { biDirectionalPageInfo: true, paginationInputType: 'test1' } } as AutoRelayConfigArgs)
+      service[methodToCall](TestClass.prototype, 'test', {} as any, () => Object, undefined, { description: 'test', paginationInputType: 'test2' })
+      process.nextTick(() => {
+        const test = Reflect.getMetadata('autorelay:query:options', TestClass.prototype, 'test')
+        expect(test).toBeTruthy();
+        expect(JSON.parse(test)).toMatchObject({ description: 'test', biDirectionalPageInfo: true, paginationInputType: 'test2' })
+        cb()
+      })
+    })
+
+  })
+
 }
 
 describe('RelayedQueryService', () => {

@@ -62,4 +62,11 @@ export interface LimitOffsetOptions {
    * You can optionally supply the key you want them to be in
    */
   paginationInputType?: boolean | string
+
+  /**
+   * Set to true to allow computing of hasPreviousPage when paginating forwards and 
+   * HasNextPage when paginationg backwards
+   * see https://github.com/graphql/graphql-relay-js/issues/58
+   */
+  biDirectionalPageInfo?: boolean
 }

@@ -21,7 +21,7 @@ export class User {
   @Column()
   password!: string;
 
-  @OneToMany(() => Recipe, recipe => recipe.author)
+  // @OneToMany(() => Recipe, recipe => recipe.author)
   @RelayedConnection(() => Recipe)
   recipes!: Recipe[]
 }

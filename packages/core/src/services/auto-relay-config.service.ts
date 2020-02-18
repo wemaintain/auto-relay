@@ -4,6 +4,7 @@ import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigA
 import { ClassValueThunk, ORMConnection } from '..'
 import * as Relay from 'graphql-relay'
 
+export const CONFIG = new Token<AutoRelayConfigArgs>('CONFIG');
 export const PREFIX = new Token<string>('PREFIX')
 export const CONNECTION_BASE_OBJECT = new Token<ClassValueThunk<any>>('CONNECTION_BASE_OBJECT')
 export const PAGINATION_OBJECT = new Token<ClassValueThunk<Relay.PageInfo>>('PAGINATION_OBJECT')
@@ -44,6 +45,7 @@ export class AutoRelayConfig {
     }
 
     AutoRelayConfig._config = config
+    Container.set(CONFIG, config)
   }
 
   /**
