@@ -1,10 +1,10 @@
-import { RelayedQueryOptions, RelayedQueryTypedDescriptor } from './../decorators/relayed-query.decorator';
+import { RelayedQueryOptions, RelayedQueryTypedDescriptor, LimitOffsetOptions } from './../decorators/relayed-query.decorator'
 import { Container, Service } from "typedi"
 import { DynamicObjectFactory } from "../graphql/dynamic-object.factory"
 import { ClassValueThunk } from "../types"
-import { RelayFromArrayCountFactory } from "../middlewares/relay-from-array-count.middleware";
-import { UseMiddleware, Query, Args, Arg, FieldResolver } from "type-graphql";
-import { CONNECTIONARGS_OBJECT } from './auto-relay-config.service';
+import { RelayFromArrayCountFactory } from "../middlewares/relay-from-array-count.middleware"
+import { UseMiddleware, Query, Args, Arg, FieldResolver } from "type-graphql"
+import { CONNECTIONARGS_OBJECT, CONFIG } from './auto-relay-config.service'
 
 /**
  * Abstracts the logic for registering paginated queries / field resolvers
@@ -67,6 +67,7 @@ export class RelayedQueryService {
     options?: RelayedQueryOptions,
     isFieldResolver: boolean = false
   ): void {
+    Reflect.defineMetadata('autorelay:query:options', JSON.stringify({ ...this.getGlobalOptions(), ...options }), target, propertyKey)
     const queryName = this.getQueryName(propertyKey, options)
     const { Connection } = this.makeEdgeConnection(to, through)
     this.registerArgs(target, propertyKey, options)
@@ -117,5 +118,17 @@ export class RelayedQueryService {
     } else {
       Args(() => ConnectionArgs)(target, propertyKey, 99999999);
     }
+  }
+
+  /**
+   * Get global options to use for a Query/fieldResolver
+   */
+  protected getGlobalOptions(): LimitOffsetOptions {
+    try {
+      return { ...Container.get(CONFIG).pagination }
+    } catch(e) {
+      // Couldn't load global config, ignore it.
+    }
+    return { }
   }
 }

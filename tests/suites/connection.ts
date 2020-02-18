@@ -4,6 +4,7 @@ import { Recipe } from "./_typeorm/entities/recipe"
 import { getConnection, EntityManager } from "typeorm"
 import { Rate } from "./_typeorm/entities/rate"
 import * as faker from 'faker'
+import { User } from "./_typeorm/entities/user"
 
 export function ConnectionTests(suiteName: string) {
   let testClient: ApolloServerTestClient
@@ -37,8 +38,7 @@ export function ConnectionTests(suiteName: string) {
     })
 
     afterEach(async () => {
-      manager.delete(Recipe, {})
-      manager.delete(Rate, {})
+      await manager.connection.synchronize()
     })
 
     describe('Ordering', () => {

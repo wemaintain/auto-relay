@@ -1,9 +1,9 @@
 import { User } from '../entities/user';
 import { Resolver, Query, Arg, Args, ArgsType, Field, Ctx } from "type-graphql";
 import { getRepository } from 'typeorm';
-import { RelayedQuery } from 'auto-relay';
-import { Recipe } from '../entities/recipe';
-import { RelayLimitOffset } from 'auto-relay';
+import { RelayedQuery, RelayLimitOffsetArgs, RelayLimitOffset } from 'auto-relay';
+import { Recipe } from '../entities/recipe'
+import { default as Faker } from 'faker'
 
 @ArgsType()
 export class UserArgType {
@@ -16,6 +16,8 @@ export class UserArgType {
 @Resolver(() => User)
 export class UserResolver {
 
+  protected static seeded: boolean = false
+
   @Query(() => [User])
   public async getAllUsers(): Promise<User[]> {
     return getRepository(User).find();
@@ -25,11 +27,31 @@ export class UserResolver {
   public async getAllUsersPaginated(
     @Arg('anArg', { nullable: true }) anArg: string,
     @Args(() => UserArgType) moreArgs?: UserArgType,
-    @RelayLimitOffset() pagination?: any,
+    @RelayLimitOffset() pagination?: RelayLimitOffsetArgs,
     @Ctx() context?: any
-  ): Promise<[number, User[]]> {
-
-    return [1, [new User()]];
+  ): Promise<[User[], number]> {
+    return getRepository(User).findAndCount({
+      skip: pagination?.offset,
+      take: pagination?.limit
+    })
   }
 
+
+  @RelayedQuery(() => User, { biDirectionalPageInfo: true })
+  public async getAllUsersPaginatedBiDirectional(
+    @Arg('anArg', { nullable: true }) anArg: string,
+    @Args(() => UserArgType) moreArgs?: UserArgType,
+    @RelayLimitOffset() pagination?: RelayLimitOffsetArgs,
+    @Ctx() context?: any
+  ): Promise<[User[], number]> {
+    return this.getAllUsersPaginated(anArg, moreArgs, pagination, context)
+  }
+
+  public static async seed(): Promise<void> {
+    if(!this.seeded) {
+      this.seeded = true;
+      const users: Partial<User>[] = Array.from({ length: 100 }, () => ({ email: Faker.internet.email(), nickname: Faker.name.firstName(), password: Faker.random.word() }));
+      await getRepository(User).insert(users)
+    }
+  }
 }

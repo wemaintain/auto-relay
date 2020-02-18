@@ -67,4 +67,8 @@ describe('Relay from array count', () => {
       expect(rootPagination._autoRelayMetadata.totalItems).toEqual(3)
     })
   })
+
+  describe('BiDirectionalPageInfo', () => {
+
+  })
 })

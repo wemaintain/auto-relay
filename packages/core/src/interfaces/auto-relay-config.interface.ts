@@ -18,7 +18,7 @@ export interface AutoRelayConfigArgsBase {
 
   },
   /** global pagination options */
-  pagination?: Pick<LimitOffsetOptions, "paginationInputType">
+  pagination?: LimitOffsetOptions
 }
 
 export interface AutoRelayConfigArgsExistingModel extends AutoRelayConfigArgsBase {
