@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/wemaintain/auto-relay.git"
+    "url": "git+ssh://git@github.com/wemaintain/auto-relay.git"
   },
   "scripts": {
     "test": "jest",
