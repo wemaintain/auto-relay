@@ -7,16 +7,15 @@ import * as Relay from 'graphql-relay'
 export function biDirectionalPageInfo<T=any>(
   connection: Relay.Connection<T>,
   meta: Relay.ArraySliceMetaInfo,
-  entityCount: number
+  returnedCount: number
 ): Relay.Connection<T> {
-
   // We're not the first element
   if (meta.sliceStart > 0) {
     connection.pageInfo.hasPreviousPage = true
   }
 
   // We have more elemnts
-  if (meta.arrayLength + meta.sliceStart < entityCount) {
+  if (1 + returnedCount + meta.sliceStart < meta.arrayLength) {
     connection.pageInfo.hasNextPage = true
   }
 
