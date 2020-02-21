@@ -1,6 +1,6 @@
 {
   "name": "@auto-relay/sorting",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "auto-relay sorting module",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/graphql-relay": "^0.4.9",
-    "auto-relay": "^0.12.3",
+    "auto-relay": "^0.12.4",
     "graphql-relay": "^0.6.0",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.18"
