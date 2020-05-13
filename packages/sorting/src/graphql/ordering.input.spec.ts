@@ -9,6 +9,7 @@ import { GraphQLInputField } from 'graphql'
 describe('OrderingInput', () => {
   beforeEach(() => {
     getMetadataStorage().clear()
+    Container.reset()
     registerEnumType(OrderingDirection, {
       name: "OrderingDirection",
       description: "Direction when sorting a column",
@@ -39,5 +40,27 @@ describe('OrderingInput', () => {
     expect(direction.defaultValue.toString()).toEqual("ASC")
 
     expect(sort.type.toString()).toEqual("TestEnum!")
+  })
+
+  it('Should re-use ordering if already exists', async () => {
+    Container.set(PREFIX, "Testabc")
+    const testEnum = {
+      foo: "foo",
+      bar: "bar"
+    }
+
+    registerEnumType(testEnum, { name: "TestEnum" })
+    const test = orderingValueGQLFactory('MyType', testEnum)
+    const test2 = orderingValueGQLFactory('MyType', testEnum)
+    expect(test).toBe(test2)
+
+
+    const schema = await buildSchema({
+      resolvers: [{} as any],
+      skipCheck: true,
+    })
+
+    const testSchema = schema.getType(`TestabcMyTypeOrderOptions`)!.toConfig()
+    expect(testSchema).toBeDefined()
   })
 })

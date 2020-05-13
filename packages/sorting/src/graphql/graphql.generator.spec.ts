@@ -37,13 +37,12 @@ describe('GQLSortingGenerator', () => {
   let generator: GQLSortingGenerator
   let ormConnection: jest.Mocked<ORMConnection>
 
-  beforeAll(() => {
+  beforeEach(async () => {
+    Container.reset()
+    getMetadataStorage().clear()
+
     ormConnection = new TypeOrmConnection() as any
     Container.set(ORM_CONNECTION, ormConnection)
-  })
-
-  beforeEach(async () => {
-    getMetadataStorage().clear()
     registerEnumType(OrderingDirection, {
       name: "OrderingDirection",
       description: "Direction when sorting a column",
