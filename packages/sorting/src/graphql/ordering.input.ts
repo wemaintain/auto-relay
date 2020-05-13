@@ -27,6 +27,14 @@ export function orderingValueGQLFactory(
     prefix = Container.get(PREFIX)
   } catch(e) { }
   const className = `${prefix}${name}OrderOptions`
+
+  // If we already have ordering options of the same name, use them
+  try {
+    const alreadyExisting = Container.get<ClassType<OrderingValue<any>>>(className)
+    if (alreadyExisting) return alreadyExisting
+  } catch(e) {}
+
+  // Otherwise generate them
   const namedClass = {
     [className]: class implements OrderingValue {
       direction?: OrderingDirection;
@@ -37,6 +45,8 @@ export function orderingValueGQLFactory(
   Field(() => registeredEnum)(namedClass[className].prototype, 'sort')  
   ArgsType()(namedClass[className])
   InputType(className)(namedClass[className])
+
+  Container.set(className, namedClass[className])
 
   return namedClass[className] 
 }
