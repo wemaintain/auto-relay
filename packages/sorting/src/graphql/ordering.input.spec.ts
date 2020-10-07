@@ -28,10 +28,11 @@ describe('OrderingInput', () => {
     }
 
     registerEnumType(testEnum, { name: "TestEnum" })
-    orderingValueGQLFactory('MyType', testEnum)
+    const OrderingValue = orderingValueGQLFactory('MyType', testEnum)
 
     const schema = await buildSchema({
       resolvers: [{} as any],
+      orphanedTypes: [OrderingValue],
       skipCheck: true,
     })
     const test = schema.getType(`TestabcMyTypeOrderOptions`)!.toConfig()
@@ -64,6 +65,7 @@ describe('OrderingInput', () => {
 
     const schema = await buildSchema({
       resolvers: [{} as any],
+      orphanedTypes: [test],
       skipCheck: true,
     })
 

@@ -70,11 +70,13 @@ describe('GQLSortingGenerator', () => {
 
   it('Should do nothing if given type has no sortable columns', async () => {
     ormConnection.getColumnsOfFields.mockReturnValueOnce({ })
-    generator.generateForType(EntityA, ResolverA.prototype, "query")
+    const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
 
-    const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
+    const schema = await buildSchema({ resolvers: [ResolverA], orphanedTypes: [OrderingValue] })
+
     const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')?.toConfig() as any
     expect(test).toBeFalsy()
+    expect(OrderingValue).toBeFalsy()
   })
 
   describe('Enum', () => {
@@ -99,10 +101,10 @@ describe('GQLSortingGenerator', () => {
         foo: "foo",
         bar: "bar" 
       })
-      generator.generateForType(EntityA, ResolverA.prototype, "query")
+      const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
 
-      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
-      const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')?.toConfig() as any
+      const schema = await buildSchema({ resolvers: [{} as any], orphanedTypes: [OrderingValue], skipCheck: true })
+      const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields').toConfig() as any
 
       expect(test).toBeTruthy()
       expect(test.values.foo).toBeTruthy()
@@ -113,9 +115,9 @@ describe('GQLSortingGenerator', () => {
       ormConnection.getColumnsOfFields.mockReturnValueOnce({
         bar: "bar" 
       })
-      generator.generateForType(EntityA, ResolverA.prototype, "query")
+      const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
 
-      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
+      const schema = await buildSchema({ resolvers: [{} as any], orphanedTypes: [OrderingValue], skipCheck: true })
       const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')?.toConfig() as any
 
       expect(test).toBeTruthy()
@@ -127,9 +129,9 @@ describe('GQLSortingGenerator', () => {
       ormConnection.getColumnsOfFields.mockReturnValueOnce({
         nonSchemaName: "dbName" 
       })
-      generator.generateForType(EntityA, ResolverA.prototype, "query")
+      const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
 
-      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
+      const schema = await buildSchema({ resolvers: [{} as any], orphanedTypes: [OrderingValue], skipCheck: true })
       const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')?.toConfig() as any
 
       expect(test).toBeTruthy()
@@ -159,13 +161,13 @@ describe('GQLSortingGenerator', () => {
 
   describe("Input", () => {
 
-    it('Should add order input to decorater fresolver', async () => {
+    it('Should add order input to decorater resolver', async () => {
       ormConnection.getColumnsOfFields.mockReturnValueOnce({
         bar: "bar" 
       })
-      generator.generateForType(EntityA, ResolverA.prototype, "query")
+      const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
 
-      const schema = await buildSchema({ resolvers: [{} as any], skipCheck: true })
+      const schema = await buildSchema({ resolvers: [ResolverA], orphanedTypes: [OrderingValue], skipCheck: true })
       const query = schema.getQueryType()
       const test = query?.getFields().query
       

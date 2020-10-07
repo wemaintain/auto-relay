@@ -10,6 +10,7 @@ import { ApolloServer } from 'apollo-server'
 import { createTestClient } from 'apollo-server-testing'
 import { RecipeResolver } from './resolvers/recipe.resolver'
 import { SortableEntity, SortingResolver } from './sorting'
+import { TestObject3 } from './entities/test';
 
 export async function setUpTypeORM() {
   try {
@@ -26,7 +27,8 @@ export async function setUpTypeORM() {
   await UserResolver.seed()
 try {
   const schema = await buildSchema({
-    resolvers: [UserResolver, TestResolver, RecipeResolver, SortingResolver]
+    resolvers: [UserResolver, TestResolver, RecipeResolver, SortingResolver],
+    orphanedTypes: [TestObject3],
   })
 
   const server = new ApolloServer({

@@ -6,6 +6,10 @@ import { AutoRelayConfig, PAGINATION_OBJECT } from "../services/auto-relay-confi
 import { ORMConnection } from "../orm/orm-connection.abstract";
 import * as TGQL from 'type-graphql'
 import { ClassValueThunk } from '..';
+jest.mock('type-graphql', () => ({
+  __esModule: true,
+  ...jest.requireActual('type-graphql')
+}));
 
 
 class ORMMock extends ORMConnection {

@@ -18,7 +18,6 @@
       "node",
       "jest",
       "jest-extended",
-      "reflect-metadata"
     ]
   },
   "exclude": [
