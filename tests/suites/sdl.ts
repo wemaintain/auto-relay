@@ -14,27 +14,27 @@ export function SDLTests(suiteName: string) {
     describe('ConnectionType', () => {
       
       it('Should use the same Object for multiple connections to the same Type', () => {
-        const type = schema.getType('TestNestedObjectConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        const type = schema.getType('TestNestedObjectConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any>
 
-        const object2 = schema.getType('TestObject2')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
-        const object3 = schema.getType('TestObject3')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        const object2 = schema.getType('TestObject2')!.toConfig() as GraphQLObjectTypeConfig<any, any>
+        const object3 = schema.getType('TestObject3')!.toConfig() as GraphQLObjectTypeConfig<any, any>
 
         expect(type).toBeTruthy()
 
-        expect((object2.fields as GraphQLFieldConfigMap<any, any,any>)['connection'].type.toString()).toEqual('TestNestedObjectConnection!')
-        expect((object3.fields as GraphQLFieldConfigMap<any, any,any>)['connection'].type.toString()).toEqual('TestNestedObjectConnection!')
+        expect((object2.fields as GraphQLFieldConfigMap<any, any>)['connection'].type.toString()).toEqual('TestNestedObjectConnection!')
+        expect((object3.fields as GraphQLFieldConfigMap<any, any>)['connection'].type.toString()).toEqual('TestNestedObjectConnection!')
       })
 
       it('Should use the same Object for multiple connections to the same Type via a given Through', () => {
-        const type = schema.getType('TestNestedThroughObjectTestNestedObjectConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        const type = schema.getType('TestNestedThroughObjectTestNestedObjectConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any>
 
-        const object2 = schema.getType('TestObject2')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
-        const object3 = schema.getType('TestObject3')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        const object2 = schema.getType('TestObject2')!.toConfig() as GraphQLObjectTypeConfig<any, any>
+        const object3 = schema.getType('TestObject3')!.toConfig() as GraphQLObjectTypeConfig<any, any>
 
         expect(type).toBeTruthy()
 
-        expect((object2.fields as GraphQLFieldConfigMap<any, any,any>)['connectionThrough'].type.toString()).toEqual('TestNestedThroughObjectTestNestedObjectConnection!')
-        expect((object3.fields as GraphQLFieldConfigMap<any, any,any>)['connectionThrough'].type.toString()).toEqual('TestNestedThroughObjectTestNestedObjectConnection!')
+        expect((object2.fields as GraphQLFieldConfigMap<any, any>)['connectionThrough'].type.toString()).toEqual('TestNestedThroughObjectTestNestedObjectConnection!')
+        expect((object3.fields as GraphQLFieldConfigMap<any, any>)['connectionThrough'].type.toString()).toEqual('TestNestedThroughObjectTestNestedObjectConnection!')
       })
 
 
@@ -42,9 +42,9 @@ export function SDLTests(suiteName: string) {
 
     describe('RelayedField', () => {
       it('Should set collection type in SDL', () => {
-        const type = schema.getType('TestObject')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>
+        const type = schema.getType('TestObject')!.toConfig() as GraphQLObjectTypeConfig<any, any>
         expect(type).toBeTruthy()
-        expect((type.fields as GraphQLFieldConfigMap<any, any,any>)['testRelayedFieldOnly'].type.toString()).toEqual('TestObject2Connection!')
+        expect((type.fields as GraphQLFieldConfigMap<any, any>)['testRelayedFieldOnly'].type.toString()).toEqual('TestObject2Connection!')
       })
     })
 
@@ -59,8 +59,8 @@ export function SDLTests(suiteName: string) {
           const field: GraphQLField<any, any, any> = query!.getFields()['getAllUsersPaginated'];
   
           expect(field.type.toString()).toEqual('UserConnection!');
-          const connection = schema.getType('UserConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>;
-          const edge = schema.getType('UserEdge')!.toConfig() as GraphQLObjectTypeConfig<any, any, any>;
+          const connection = schema.getType('UserConnection')!.toConfig() as GraphQLObjectTypeConfig<any, any>;
+          const edge = schema.getType('UserEdge')!.toConfig() as GraphQLObjectTypeConfig<any, any>;
   
           expect(connection).toBeTruthy();
           expect(edge).toBeTruthy();

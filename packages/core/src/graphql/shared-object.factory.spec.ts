@@ -2,7 +2,10 @@ import { SharedObjectFactory } from "../../src/graphql/shared-object.factory";
 import * as TGQL from 'type-graphql'
 import * as Relay from 'graphql-relay'
 import { ObjectType, Field } from "type-graphql";
-
+jest.mock('type-graphql', () => ({
+  __esModule: true,
+  ...jest.requireActual('type-graphql')
+}));
 
 
 describe('SharedObjectFactory', () => {

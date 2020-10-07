@@ -93,7 +93,7 @@ export function RelayedQueryTests(suiteName: string) {
           let lastCursor: string;
 
           beforeEach(async () => {
-            const { data } = await testClient.query({
+            const { data, errors } = await testClient.query({
               query: `query { 
                 getAllUsersPaginatedBiDirectional { pageInfo{hasPreviousPage, hasNextPage, startCursor, endCursor} } 
               }
@@ -110,6 +110,7 @@ export function RelayedQueryTests(suiteName: string) {
               }
               `
             })
+
             expect(test.data!.getAllUsersPaginatedBiDirectional.pageInfo.hasPreviousPage).toBeTrue()
             expect(test.data!.getAllUsersPaginatedBiDirectional.pageInfo.hasNextPage).toBeFalse()
           })

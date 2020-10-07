@@ -16,5 +16,6 @@
       "editor.codeActionsOnSave": {
         "source.fixAll.eslint": false
       }
-    }
+    },
+    "typescript.tsdk": "/home/david/wmtn/auto-relay/node_modules/typescript/lib"
 }

@@ -31,6 +31,7 @@ export class UserResolver {
     @Ctx() context?: any
   ): Promise<[User[], number]> {
     return getRepository(User).findAndCount({
+      where: {},
       skip: pagination?.offset,
       take: pagination?.limit
     })

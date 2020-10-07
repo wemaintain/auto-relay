@@ -4,7 +4,7 @@ import { Container, Service } from "typedi"
 import { ORMConnection, ORM_CONNECTION } from 'auto-relay'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
 import { FieldMetadata, ResolverClassMetadata, FieldResolverMetadata } from 'type-graphql/dist/metadata/definitions'
-import { orderingValueGQLFactory, StandardEnum } from './ordering.input'
+import { OrderingValue, orderingValueGQLFactory, StandardEnum } from './ordering.input'
 
 /**
  * Helper service to generate all the objects / enum we might need in the SDL
@@ -28,13 +28,15 @@ export class GQLSortingGenerator {
     type: ClassType<T>,
     target: ClassType,
     propertyKey: string,
-  ): void {
+  ): ClassType<OrderingValue<any, any>> | undefined {
     const Enum = this.createEnum(type, target, propertyKey)
 
     if (Enum) {
       const OrderingValue = orderingValueGQLFactory(type.name, Enum)
       Arg("order", () => [OrderingValue], { nullable: true })(target, propertyKey, 999999998)
+      return OrderingValue
     }
+
   }
 
 

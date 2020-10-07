@@ -28,12 +28,13 @@ const basicSchema = () => {
 
 describe('SDL Integration', () => {
 
-  let resolvers: any[] = [];
+  let resolvers: Function[] = [];
   let sharedObjectFactory = new SharedObjectFactory()
-  const buildSchema = async () => {
+  const buildSchema = async (...types: Function[]) => {
     return TGQL.buildSchema({
-      resolvers,
+      resolvers: resolvers as [Function, ...Function[]],
       skipCheck: true,
+      orphanedTypes: types
     });
   }
 
@@ -54,7 +55,7 @@ describe('SDL Integration', () => {
     describe('PageInfo', () => {
       it('Should create a PageInfo Object in the SDL', async () => {
         const PageInfo = sharedObjectFactory.generatePageInfo('');
-        const schema = await buildSchema();
+        const schema = await buildSchema(PageInfo);
 
         const pageInfoType = schema.getType('PageInfo');
         if (!pageInfoType) throw new Error(`Couldn't find Object in SDL`);
@@ -64,7 +65,7 @@ describe('SDL Integration', () => {
 
       it('Should create a PageInfo Object with prefix in the SDL', async () => {
         const PageInfo = sharedObjectFactory.generatePageInfo('AHA');
-        const schema = await buildSchema();
+        const schema = await buildSchema(PageInfo);
 
         const pageInfoType = schema.getType('AHAPageInfo');
         if (!pageInfoType) throw new Error(`Couldn't find Object in SDL`);
@@ -73,8 +74,8 @@ describe('SDL Integration', () => {
       })
 
       it('Should have valid PageInfo object', async () => {
-        sharedObjectFactory.generatePageInfo('');
-        const schema = await buildSchema();
+        const PageInfo = sharedObjectFactory.generatePageInfo('');
+        const schema = await buildSchema(PageInfo);
 
         const config = getConfigOfObjectType(schema, 'PageInfo')
         const hasNextPage = getFieldOfObjectType(schema, config, 'hasNextPage')

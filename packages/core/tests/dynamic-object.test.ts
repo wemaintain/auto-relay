@@ -49,11 +49,12 @@ const basicSchema = () => {
 
 describe('SDL Integration', () => {
   let declarations: { TestResolver: ClassType, TestObject: ClassType; TestLinkedObject: ClassType; TestLinkedThroughObject: ClassType; }
-  let resolvers: any[] = [];
+  let resolvers: Function[] = [];
   let dynamicObjectFactory = new DynamicObjectFactory()
-  const buildSchema = async () => {
+  const buildSchema = async (decs: typeof declarations, otherTypes: Function[]) => {
     return TGQL.buildSchema({
-      resolvers,
+      resolvers: resolvers as [Function, ...Function[]],
+      orphanedTypes: [...Object.values(decs), ...otherTypes],
       skipCheck: true,
     });
   }
@@ -64,7 +65,7 @@ describe('SDL Integration', () => {
     resolvers = [declarations.TestResolver];
     dynamicObjectFactory = new DynamicObjectFactory();
     new AutoRelayConfig({
-      orm: () => class {} as any
+      orm: () => class { } as any
     })
   })
 
@@ -87,8 +88,8 @@ describe('SDL Integration', () => {
       }
 
       it('Should create basic Edge', async () => {
-        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
-        const schema = await buildSchema();
+        const { Edge, Connection } = dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
+        const schema = await buildSchema(declarations, [Edge]);
 
         const type = getConfigOfObjectType(schema, 'TestLinkedObjectEdge');
 
@@ -97,15 +98,15 @@ describe('SDL Integration', () => {
       })
 
       it('Should have valid Edge Object', async () => {
-        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
-        const schema = await buildSchema();
+        const { Edge } = dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
+        const schema = await buildSchema(declarations, [Edge]);
 
         validateSchemaOfBasicEdge(schema, 'TestLinkedObjectEdge', declarations.TestLinkedObject);
       })
 
       it('Should have valid Augmented Edge Object', async () => {
-        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject, () => declarations.TestLinkedThroughObject as any)
-        const schema = await buildSchema();
+        const { Edge } = dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject, () => declarations.TestLinkedThroughObject as any)
+        const schema = await buildSchema(declarations, [Edge]);
 
         validateSchemaOfBasicEdge(schema, 'TestLinkedThroughObjectTestLinkedObjectEdge', declarations.TestLinkedObject);
 
@@ -121,8 +122,8 @@ describe('SDL Integration', () => {
 
     describe('Connection', () => {
       it('Should create a connection Object', async () => {
-        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
-        const schema = await buildSchema();
+        const { Connection } = dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
+        const schema = await buildSchema(declarations, [Connection]);
 
         const type = getConfigOfObjectType(schema, 'TestLinkedObjectConnection');
 
@@ -131,8 +132,8 @@ describe('SDL Integration', () => {
       })
 
       it('Should have valid Connection Object', async () => {
-        dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
-        const schema = await buildSchema();
+        const { Connection } = dynamicObjectFactory.getEdgeConnection(() => declarations.TestLinkedObject)
+        const schema = await buildSchema(declarations, [Connection]);
 
         const type = getConfigOfObjectType(schema, 'TestLinkedObjectConnection');
 
@@ -142,7 +143,7 @@ describe('SDL Integration', () => {
         expect(pageInfo.type.toString()).toEqual('PageInfo!');
         expect(edges.type.toString()).toEqual('[TestLinkedObjectEdge!]!');
       })
-      
+
     })
 
   })
