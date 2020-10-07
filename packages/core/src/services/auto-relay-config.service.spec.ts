@@ -2,6 +2,7 @@ import { AutoRelayConfig, PAGINATION_OBJECT, CONNECTIONARGS_OBJECT, ORM_CONNECTI
 import { Container } from 'typedi'
 import { ORMConnection } from '../orm';
 import { ClassValueThunk } from '..';
+import * as Relay from 'graphql-relay'
 
 class ORMMock extends ORMConnection {
   public getColumnsOfFields(entity: ClassValueThunk<any>, keys: string[]): Record<string, string | undefined> {
@@ -51,7 +52,12 @@ describe('AutoRelayConfig', () => {
   })
 
   it('Should make available supplied PAGINATION_OBJECT and CONNECTIONARGS_OBJECT', () => {
-    const pagination = () => class TestA { };
+    const pagination = () => class TestA implements Relay.PageInfo {
+      public startCursor!: string
+      public endCursor!: string
+      public hasNextPage!: boolean
+      public hasPreviousPage!: boolean
+    };
     const connectionArgs = () => class TestB { };
 
     typeRelayConfig = new AutoRelayConfig({
