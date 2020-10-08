@@ -85,7 +85,16 @@ export class GQLSortingGenerator {
       = getMetadataStorage() as any
 
     resolversForThisType.push(
-      ...resolverClasses.filter(resolver => resolver.getObjectType() === type)
+      ...resolverClasses.filter(resolver => {
+        let resolverObjectType: Function;
+        try {
+          resolverObjectType = resolver.getObjectType()
+        } catch(e) {
+          // resolver is abstract, skip.
+          return false
+        }
+        return  resolverObjectType === type
+      })
         .map(resolver => resolver.target)
     )
 

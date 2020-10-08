@@ -28,12 +28,21 @@ const createSchema = () => {
   Reflect.defineMetadata('design:paramtypes', [], ResolverA.prototype, 'query');
   Resolver(() => EntityA)(ResolverA)
   
-  return { EntityA, ResolverA }
+  const AbstractResolver = class {
+    public async query() {}
+  }
+  
+  Query(() => [Number])(AbstractResolver.prototype, "query", {})
+  Reflect.defineMetadata('design:paramtypes', [], AbstractResolver.prototype, 'query');
+  Resolver({ isAbstract: true })(AbstractResolver)
+  
+  return { EntityA, ResolverA, AbstractResolver }
 }
 
 describe('GQLSortingGenerator', () => {
   let EntityA: ClassType
   let ResolverA: ClassType
+  let AbstractResolver: ClassType
   let generator: GQLSortingGenerator
   let ormConnection: jest.Mocked<ORMConnection>
 
@@ -50,6 +59,7 @@ describe('GQLSortingGenerator', () => {
     const schema = createSchema()
     EntityA = schema.EntityA
     ResolverA = schema.ResolverA
+    AbstractResolver = schema.AbstractResolver
 
     generator = new GQLSortingGenerator()
   })
@@ -64,6 +74,21 @@ describe('GQLSortingGenerator', () => {
   })
 
   describe('Enum', () => {
+
+    it('Should skip abstract resolvers', async () => {
+      ormConnection.getColumnsOfFields.mockReturnValueOnce({
+        foo: "foo",
+        bar: "bar" 
+      })
+      const OrderingValue = generator.generateForType(EntityA, ResolverA.prototype, "query")
+
+      const schema = await buildSchema({ resolvers: [AbstractResolver], skipCheck: true })
+      const test: GraphQLEnumTypeConfig = schema.getType('EntityASortableFields')!.toConfig() as any
+
+      expect(test).toBeTruthy()
+      expect(test.values.foo).toBeTruthy()
+      expect(test.values.bar).toBeTruthy()
+    })
 
     it('Should create an enum for the given type', async () => {
       ormConnection.getColumnsOfFields.mockReturnValueOnce({
