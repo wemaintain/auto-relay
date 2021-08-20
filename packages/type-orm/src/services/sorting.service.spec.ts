@@ -65,28 +65,28 @@ describe("TypeORM Sorting Service", () => {
 
   describe('buildOrderByConditionValue', () => {
     it("Should returns ASC", () => {
-      const result = service.buildOrderByConditionValue({direction: "ASC"})
+      const result = service["buildOrderByConditionValue"]({direction: "ASC"})
       expect(result).toEqual("ASC")
     })
 
     it("Should returns DESC", () => {
-      const result = service.buildOrderByConditionValue({direction: "DESC"})
+      const result = service["buildOrderByConditionValue"]({direction: "DESC"})
       expect(result).toEqual("DESC")
     })
 
     it("Should not care about undefined nulls values", () => {
-      const withUndefined = service.buildOrderByConditionValue({direction: "ASC", nulls: undefined})
+      const withUndefined = service["buildOrderByConditionValue"]({direction: "ASC", nulls: undefined})
 
       expect(withUndefined).toEqual("ASC")
     })
 
     it("Should returns a NULLS FIRST", () => {
-      const result = service.buildOrderByConditionValue({direction: "ASC", nulls: "FIRST"})
+      const result = service["buildOrderByConditionValue"]({direction: "ASC", nulls: "FIRST"})
       expect(result).toEqual({order: "ASC", nulls: "NULLS FIRST"})
     })
 
     it("Should returns a NULLS LAST", () => {
-      const result = service.buildOrderByConditionValue({direction: "DESC", nulls: "LAST"})
+      const result = service["buildOrderByConditionValue"]({direction: "DESC", nulls: "LAST"})
       expect(result).toEqual({order: "DESC", nulls: "NULLS LAST"})
     })
   })

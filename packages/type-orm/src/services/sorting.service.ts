@@ -43,7 +43,15 @@ export class SortingService {
 
   }
 
-  public buildOrderByConditionValue(sortingField: {
+  /**
+   * Build the correct TypeORMOrderByConditionValue matching the internal TypeORM OrderByCondition type
+   * When nulls is not provided, it uses the short form: `("ASC"|"DESC")`
+   * When nulls is provided, it uses the long form: `{order, nulls}`
+   * 
+   * @param sortingField The SortingField to build
+   * @returns TypeORMOrderByConditionValue
+   */
+  protected buildOrderByConditionValue(sortingField: {
     direction: "ASC" | "DESC", 
     nulls?: "FIRST" | "LAST",
   }): TypeORMOrderByConditionValue {
