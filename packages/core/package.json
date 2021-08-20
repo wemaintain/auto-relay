@@ -1,6 +1,6 @@
 {
   "name": "auto-relay",
-  "version": "0.12.9",
+  "version": "0.13.0",
   "description": "Relay made simple in code-first GraphQL typescript applications",
   "author": "David <dfain@wemaintain.io>",
   "homepage": "https://github.com/wemaintain/auto-relay#readme",
