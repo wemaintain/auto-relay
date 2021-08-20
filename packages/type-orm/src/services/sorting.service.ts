@@ -37,16 +37,14 @@ export class SortingService {
 
     return sortingFields.reduce((acc: TypeORMOrdering, sortingField) => {
       const dbName = dbColumns[sortingField.name]
-      acc[`${prefix}${dbName}`] = (sortingField.nulls) 
-        // complex ordering form that supports nulls direction
-        ? {
+      acc[`${prefix}${dbName}`] = {
           order: sortingField.direction, 
-          nulls: (sortingField.nulls === "FIRST") 
-            ? `NULLS FIRST` 
-            : `NULLS LAST`
+          nulls: sortingField.nulls && (
+            (sortingField.nulls === "FIRST") 
+                ? `NULLS FIRST` 
+                : `NULLS LAST`
+          )
         }
-        // simple ordering form as a string (ASC|DESC)
-        : sortingField.direction
       return acc
     }, {} as TypeORMOrdering)
 

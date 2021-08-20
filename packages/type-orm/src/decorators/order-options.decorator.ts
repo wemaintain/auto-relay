@@ -14,7 +14,7 @@ export function OrderOptions<T = any>(prefix?: string) {
 }
 
 export type TypeORMOrdering<Entity = any> = {
-  [P in keyof Entity]?: ("ASC"|"DESC")|{
+  [P in keyof Entity]?: {
     order: "ASC"|"DESC";
     nulls?: "NULLS FIRST"|"NULLS LAST";
   }
