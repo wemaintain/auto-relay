@@ -62,7 +62,7 @@ type Query {
 type EntityOrderOptions {
   direction: OrderingDirection = OrderingDirection.ASC
   sort: EntitySortableField
-  nulls: OrderingNullsDirection
+  nulls: NullsOrdering
 }
 
 enum EntitySortableField {

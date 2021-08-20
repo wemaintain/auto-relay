@@ -5,7 +5,7 @@ import { FieldResolver, ClassType, Query, buildSchema, registerEnumType } from '
 import { Field, ObjectType, Resolver } from 'type-graphql'
 import { TypeOrmConnection } from "@auto-relay/typeorm"
 import { Container } from 'typedi'
-import { OrderingDirection, OrderingNullsDirection } from './ordering.input'
+import { OrderingDirection, NullsOrdering } from './ordering.input'
 import { GraphQLEnumTypeConfig } from 'graphql'
 
 jest.mock("@auto-relay/typeorm")
@@ -56,10 +56,10 @@ describe('GQLSortingGenerator', () => {
       name: "OrderingDirection",
       description: "Direction when sorting a column",
     });
-    registerEnumType(OrderingNullsDirection, {
-      name: "OrderingNullsDirection",
-      description: "Direction of nulls values when sorting a column"
-    });
+    registerEnumType(NullsOrdering, {
+      name: "NullsOrdering",
+      description: "When sorting a nullable field, possible values on how to sort those null values"
+    })
     const schema = createSchema()
     EntityA = schema.EntityA
     ResolverA = schema.ResolverA

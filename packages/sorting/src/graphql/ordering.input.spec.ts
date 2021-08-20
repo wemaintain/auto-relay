@@ -3,7 +3,7 @@ import { PREFIX } from 'auto-relay'
 import { Container } from 'typedi'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
 import { buildSchema } from 'type-graphql'
-import { orderingValueGQLFactory, OrderingDirection, OrderingNullsDirection } from './ordering.input'
+import { orderingValueGQLFactory, OrderingDirection, NullsOrdering } from './ordering.input'
 import { GraphQLInputField } from 'graphql'
 
 describe('OrderingInput', () => {
@@ -14,9 +14,9 @@ describe('OrderingInput', () => {
       name: "OrderingDirection",
       description: "Direction when sorting a column",
     });
-    registerEnumType(OrderingNullsDirection, {
-      name: "OrderingNullsDirection",
-      description: "Direction of nulls values when sorting a column"
+    registerEnumType(NullsOrdering, {
+      name: "NullsOrdering",
+      description: "When sorting a nullable field, possible values on how to sort those null values"
     })
   })
 
@@ -46,7 +46,7 @@ describe('OrderingInput', () => {
 
     expect(sort.type.toString()).toEqual("TestEnum!")
 
-    expect(nulls.type.toString()).toEqual("OrderingNullsDirection")
+    expect(nulls.type.toString()).toEqual("NullsOrdering")
   })
 
   it('Should re-use ordering if already exists', async () => {

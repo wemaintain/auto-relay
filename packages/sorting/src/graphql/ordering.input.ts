@@ -7,7 +7,7 @@ export enum OrderingDirection {
   DESC = 'DESC'
 }
 
-export enum OrderingNullsDirection {
+export enum NullsOrdering {
   FIRST = 'FIRST',
   LAST = 'LAST',
 }
@@ -17,9 +17,9 @@ registerEnumType(OrderingDirection, {
   description: "Direction when sorting a column (defaults to ASC)",
 });
 
-registerEnumType(OrderingNullsDirection, {
-  name: "OrderingNullsDirection",
-  description: "Direction of nulls values when sorting a column"
+registerEnumType(NullsOrdering, {
+  name: "NullsOrdering",
+  description: "When sorting a nullable field, possible values on how to sort those null values"
 })
 
 /**
@@ -49,12 +49,12 @@ export function orderingValueGQLFactory(
     [className]: class implements OrderingValue {
       direction?: OrderingDirection
       sort!: StandardEnum
-      nulls?: OrderingNullsDirection
+      nulls?: NullsOrdering
     }
   }
   Field(() => OrderingDirection, { defaultValue: OrderingDirection.ASC })(namedClass[className].prototype, 'direction')
   Field(() => registeredEnum)(namedClass[className].prototype, 'sort')  
-  Field(() => OrderingNullsDirection, { nullable: true })(namedClass[className].prototype, 'nulls')
+  Field(() => NullsOrdering, { nullable: true })(namedClass[className].prototype, 'nulls')
   ArgsType()(namedClass[className])
   InputType(className)(namedClass[className])
 
@@ -67,7 +67,7 @@ export function orderingValueGQLFactory(
 export interface OrderingValue<T extends StandardEnum<U> = any, U = any> {
   direction?: OrderingDirection
   sort: T
-  nulls?: OrderingNullsDirection
+  nulls?: NullsOrdering
 }
 
 export type StandardEnum<T=any> = {

@@ -42,7 +42,7 @@ describe("SortableFromResolver", () => {
     ).toThrow(SortingFieldDoesntExistError)
   })
 
-  describe('Without using nulls values direction', () => {
+  describe('Without using nulls ordering', () => {
     it("Should return array of SortingField", () => {
       const test = getSortablesFromResolverData({
         args: {
@@ -61,7 +61,7 @@ describe("SortableFromResolver", () => {
     })
   })
 
-  describe('Using nulls values direction', () => {
+  describe('Using nulls ordering', () => {
     it("Should return array of SortingField", () => {
       const test = getSortablesFromResolverData({
         args: {

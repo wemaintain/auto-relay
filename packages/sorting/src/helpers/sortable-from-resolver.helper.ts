@@ -1,7 +1,7 @@
 import { NotSortableError } from './../errors/not-sortable.error';
 import { AUTORELAY_ENUM_REVERSE_MAP, SortableField } from './../graphql/graphql.generator';
 import { ResolverData, ClassType } from 'type-graphql'
-import { OrderingDirection, OrderingNullsDirection,  OrderingValue } from '../graphql/ordering.input'
+import { OrderingDirection, OrderingValue, NullsOrdering } from '../graphql/ordering.input'
 import { SortingFieldDoesntExistError } from '../errors/sorting-field-no-exists.error';
 
 /**
@@ -43,8 +43,8 @@ export interface SortingField {
   schemaName: string
   /** direction to sort by */
   direction: OrderingDirection
-  /** direction to sort nulls by */
-  nulls?: OrderingNullsDirection
+  /** how the nulls ordering is managed */
+  nulls?: NullsOrdering
   /** type on which this field exists */
   type: ClassType
 }
