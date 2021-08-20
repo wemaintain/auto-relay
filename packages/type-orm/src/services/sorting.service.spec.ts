@@ -33,7 +33,7 @@ describe("TypeORM Sorting Service", () => {
     ])
     typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "foo" })
     const test = service.buildOrderObject({} as any, {} as any, "test", 'test.')
-    expect(test).toStrictEqual({ "test.foo": { order: "ASC", nulls: undefined }})
+    expect(test).toStrictEqual({ "test.foo": "ASC" })
   })
 
   it("Should return db name", () => {
@@ -42,7 +42,7 @@ describe("TypeORM Sorting Service", () => {
     ])
     typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "dbFoo" })
     const test = service.buildOrderObject({} as any, {} as any, "test", '')
-    expect(test).toStrictEqual({ "dbFoo": { order: "ASC", nulls: undefined }})
+    expect(test).toStrictEqual({ "dbFoo": "ASC" })
   })
 
   
@@ -60,6 +60,34 @@ describe("TypeORM Sorting Service", () => {
     expect(test).toStrictEqual({ 
       "dbFoo": { order: "ASC", nulls: "NULLS FIRST" },
       "dbBar": { order: "DESC", nulls: "NULLS LAST" },
+    })
+  })
+
+  describe('buildOrderByConditionValue', () => {
+    it("Should returns ASC", () => {
+      const result = service.buildOrderByConditionValue({direction: "ASC"})
+      expect(result).toEqual("ASC")
+    })
+
+    it("Should returns DESC", () => {
+      const result = service.buildOrderByConditionValue({direction: "DESC"})
+      expect(result).toEqual("DESC")
+    })
+
+    it("Should not care about undefined nulls values", () => {
+      const withUndefined = service.buildOrderByConditionValue({direction: "ASC", nulls: undefined})
+
+      expect(withUndefined).toEqual("ASC")
+    })
+
+    it("Should returns a NULLS FIRST", () => {
+      const result = service.buildOrderByConditionValue({direction: "ASC", nulls: "FIRST"})
+      expect(result).toEqual({order: "ASC", nulls: "NULLS FIRST"})
+    })
+
+    it("Should returns a NULLS LAST", () => {
+      const result = service.buildOrderByConditionValue({direction: "DESC", nulls: "LAST"})
+      expect(result).toEqual({order: "DESC", nulls: "NULLS LAST"})
     })
   })
 

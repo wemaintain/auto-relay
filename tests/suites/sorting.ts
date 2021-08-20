@@ -23,8 +23,8 @@ export function SortingTests(suiteName: string) {
       })
       expect(test.errors).toBeUndefined()
       expect(JSON.parse(test.data!.sortableEntities)).toStrictEqual({ 
-        sortingFoo: { order: "ASC" }, 
-        sortingBar: { order: "DESC" },
+        sortingFoo: "ASC", 
+        sortingBar: "DESC",
       })
     })
 

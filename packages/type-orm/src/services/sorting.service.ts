@@ -1,6 +1,6 @@
 import { ClassType, ResolverData } from 'type-graphql'
 import { Container, Service } from "typedi"
-import { TypeORMOrdering } from '../decorators/order-options.decorator'
+import { TypeORMOrdering, TypeORMOrderByConditionValue } from '../decorators/order-options.decorator'
 import { TypeOrmConnection } from '../type-orm-connection'
 
 @Service()
@@ -37,17 +37,24 @@ export class SortingService {
 
     return sortingFields.reduce((acc: TypeORMOrdering, sortingField) => {
       const dbName = dbColumns[sortingField.name]
-      acc[`${prefix}${dbName}`] = {
-          order: sortingField.direction, 
-          nulls: sortingField.nulls && (
-            (sortingField.nulls === "FIRST") 
-                ? `NULLS FIRST` 
-                : `NULLS LAST`
-          )
-        }
+      acc[`${prefix}${dbName}`] = this.buildOrderByConditionValue(sortingField)
       return acc
     }, {} as TypeORMOrdering)
 
+  }
+
+  public buildOrderByConditionValue(sortingField: {
+    direction: "ASC" | "DESC", 
+    nulls?: "FIRST" | "LAST",
+  }): TypeORMOrderByConditionValue {
+    if(!sortingField.nulls){
+      return sortingField.direction
+    }
+
+    return {
+      order: sortingField.direction,
+      nulls: (sortingField.nulls === "FIRST") ? "NULLS FIRST" : "NULLS LAST"
+    }
   }
 
 }
