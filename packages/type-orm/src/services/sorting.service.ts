@@ -25,7 +25,7 @@ export class SortingService {
       name: string, 
       type: ClassType, 
       direction: "ASC" | "DESC", 
-      nulls?: "NULLS FIRST" | "NULLS LAST",
+      nulls?: "FIRST" | "LAST",
     }[] = getSortablesFromResolverData(resolverData, target, propertyKey)
 
     if (!sortingFields.length) return {}
@@ -39,7 +39,12 @@ export class SortingService {
       const dbName = dbColumns[sortingField.name]
       acc[`${prefix}${dbName}`] = (sortingField.nulls) 
         // complex ordering form that supports nulls direction
-        ? {order: sortingField.direction, nulls: sortingField.nulls}
+        ? {
+          order: sortingField.direction, 
+          nulls: (sortingField.nulls === "FIRST") 
+            ? `NULLS FIRST` 
+            : `NULLS LAST`
+        }
         // simple ordering form as a string (ASC|DESC)
         : sortingField.direction
       return acc

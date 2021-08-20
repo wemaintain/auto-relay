@@ -48,11 +48,19 @@ describe("TypeORM Sorting Service", () => {
   
   it("Should use complex ordering form on nulls", () => {
     getSortables.mockReturnValueOnce([
-      { name: "foo", schemaName: "foo", type: entity, direction: OrderingDirection.ASC, nulls: OrderingNullsDirection.NULLS_FIRST }
+      { name: "foo", schemaName: "foo", type: entity, direction: OrderingDirection.ASC, nulls: OrderingNullsDirection.FIRST },
+      { name: "bar", schemaName: "bar", type: entity, direction: OrderingDirection.DESC, nulls: OrderingNullsDirection.LAST },
     ])
-    typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "dbFoo" })
+    typeormConnection.getColumnsOfFields.mockReturnValue({ 
+      foo: "dbFoo",
+      bar: "dbBar",
+    })
+
     const test = service.buildOrderObject({} as any, {} as any, "test", '')
-    expect(test).toStrictEqual({ "dbFoo": { order: "ASC", nulls: "NULLS FIRST" }})
+    expect(test).toStrictEqual({ 
+      "dbFoo": { order: "ASC", nulls: "NULLS FIRST" },
+      "dbBar": { order: "DESC", nulls: "NULLS LAST" },
+    })
   })
 
 })

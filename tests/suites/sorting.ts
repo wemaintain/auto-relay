@@ -25,7 +25,7 @@ export function SortingTests(suiteName: string) {
     it('Should work without errors on a query and get nulls values', async () => {
       const test = await testClient.query({
         query: `query { 
-          sortableEntities(order: [{sort: sortingFoo, nulls: NULLS_FIRST }, { sort: sortingBar, direction: DESC, , nulls: NULLS_LAST }]) 
+          sortableEntities(order: [{sort: sortingFoo, nulls: FIRST }, { sort: sortingBar, direction: DESC, nulls: LAST }]) 
         }
         `
       })

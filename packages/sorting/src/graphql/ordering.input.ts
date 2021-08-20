@@ -8,8 +8,8 @@ export enum OrderingDirection {
 }
 
 export enum OrderingNullsDirection {
-  NULLS_FIRST = 'NULLS FIRST',
-  NULLS_LAST = 'NULLS LAST',
+  FIRST = 'FIRST',
+  LAST = 'LAST',
 }
 
 registerEnumType(OrderingDirection, {

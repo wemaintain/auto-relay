@@ -63,16 +63,16 @@ describe("SortableFromResolver", () => {
     const test = getSortablesFromResolverData({
       args: {
         order: [
-          { sort: "foo", direction: "DESC", nulls: "NULLS LAST" },
-          { sort: "schemaBar", nulls: "NULLS FIRST" },
+          { sort: "foo", direction: "DESC", nulls: "LAST" },
+          { sort: "schemaBar", nulls: "FIRST" },
         ] as OrderingValue[]
       }
     } as any, resolver, "test")
 
     expect(test).toHaveLength(2)
     expect(test).toContainAllValues([
-      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: "NULLS LAST" },
-      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: "NULLS FIRST" },
+      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: "LAST" },
+      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: "FIRST" },
     ] as SortingField[])
   })
 
