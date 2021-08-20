@@ -42,38 +42,42 @@ describe("SortableFromResolver", () => {
     ).toThrow(SortingFieldDoesntExistError)
   })
 
-  it("Should return array of SortingField (without nulls)", () => {
-    const test = getSortablesFromResolverData({
-      args: {
-        order: [
-          { sort: "foo", direction: "DESC" },
-          { sort: "schemaBar" },
-        ] as OrderingValue[]
-      }
-    } as any, resolver, "test")
-
-    expect(test).toHaveLength(2)
-    expect(test).toContainAllValues([
-      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: undefined },
-      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: undefined },
-    ] as SortingField[])
+  describe('Without using nulls values direction', () => {
+    it("Should return array of SortingField", () => {
+      const test = getSortablesFromResolverData({
+        args: {
+          order: [
+            { sort: "foo", direction: "DESC" },
+            { sort: "schemaBar" },
+          ] as OrderingValue[]
+        }
+      } as any, resolver, "test")
+  
+      expect(test).toHaveLength(2)
+      expect(test).toContainAllValues([
+        { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: undefined },
+        { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: undefined },
+      ] as SortingField[])
+    })
   })
 
-  it("Should return array of SortingField (with nulls)", () => {
-    const test = getSortablesFromResolverData({
-      args: {
-        order: [
-          { sort: "foo", direction: "DESC", nulls: "LAST" },
-          { sort: "schemaBar", nulls: "FIRST" },
-        ] as OrderingValue[]
-      }
-    } as any, resolver, "test")
+  describe('Using nulls values direction', () => {
+    it("Should return array of SortingField", () => {
+      const test = getSortablesFromResolverData({
+        args: {
+          order: [
+            { sort: "foo", direction: "DESC", nulls: "LAST" },
+            { sort: "schemaBar", nulls: "FIRST" },
+          ] as OrderingValue[]
+        }
+      } as any, resolver, "test")
 
-    expect(test).toHaveLength(2)
-    expect(test).toContainAllValues([
-      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: "LAST" },
-      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: "FIRST" },
-    ] as SortingField[])
+      expect(test).toHaveLength(2)
+      expect(test).toContainAllValues([
+        { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: "LAST" },
+        { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: "FIRST" },
+      ] as SortingField[])
+    })
   })
 
 })
