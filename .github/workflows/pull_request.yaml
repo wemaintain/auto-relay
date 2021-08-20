@@ -1,0 +1,27 @@
+name: Pull Requests Pipeline
+
+on:
+  pull_request:
+    branches:
+      - "*"
+jobs:
+  build_and_tests: 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '12', '14', '16' ]
+    name: Node ${{ matrix.node }} Build & Test
+    steps:      
+    - uses: actions/checkout@v2
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node }}
+    - name: Install modules
+      run: npm ci
+    - name: Boostrap lerna
+      run:  npx lerna bootstrap
+    - name: Build packages
+      run: npx lerna run build
+    - name: Run tests
+      run: npm run test
