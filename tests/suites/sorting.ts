@@ -14,12 +14,35 @@ export function SortingTests(suiteName: string) {
     it('Should work without errors on a query', async () => {
       const test = await testClient.query({
         query: `query { 
-          sortableEntities(order: [{sort: sortingFoo}, { sort: sortingBar, direction: DESC }]) 
+          sortableEntities(order: [
+            { sort: sortingFoo }, 
+            { sort: sortingBar, direction: DESC }
+          ]) 
         }
         `
       })
       expect(test.errors).toBeUndefined()
-      expect(JSON.parse(test.data!.sortableEntities)).toStrictEqual({ sortingFoo: "ASC", sortingBar: "DESC" })
+      expect(JSON.parse(test.data!.sortableEntities)).toStrictEqual({ 
+        sortingFoo: { order: "ASC" }, 
+        sortingBar: { order: "DESC" },
+      })
+    })
+
+    it('Should work without errors on a query and get nulls ordering', async () => {
+      const test = await testClient.query({
+        query: `query { 
+          sortableEntities(order: [
+            { sort: sortingFoo, nulls: FIRST }, 
+            { sort: sortingBar, direction: DESC, nulls: LAST }
+          ]) 
+        }
+        `
+      })
+      expect(test.errors).toBeUndefined()
+      expect(JSON.parse(test.data!.sortableEntities)).toStrictEqual({ 
+        sortingFoo: { order: "ASC", nulls: "NULLS FIRST" }, 
+        sortingBar: { order: "DESC", nulls: "NULLS LAST" },
+      })
     })
   })
 }

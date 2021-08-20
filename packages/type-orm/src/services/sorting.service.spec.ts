@@ -1,7 +1,7 @@
 import { SortingService } from './sorting.service';
 import { getSortablesFromResolverData } from "@auto-relay/sorting"
 import { TypeOrmConnection } from '../type-orm-connection'
-import { OrderingDirection } from '@auto-relay/sorting/graphql/ordering.input'
+import { OrderingDirection, NullsOrdering } from '@auto-relay/sorting/graphql/ordering.input'
 import { Container } from 'typedi'
 
 jest.mock("../type-orm-connection")
@@ -33,7 +33,7 @@ describe("TypeORM Sorting Service", () => {
     ])
     typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "foo" })
     const test = service.buildOrderObject({} as any, {} as any, "test", 'test.')
-    expect(test).toStrictEqual({ "test.foo": "ASC" })
+    expect(test).toStrictEqual({ "test.foo": { order: "ASC", nulls: undefined }})
   })
 
   it("Should return db name", () => {
@@ -42,7 +42,25 @@ describe("TypeORM Sorting Service", () => {
     ])
     typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "dbFoo" })
     const test = service.buildOrderObject({} as any, {} as any, "test", '')
-    expect(test).toStrictEqual({ "dbFoo": "ASC" })
+    expect(test).toStrictEqual({ "dbFoo": { order: "ASC", nulls: undefined }})
+  })
+
+  
+  it("Should support nulls ordering", () => {
+    getSortables.mockReturnValueOnce([
+      { name: "foo", schemaName: "foo", type: entity, direction: OrderingDirection.ASC, nulls: NullsOrdering.FIRST },
+      { name: "bar", schemaName: "bar", type: entity, direction: OrderingDirection.DESC, nulls: NullsOrdering.LAST },
+    ])
+    typeormConnection.getColumnsOfFields.mockReturnValue({ 
+      foo: "dbFoo",
+      bar: "dbBar",
+    })
+
+    const test = service.buildOrderObject({} as any, {} as any, "test", '')
+    expect(test).toStrictEqual({ 
+      "dbFoo": { order: "ASC", nulls: "NULLS FIRST" },
+      "dbBar": { order: "DESC", nulls: "NULLS LAST" },
+    })
   })
 
 })

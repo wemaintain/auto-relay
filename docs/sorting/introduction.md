@@ -14,6 +14,7 @@ As to not bloat the main `auto-relay` package, all sorting features have been po
 Currently, the sorting package allows automatically generating all the necessary types for sorting, as well as providing simple API to convert those to input expected by ORMs.
 
 - [x] Sorting by fields that are columns
+- [x] Sorting nulls values first or last
 - [ ] Sorting by custom logic (to be implemented)
 
 ```typescript
@@ -61,6 +62,7 @@ type Query {
 type EntityOrderOptions {
   direction: OrderingDirection = OrderingDirection.ASC
   sort: EntitySortableField
+  nulls: NullsOrdering
 }
 
 enum EntitySortableField {
