@@ -15,7 +15,7 @@ export function OrderOptions<T = any>(prefix?: string) {
 
 export type TypeORMOrderByConditionValue = ("ASC"|"DESC")|{
   order: "ASC"|"DESC";
-  nulls?: "NULLS FIRST"|"NULLS LAST";
+  nulls: "NULLS FIRST"|"NULLS LAST";
 }
 
 export type TypeORMOrdering<Entity = any> = {
