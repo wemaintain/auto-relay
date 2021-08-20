@@ -3,7 +3,7 @@ import { PREFIX } from 'auto-relay'
 import { Container } from 'typedi'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
 import { buildSchema } from 'type-graphql'
-import { orderingValueGQLFactory, OrderingDirection } from './ordering.input'
+import { orderingValueGQLFactory, OrderingDirection, OrderingNullsDirection } from './ordering.input'
 import { GraphQLInputField } from 'graphql'
 
 describe('OrderingInput', () => {
@@ -14,6 +14,10 @@ describe('OrderingInput', () => {
       name: "OrderingDirection",
       description: "Direction when sorting a column",
     });
+    registerEnumType(OrderingNullsDirection, {
+      name: "OrderingNullsDirection",
+      description: "Direction of nulls values when sorting a column"
+    })
   })
 
   it("Should create an InputType with supplied infos", async () => {
@@ -35,11 +39,14 @@ describe('OrderingInput', () => {
     expect(test.name).toEqual("TestabcMyTypeOrderOptions")
     const direction: GraphQLInputField = (test as any).fields.direction
     const sort: GraphQLInputField = (test as any).fields.sort
+    const nulls: GraphQLInputField = (test as any).fields.nulls
 
     expect(direction.type.toString()).toEqual("OrderingDirection")
     expect(direction.defaultValue.toString()).toEqual("ASC")
 
     expect(sort.type.toString()).toEqual("TestEnum!")
+
+    expect(nulls.type.toString()).toEqual("OrderingNullsDirection")
   })
 
   it('Should re-use ordering if already exists', async () => {

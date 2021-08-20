@@ -42,7 +42,7 @@ describe("SortableFromResolver", () => {
     ).toThrow(SortingFieldDoesntExistError)
   })
 
-  it("Should return array of SortingField", () => {
+  it("Should return array of SortingField (without nulls)", () => {
     const test = getSortablesFromResolverData({
       args: {
         order: [
@@ -54,8 +54,25 @@ describe("SortableFromResolver", () => {
 
     expect(test).toHaveLength(2)
     expect(test).toContainAllValues([
-      { direction: "DESC", name: "foo", schemaName: "foo", type: entity },
-      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity },
+      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: undefined },
+      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: undefined },
+    ] as SortingField[])
+  })
+
+  it("Should return array of SortingField (with nulls)", () => {
+    const test = getSortablesFromResolverData({
+      args: {
+        order: [
+          { sort: "foo", direction: "DESC", nulls: "NULLS LAST" },
+          { sort: "schemaBar", nulls: "NULLS FIRST" },
+        ] as OrderingValue[]
+      }
+    } as any, resolver, "test")
+
+    expect(test).toHaveLength(2)
+    expect(test).toContainAllValues([
+      { direction: "DESC", name: "foo", schemaName: "foo", type: entity, nulls: "NULLS LAST" },
+      { direction: "ASC", name: "bar", schemaName: "schemaBar", type: entity, nulls: "NULLS FIRST" },
     ] as SortingField[])
   })
 

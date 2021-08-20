@@ -7,10 +7,20 @@ export enum OrderingDirection {
   DESC = 'DESC'
 }
 
+export enum OrderingNullsDirection {
+  NULLS_FIRST = 'NULLS FIRST',
+  NULLS_LAST = 'NULLS LAST',
+}
+
 registerEnumType(OrderingDirection, {
   name: "OrderingDirection",
   description: "Direction when sorting a column (defaults to ASC)",
 });
+
+registerEnumType(OrderingNullsDirection, {
+  name: "OrderingNullsDirection",
+  description: "Direction of nulls values when sorting a column"
+})
 
 /**
  * Create an OrderingInput inputType for graphql based on the given name and
@@ -37,12 +47,14 @@ export function orderingValueGQLFactory(
   // Otherwise generate them
   const namedClass = {
     [className]: class implements OrderingValue {
-      direction?: OrderingDirection;
+      direction?: OrderingDirection
       sort!: StandardEnum
+      nulls?: OrderingNullsDirection
     }
   }
   Field(() => OrderingDirection, { defaultValue: OrderingDirection.ASC })(namedClass[className].prototype, 'direction')
   Field(() => registeredEnum)(namedClass[className].prototype, 'sort')  
+  Field(() => OrderingNullsDirection, { nullable: true })(namedClass[className].prototype, 'nulls')
   ArgsType()(namedClass[className])
   InputType(className)(namedClass[className])
 
@@ -55,6 +67,7 @@ export function orderingValueGQLFactory(
 export interface OrderingValue<T extends StandardEnum<U> = any, U = any> {
   direction?: OrderingDirection
   sort: T
+  nulls?: OrderingNullsDirection
 }
 
 export type StandardEnum<T=any> = {

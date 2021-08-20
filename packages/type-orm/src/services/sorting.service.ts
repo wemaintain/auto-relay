@@ -21,7 +21,13 @@ export class SortingService {
       throw new Error(`Couldn't loading sorting module. Did you forgot to install @auto-relay/sorting ?`)
     }
 
-    const sortingFields: { name: string, type: ClassType, direction: "ASC" | "DESC" }[] = getSortablesFromResolverData(resolverData, target, propertyKey)
+    const sortingFields: { 
+      name: string, 
+      type: ClassType, 
+      direction: "ASC" | "DESC", 
+      nulls?: "NULLS FIRST" | "NULLS LAST",
+    }[] = getSortablesFromResolverData(resolverData, target, propertyKey)
+
     if (!sortingFields.length) return {}
 
     const dbColumns = this.typeOrmConnection.getColumnsOfFields(
@@ -31,7 +37,11 @@ export class SortingService {
 
     return sortingFields.reduce((acc: TypeORMOrdering, sortingField) => {
       const dbName = dbColumns[sortingField.name]
-      acc[`${prefix}${dbName}`] = sortingField.direction
+      acc[`${prefix}${dbName}`] = (sortingField.nulls) 
+        // complex ordering form that supports nulls direction
+        ? {order: sortingField.direction, nulls: sortingField.nulls}
+        // simple ordering form as a string (ASC|DESC)
+        : sortingField.direction
       return acc
     }, {} as TypeORMOrdering)
 

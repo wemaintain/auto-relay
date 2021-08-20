@@ -1,7 +1,7 @@
 import { SortingService } from './sorting.service';
 import { getSortablesFromResolverData } from "@auto-relay/sorting"
 import { TypeOrmConnection } from '../type-orm-connection'
-import { OrderingDirection } from '@auto-relay/sorting/graphql/ordering.input'
+import { OrderingDirection, OrderingNullsDirection } from '@auto-relay/sorting/graphql/ordering.input'
 import { Container } from 'typedi'
 
 jest.mock("../type-orm-connection")
@@ -43,6 +43,16 @@ describe("TypeORM Sorting Service", () => {
     typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "dbFoo" })
     const test = service.buildOrderObject({} as any, {} as any, "test", '')
     expect(test).toStrictEqual({ "dbFoo": "ASC" })
+  })
+
+  
+  it("Should use complex ordering form on nulls", () => {
+    getSortables.mockReturnValueOnce([
+      { name: "foo", schemaName: "foo", type: entity, direction: OrderingDirection.ASC, nulls: OrderingNullsDirection.NULLS_FIRST }
+    ])
+    typeormConnection.getColumnsOfFields.mockReturnValue({ foo: "dbFoo" })
+    const test = service.buildOrderObject({} as any, {} as any, "test", '')
+    expect(test).toStrictEqual({ "dbFoo": { order: "ASC", nulls: "NULLS FIRST" }})
   })
 
 })
