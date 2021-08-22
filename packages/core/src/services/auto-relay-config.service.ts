@@ -1,6 +1,6 @@
 import { SharedObjectFactory } from '../graphql/shared-object.factory'
 import { Container, Service, Token } from 'typedi'
-import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigArgsNoModel, AutoRelayOrmConnect } from '../interfaces/auto-relay-config.interface'
+import { AutoRelayConfigArgs, AutoRelayConfigArgsExistingModel, AutoRelayConfigArgsNoModel } from '../interfaces/auto-relay-config.interface'
 import { ClassValueThunk, ORMConnection } from '..'
 import * as Relay from 'graphql-relay'
 
@@ -21,7 +21,8 @@ export class AutoRelayConfig {
     config: AutoRelayConfigArgs
   ) {
     if (!config) throw new Error(`No config supplied to AutoRelay`)
-    Container.remove(PAGINATION_OBJECT, CONNECTIONARGS_OBJECT)
+    Container.remove(PAGINATION_OBJECT)
+    Container.remove(CONNECTIONARGS_OBJECT)
 
     this._registerOrm(config)
 
