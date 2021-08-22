@@ -7,7 +7,7 @@ import { RelayedConnection, RelayedFieldResolver, RelayedField, AugmentedConnect
 export class TestObject {
 
   @Field(() => ID)
-  id: string = faker.random.uuid()
+  id: string = faker.datatype.uuid()
 
   @Field()
   foo: string = faker.random.words()
@@ -27,7 +27,7 @@ export class TestObject {
 export class TestObject2 {
 
   @Field(() => ID)
-  id: string = faker.random.uuid()
+  id: string = faker.datatype.uuid()
 
   @RelayedConnection(() => TestNestedObject)
   public connection!: TestNestedObject[]
@@ -41,7 +41,7 @@ export class TestObject2 {
 export class TestObject3 {
 
   @Field(() => ID)
-  id: string = faker.random.uuid()
+  id: string = faker.datatype.uuid()
 
   @RelayedConnection(() => TestNestedObject)
   public connection!: TestNestedObject[]

@@ -1,7 +1,7 @@
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { pathsToModuleNameMapper } = require('ts-jest/utils')
 // In the following statement, replace `./tsconfig` with the path to your `tsconfig` file
 // which contains the path mapping (ie the `compilerOptions.paths` option):
-const { compilerOptions } = require('./tsconfig.json');
+const { compilerOptions } = require('./tsconfig.json')
 
 module.exports = {
   roots: [
@@ -22,8 +22,8 @@ module.exports = {
   ],
   globals: {
     'ts-jest': {
-      tsConfig: '<rootDir>/tsconfig.specs.json'
-    }
+      tsconfig: '<rootDir>/tsconfig.specs.json',
+    },
   },
   collectCoverage: true,
   // collectCoverageFrom: [
@@ -35,6 +35,6 @@ module.exports = {
   ],
   setupFiles: ['reflect-metadata'],
   setupFilesAfterEnv: ['jest-extended'],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {prefix: __dirname + '/packages/'}),
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: __dirname + '/packages/' }),
   // verbose: true,
 }
