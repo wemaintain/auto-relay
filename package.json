@@ -35,5 +35,8 @@
     "conventional-changelog-cli": "2.1.1",
     "graphql-relay": "0.8.0",
     "typedi": "0.8.0"
+  },
+  "engines": {
+    "node": ">= 12"
   }
 }
