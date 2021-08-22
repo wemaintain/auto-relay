@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import 'reflect-metadata'
 export * from './types'
 export * from './decorators'
 export * from './services'

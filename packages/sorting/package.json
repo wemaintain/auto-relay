@@ -30,15 +30,14 @@
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "devDependencies": {
-    "@types/graphql-relay": "^0.4.9",
     "auto-relay": "^0.13.0",
-    "graphql-relay": "^0.6.0",
+    "graphql-relay": "^0.8.0",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.18"
   },
   "peerDependencies": {
-    "auto-relay": "^0.10.0",
-    "graphql-relay": "^0.6.0",
+    "auto-relay": "^0.13.0",
+    "graphql-relay": "^0.8.0",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.18"
   },

@@ -23,8 +23,8 @@ export class SharedObjectFactory {
     const PageInfo = class extends (extend as ObjectConstructor) implements Relay.PageInfo {
       public hasNextPage!: boolean;
       public hasPreviousPage!: boolean;
-      public startCursor?: Relay.ConnectionCursor;
-      public endCursor?: Relay.ConnectionCursor;
+      public startCursor!: Relay.ConnectionCursor | null;
+      public endCursor!: Relay.ConnectionCursor | null;
     }
 
     Field(() => Boolean)(PageInfo.prototype, 'hasNextPage')

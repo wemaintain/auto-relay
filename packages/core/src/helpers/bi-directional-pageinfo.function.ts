@@ -1,12 +1,17 @@
 import * as Relay from 'graphql-relay'
 
+export interface ArraySliceMetaInfo {
+  sliceStart: number
+  arrayLength: number
+}
+
 /**
  * Augments PageInfo to add support for bi-directional pageinfo
  * (ie: having hasPreviousPage updated when paging forwards and vice versa)
  */
 export function biDirectionalPageInfo<T=any>(
   connection: Relay.Connection<T>,
-  meta: Relay.ArraySliceMetaInfo,
+  meta: ArraySliceMetaInfo,
   returnedCount: number
 ): Relay.Connection<T> {
   // We're not the first element

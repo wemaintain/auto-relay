@@ -56,8 +56,8 @@ export class AutoRelayConfig {
     config = config || AutoRelayConfig._config
     const alreadyExists = this.paginationExists()
     if (!alreadyExists || force) {
-      const ConnectionArgs = this._sharedObjectFactory.generateConnectionArgs(config.microserviceName ?? "")
-      const PageInfo = this._sharedObjectFactory.generatePageInfo(config.microserviceName ?? "", config.extends ? config.extends.pageInfo : undefined)
+      const ConnectionArgs = this._sharedObjectFactory.generateConnectionArgs(config.microserviceName || "")
+      const PageInfo = this._sharedObjectFactory.generatePageInfo(config.microserviceName || "", config.extends ? config.extends.pageInfo : undefined)
 
       Container.set(PAGINATION_OBJECT, (): typeof PageInfo => PageInfo)
       Container.set(CONNECTIONARGS_OBJECT, (): typeof ConnectionArgs => ConnectionArgs)
