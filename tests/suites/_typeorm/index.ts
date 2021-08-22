@@ -35,7 +35,9 @@ try {
     schema
   });
 
-  const testServer = createTestClient(server);
+  // CreateTestClient still expect an apolloServer v2...
+  // @todo Probably need to move to another test library
+  const testServer = createTestClient(server as any);
   await server.listen({ port: 33333 });
 
   Container.set('schema', schema)
