@@ -2,7 +2,7 @@ import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX, CONNECTION_BASE_OBJECT } fr
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
 import { TypeValue, ClassValueThunk } from '../types/types'
-import { Field, ObjectType, Arg, ClassType } from 'type-graphql'
+import { Field, ObjectType, Arg, ClassType, Int } from 'type-graphql'
 import * as Relay from 'graphql-relay'
 
 /**
@@ -63,9 +63,9 @@ export class DynamicObjectFactory {
     // And we ensure our target[getterName] is recognized by GQL under target{}
     Reflect.defineMetadata('design:paramtypes', [String, Number, String, Number], target, functionName)
     Arg('after', () => String, { nullable: true })(target, functionName, 0)
-    Arg('first', () => Number, { nullable: true })(target, functionName, 1)
+    Arg('first', () => Int, { nullable: true })(target, functionName, 1)
     Arg('before', () => String, { nullable: true })(target, functionName, 2)
-    Arg('last', () => Number, { nullable: true })(target, functionName, 3)
+    Arg('last', () => Int, { nullable: true })(target, functionName, 3)
     Field(() => Connection, { name: `${String(sdlName)}`, ...fieldOptions })(target, functionName, { value: true })
   }
 
