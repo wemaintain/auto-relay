@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLField, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLArgument, GraphQLFieldConfigMap } from 'graphql';
+import { GraphQLSchema, GraphQLField, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLArgument, GraphQLFieldConfigMap, GraphQLNamedType } from 'graphql';
 import Container from 'typedi';
 export function SDLTests(suiteName: string) {
 
@@ -49,6 +49,31 @@ export function SDLTests(suiteName: string) {
     })
 
     describe('RelayedConnection', () => {
+      
+      describe('Types', () => {
+
+        it('Should add inline relay arguments', () => {
+          const recipe = schema.getType('Recipe') as GraphQLObjectType
+          const field = recipe.getFields()['ratings']
+  
+          const first = field.args.find((a) => a.name === 'first');
+          const last = field.args.find((a) => a.name === 'last');
+          const before = field.args.find((a) => a.name === 'before');
+          const after = field.args.find((a) => a.name === 'after');
+  
+          const checkArg = (expectedType: string, arg?: GraphQLArgument) => {
+            expect(arg).toBeTruthy();
+            expect(arg!.type.toString()).toEqual(expectedType);
+          }
+  
+          checkArg('Int', first)
+          checkArg('Int', last)
+          checkArg('String', before)
+          checkArg('String', after)
+        })
+
+      })
+
     })
 
     describe('RelayedQuery', () => {
