@@ -29,7 +29,7 @@ _src/base-connection.ts_
 ```typescript
 import { RelayNbOfItems } from 'auto-relay'
 
-@ObjectType({ abstract: true })
+@ObjectType({ isAbstract: true })
 export class BaseConnection {
 
   @Field(() => Int)
