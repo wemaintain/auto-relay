@@ -1,8 +1,8 @@
 import { AutoRelayConfig, PAGINATION_OBJECT, PREFIX, CONNECTION_BASE_OBJECT } from './../services/auto-relay-config.service';
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { Service, Container } from 'typedi'
-import { TypeValue, ClassValueThunk } from '../types/types'
-import { Field, ObjectType, Arg, ClassType, Int } from 'type-graphql'
+import { TypeValue, ClassValueThunk, ClassType } from '../types/types'
+import { Field, ObjectType, Arg, Int } from 'type-graphql'
 import * as Relay from 'graphql-relay'
 
 /**

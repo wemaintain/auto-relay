@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-type-alias */
-import { ClassType } from 'type-graphql'
 import { GraphQLScalarType } from 'graphql'
 
+export type ClassType<T = any> = abstract new (...args: any[]) => T;
 export type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
 export type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
 export type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;

@@ -1,6 +1,6 @@
 import { Container } from 'typedi'
-import { InputType, ClassType, Field, registerEnumType, ArgsType } from "type-graphql"
-import { PREFIX } from 'auto-relay'
+import { InputType, Field, registerEnumType, ArgsType } from "type-graphql"
+import { ClassType, PREFIX} from 'auto-relay'
 
 export enum OrderingDirection {
   ASC = 'ASC',
