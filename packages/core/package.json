@@ -33,6 +33,7 @@
   "peerDependencies": {
     "graphql": "^15.3.0",
     "graphql-relay": "^0.8.0",
+    "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.0.0"
   },
   "engines": {
