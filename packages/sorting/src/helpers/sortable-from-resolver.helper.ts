@@ -1,8 +1,9 @@
 import { NotSortableError } from './../errors/not-sortable.error';
 import { AUTORELAY_ENUM_REVERSE_MAP, SortableField } from './../graphql/graphql.generator';
-import { ResolverData, ClassType } from 'type-graphql'
+import { ResolverData } from 'type-graphql'
 import { OrderingDirection, OrderingValue, NullsOrdering } from '../graphql/ordering.input'
 import { SortingFieldDoesntExistError } from '../errors/sorting-field-no-exists.error';
+import { ClassType } from "auto-relay";
 
 /**
  * Returns all the sorting fields being used in a given query/field resolver

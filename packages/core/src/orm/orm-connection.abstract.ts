@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-type-alias */
-import { ClassType } from 'type-graphql'
 import { RelayedConnectionOptions } from './../decorators/relayed-connection.decorator';
 import { ClassValueThunk } from '..'
 import { AugmentedConnection } from '../interfaces/augmented-connection.interface'

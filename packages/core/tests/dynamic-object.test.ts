@@ -6,7 +6,7 @@ import { ObjectTypeDefinitionNode, GraphQLNamedType, GraphQLObjectType, GraphQLS
 import { getMetadataStorage } from "type-graphql/dist/metadata/getMetadataStorage"
 import { getFieldOfObjectType, getConfigOfObjectType } from "./_.helper";
 import Container from 'typedi';
-import { ClassType } from 'type-graphql';
+import { ClassType } from "auto-relay";
 
 const basicSchema = () => {
   @TGQL.ObjectType()

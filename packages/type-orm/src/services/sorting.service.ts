@@ -1,7 +1,8 @@
-import { ClassType, ResolverData } from 'type-graphql'
+import { ResolverData } from 'type-graphql'
 import { Container, Service } from "typedi"
 import { TypeORMOrdering, TypeORMOrderByConditionValue } from '../decorators/order-options.decorator'
 import { TypeOrmConnection } from '../type-orm-connection'
+import { ClassType } from "auto-relay";
 
 @Service()
 export class SortingService {

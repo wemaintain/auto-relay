@@ -1,7 +1,7 @@
-import { ORMConnection, ORM_CONNECTION } from 'auto-relay'
+import { ORMConnection, ORM_CONNECTION, ClassType } from 'auto-relay'
 import { GQLSortingGenerator, AUTORELAY_ENUM_REVERSE_MAP } from './graphql.generator'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
-import { FieldResolver, ClassType, Query, buildSchema, registerEnumType } from 'type-graphql'
+import { FieldResolver, Query, buildSchema, registerEnumType } from 'type-graphql'
 import { Field, ObjectType, Resolver } from 'type-graphql'
 import { TypeOrmConnection } from "@auto-relay/typeorm"
 import { Container } from 'typedi'

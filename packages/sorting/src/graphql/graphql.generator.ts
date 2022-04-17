@@ -1,7 +1,7 @@
 import { registerEnumType } from 'type-graphql';
-import { ClassType, Arg } from 'type-graphql'
+import { Arg } from 'type-graphql'
 import { Container, Service } from "typedi"
-import { ORMConnection, ORM_CONNECTION } from 'auto-relay'
+import { ORMConnection, ORM_CONNECTION, ClassType } from 'auto-relay'
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage'
 import { FieldMetadata, ResolverClassMetadata, FieldResolverMetadata } from 'type-graphql/dist/metadata/definitions'
 import { OrderingValue, orderingValueGQLFactory, StandardEnum } from './ordering.input'

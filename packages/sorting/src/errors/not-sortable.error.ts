@@ -1,4 +1,4 @@
-import { ClassType } from 'type-graphql';
+import { ClassType } from "auto-relay";
 
 export class NotSortableError extends Error {
   constructor(target: ClassType, propertyKey: string) {
