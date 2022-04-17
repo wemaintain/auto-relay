@@ -12,7 +12,7 @@
     "@types/node": "14.17.11",
     "@typescript-eslint/eslint-plugin": "4.29.3",
     "@wemaintain/eslint-config": "4.0.2",
-    "apollo-server": "3.2.0",
+    "apollo-server": "3.4.1",
     "apollo-server-testing": "2.25.2",
     "class-validator": "0.13.1",
     "eslint": "7.32.0",
