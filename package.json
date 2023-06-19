@@ -14,7 +14,7 @@
     "@wemaintain/eslint-config": "4.0.2",
     "apollo-server": "3.4.1",
     "apollo-server-testing": "2.25.2",
-    "class-validator": "0.13.1",
+    "class-validator": "0.14.0",
     "eslint": "7.32.0",
     "eslint-plugin-json": "3.1.0",
     "faker": "5.5.3",
