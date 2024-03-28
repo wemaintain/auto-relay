@@ -30,10 +30,10 @@
     "url": "https://github.com/wemaintain/auto-relay/issues"
   },
   "peerDependencies": {
-    "auto-relay": "^0.13.0",
-    "graphql-relay": "^0.8.0",
+    "auto-relay": "^0.13.0 || ^0.14.0",
+    "graphql-relay": "^0.8.0 || ^0.10.0",
     "typedi": "0.8.0",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18 || ^0.3.0"
   },
   "devDependencies": {
     "auto-relay": "^0.14.0"

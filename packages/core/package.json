@@ -31,9 +31,9 @@
     "typedi": "0.8.0"
   },
   "peerDependencies": {
-    "graphql": "^15.3.0",
-    "graphql-relay": "^0.8.0",
-    "reflect-metadata": "^0.1.13",
+    "graphql": "^15.3.0 || ^16.0.0",
+    "graphql-relay": "^0.8.0 || ^0.10.0",
+    "reflect-metadata": "^0.1.13 || ^0.2.0",
     "type-graphql": "^1.0.0"
   },
   "engines": {
