@@ -1,5 +1,13 @@
-import { ClassType } from 'type-graphql';
-import { ORMConnection, ClassValueThunk, AutoRelayGetter, AugmentedConnection, LimitOffsetPagingService, augmentedConnection, RelayedConnectionOptions } from 'auto-relay'
+import {
+  ORMConnection,
+  ClassValueThunk,
+  AutoRelayGetter,
+  AugmentedConnection,
+  LimitOffsetPagingService,
+  augmentedConnection,
+  RelayedConnectionOptions,
+  ClassType
+} from 'auto-relay'
 import { Container, Service } from 'typedi'
 import { getConnection, EntityMetadata, FindManyOptions, BaseEntity, getMetadataArgsStorage } from 'typeorm'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'

@@ -1,9 +1,9 @@
 import { SortingFieldDoesntExistError } from './../errors/sorting-field-no-exists.error';
-import { ClassType } from 'type-graphql'
 import { NotSortableError } from './../errors/not-sortable.error'
 import { getSortablesFromResolverData, SortingField } from "./sortable-from-resolver.helper"
 import { AUTORELAY_ENUM_REVERSE_MAP } from '../graphql/graphql.generator'
 import { OrderingValue } from '../graphql/ordering.input'
+import { ClassType } from "auto-relay";
 
 describe("SortableFromResolver", () => {
 
