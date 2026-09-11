@@ -33,7 +33,7 @@
     "auto-relay": "^0.13.1",
     "graphql-relay": "^0.8.0",
     "typedi": "0.8.0",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.3.31"
   },
   "devDependencies": {
     "auto-relay": "^0.14.0"
